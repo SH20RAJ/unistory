@@ -19,7 +19,6 @@ import {
     Calendar,
     Image,
     Video,
-    Poll,
     Smile,
     MapPin,
     Clock,
@@ -28,7 +27,8 @@ import {
     Send,
     Eye,
     EyeOff,
-    Sparkles
+    Sparkles,
+    PaintRoller as Poll
 } from "lucide-react";
 
 const postTypes = [
@@ -152,9 +152,8 @@ export default function CreatePage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <MainNavigation />
 
-            <div className="max-w-4xl mx-auto px-4 py-6 pb-20 md:pb-6">
+            <div className="max-w-7xl mx-auto px-4 py-6 pb-20 md:pb-6">
                 <div className="mb-6">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create & Share</h1>
                     <p className="text-gray-600 dark:text-gray-400">Express yourself, connect with others, and build your campus community</p>

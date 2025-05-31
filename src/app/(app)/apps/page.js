@@ -330,109 +330,107 @@ export default function AppsPage() {
         : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-7xl mx-auto px-4 py-8">
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        Campus Apps 📱
-                    </h1>
-                    <p className="text-xl text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto">
-                        Discover all the amazing features that make campus life more connected,
-                        fun, and productive. From dating to studying, we've got you covered!
-                    </p>
+        <div>
+            {/* Header */}
+            <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    Campus Apps 📱
+                </h1>
+                <p className="text-xl text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto">
+                    Discover all the amazing features that make campus life more connected,
+                    fun, and productive. From dating to studying, we've got you covered!
+                </p>
 
-                    {/* Search */}
-                    <div className="relative max-w-md mx-auto">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                            placeholder="Search apps..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10"
-                        />
+                {/* Search */}
+                <div className="relative max-w-md mx-auto">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                        placeholder="Search apps..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                    />
+                </div>
+            </div>
+
+            {/* Search Results */}
+            {filteredApps && (
+                <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        Search Results ({filteredApps.length})
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredApps.map((app, index) => (
+                            <AppCard key={index} {...app} />
+                        ))}
                     </div>
                 </div>
+            )}
 
-                {/* Search Results */}
-                {filteredApps && (
-                    <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                            Search Results ({filteredApps.length})
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {filteredApps.map((app, index) => (
-                                <AppCard key={index} {...app} />
-                            ))}
-                        </div>
-                    </div>
-                )}
+            {/* App Sections */}
+            {!searchQuery && (
+                <div className="space-y-8">
+                    <AppSection
+                        icon={Heart}
+                        title="Dating & Connections"
+                        description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
+                        apps={datingApps}
+                        color="pink"
+                    />
 
-                {/* App Sections */}
-                {!searchQuery && (
-                    <div className="space-y-8">
-                        <AppSection
-                            icon={Heart}
-                            title="Dating & Connections"
-                            description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
-                            apps={datingApps}
-                            color="pink"
-                        />
+                    <AppSection
+                        icon={BookOpen}
+                        title="Study & Learning"
+                        description="Enhance your academic journey with collaborative learning tools and study resources"
+                        apps={studyApps}
+                        color="blue"
+                    />
 
-                        <AppSection
-                            icon={BookOpen}
-                            title="Study & Learning"
-                            description="Enhance your academic journey with collaborative learning tools and study resources"
-                            apps={studyApps}
-                            color="blue"
-                        />
+                    <AppSection
+                        icon={Users}
+                        title="Social & Community"
+                        description="Connect with your campus community, join events, and share memorable moments"
+                        apps={socialApps}
+                        color="green"
+                    />
 
-                        <AppSection
-                            icon={Users}
-                            title="Social & Community"
-                            description="Connect with your campus community, join events, and share memorable moments"
-                            apps={socialApps}
-                            color="green"
-                        />
+                    <AppSection
+                        icon={Gamepad2}
+                        title="Games & Competition"
+                        description="Compete, have fun, and earn rewards through campus-wide games and challenges"
+                        apps={gameApps}
+                        color="purple"
+                    />
 
-                        <AppSection
-                            icon={Gamepad2}
-                            title="Games & Competition"
-                            description="Compete, have fun, and earn rewards through campus-wide games and challenges"
-                            apps={gameApps}
-                            color="purple"
-                        />
+                    <AppSection
+                        icon={Lightbulb}
+                        title="Startups & Innovation"
+                        description="Build the next big thing with fellow student entrepreneurs and innovators"
+                        apps={startupApps}
+                        color="orange"
+                    />
 
-                        <AppSection
-                            icon={Lightbulb}
-                            title="Startups & Innovation"
-                            description="Build the next big thing with fellow student entrepreneurs and innovators"
-                            apps={startupApps}
-                            color="orange"
-                        />
-
-                        <AppSection
-                            icon={Heart}
-                            title="Wellness & Growth"
-                            description="Take care of your mental health and track your personal growth journey"
-                            apps={wellnessApps}
-                            color="indigo"
-                        />
-                    </div>
-                )}
-
-                {/* Footer CTA */}
-                <div className="mt-12 text-center bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                        Missing something? 🤔
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
-                        We're always adding new features! Let us know what you'd love to see on campus.
-                    </p>
-                    <Button className="bg-blue-600 hover:bg-blue-700">
-                        Suggest a Feature
-                    </Button>
+                    <AppSection
+                        icon={Heart}
+                        title="Wellness & Growth"
+                        description="Take care of your mental health and track your personal growth journey"
+                        apps={wellnessApps}
+                        color="indigo"
+                    />
                 </div>
+            )}
+
+            {/* Footer CTA */}
+            <div className="mt-12 text-center bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    Missing something? 🤔
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    We're always adding new features! Let us know what you'd love to see on campus.
+                </p>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                    Suggest a Feature
+                </Button>
             </div>
         </div>
     );

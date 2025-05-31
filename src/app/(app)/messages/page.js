@@ -295,9 +295,8 @@ export default function Messages() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <MainNavigation />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-2 py-2">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 h-[calc(100vh-200px)]">
                     <div className="flex h-full">
 
