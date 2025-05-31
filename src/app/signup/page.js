@@ -84,7 +84,8 @@ export default function SignUp() {
 
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
-        } else if (!/\.edu$/.test(formData.email) && !formData.email.includes('@university.')) {
+        } 
+        else if (!/\.edu$/.test(formData.email) && !formData.email.includes('@university.')) {
             newErrors.email = 'Please use a valid .edu email address';
         }
 
@@ -201,7 +202,7 @@ export default function SignUp() {
                             <>
                                 <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
                                 <CardDescription>
-                                    Let's start with your basic information
+                                    Let&apmos;s start with your basic information
                                 </CardDescription>
                             </>
                         )}

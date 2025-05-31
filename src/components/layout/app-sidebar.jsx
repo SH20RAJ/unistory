@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Home,
     Grid3X3,
@@ -18,7 +20,8 @@ import {
     Settings,
     Search,
     Bell,
-    Plus
+    Plus,
+    LogOut
 } from "lucide-react";
 
 const sidebarItems = [
@@ -96,6 +99,7 @@ const quickAccessItems = [
 
 export function AppSidebar() {
     const pathname = usePathname();
+    const { user, isAuthenticated, signOut } = useAuth();
 
     return (
         <div className="flex h-full w-64 flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
@@ -176,24 +180,50 @@ export function AppSidebar() {
 
             {/* Bottom Section */}
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-                <Link href="/profile">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <Users className="mr-3 h-4 w-4" />
-                        Profile
-                    </Button>
-                </Link>
-                <Link href="/notifications">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <Bell className="mr-3 h-4 w-4" />
-                        Notifications
-                    </Button>
-                </Link>
-                <Link href="/settings">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <Settings className="mr-3 h-4 w-4" />
-                        Settings
-                    </Button>
-                </Link>
+                {isAuthenticated ? (
+                    <>
+                        <div className="flex items-center gap-3 mb-3 p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                            <Avatar>
+                                <AvatarImage src={user?.image} alt={user?.name} />
+                                <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">{user?.name || 'User'}</p>
+                                <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                            </div>
+                        </div>
+                        <Link href="/profile">
+                            <Button variant="ghost" className="w-full justify-start">
+                                <Users className="mr-3 h-4 w-4" />
+                                Profile
+                            </Button>
+                        </Link>
+                        <Link href="/notifications">
+                            <Button variant="ghost" className="w-full justify-start">
+                                <Bell className="mr-3 h-4 w-4" />
+                                Notifications
+                            </Button>
+                        </Link>
+                        <Link href="/settings">
+                            <Button variant="ghost" className="w-full justify-start">
+                                <Settings className="mr-3 h-4 w-4" />
+                                Settings
+                            </Button>
+                        </Link>
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                            onClick={() => signOut({ callbackUrl: '/' })}
+                        >
+                            <LogOut className="mr-3 h-4 w-4" />
+                            Sign Out
+                        </Button>
+                    </>
+                ) : (
+                    <Link href="/auth/signin">
+                        <Button className="w-full">Sign In</Button>
+                    </Link>
+                )}
             </div>
         </div>
     );

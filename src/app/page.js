@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LoadingScreen } from "@/components/ui/loading";
-import { Heart, Users, BookOpen, Shield, Zap, Star, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { SignInButton } from "@/components/auth/SignIn";
+import { Heart, Users, BookOpen, Shield, Zap, Star, ArrowRight, LogIn } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -172,29 +175,90 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* Clean Testimonials Section */}
+      <section className="bg-gray-50 dark:bg-gray-800/30 py-20 lg:py-32">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+              What Students Say
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 font-light">
+              Hear from our community about their experiences
+            </p>
+          </div>
 
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {[
+              {
+                name: "Emily R.",
+                role: "Sophomore, Biology Major",
+                testimonial: "Unistory has transformed how I connect with classmates. It's a safe space to share and learn."
+              },
+              {
+                name: "Jake T.",
+                role: "Senior, Computer Science",
+                testimonial: "Finally a platform that understands college life! I've made great friends and study partners."
+              },
+              {
+                name: "Sofia L.",
+                role: "Freshman, Business Admin",
+                testimonial: "I love the anonymous sharing feature. It allows me to express myself freely without fear of judgment."
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-white dark:bg-gray-800 rounded-2xl p-8">
+                <div className="flex flex-col space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {testimonial.name}
+                  </h3>
+                  <span className="text-sm text-gray-600 dark:text-gray-400 italic">
+                    {testimonial.role}
+                  </span>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    "{testimonial.testimonial}"
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Elegant CTA Section */}
       <section className="container mx-auto px-6 py-20 lg:py-32">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gray-900 dark:bg-white rounded-3xl p-16 lg:p-20">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white dark:text-gray-900 tracking-tight">
-              Ready to Connect?
+              {isAuthenticated
+                ? `Welcome back, ${user?.name?.split(' ')[0] || 'User'}!`
+                : 'Ready to Connect?'}
             </h2>
             <p className="text-xl mb-10 text-gray-300 dark:text-gray-600 max-w-2xl mx-auto font-light">
-              Join students creating meaningful connections and building supportive communities.
+              {isAuthenticated
+                ? 'Continue to your personalized campus experience.'
+                : 'Join students creating meaningful connections and building supportive communities.'}
             </p>
-            <Button
-              onClick={handleGetStarted}
-              size="lg"
-              className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 text-lg px-8 py-4 rounded-full group shadow-lg"
-            >
-              Join Your Campus
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            {isAuthenticated ? (
+              <Button
+                onClick={() => router.push('/dashboard')}
+                size="lg"
+                className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 text-lg px-8 py-4 rounded-full group shadow-lg"
+              >
+                Go to Dashboard
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            ) : (
+              <Button
+                onClick={handleGetStarted}
+                size="lg"
+                className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 text-lg px-8 py-4 rounded-full group shadow-lg"
+              >
+                Join Your Campus
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            )}
           </div>
         </div>
       </section>
-
+      
       {/* Clean Footer */}
       <footer className="border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 py-12">
         <div className="container mx-auto px-6 text-center">

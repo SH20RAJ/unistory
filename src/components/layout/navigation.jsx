@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Search,
     Bell,
@@ -16,7 +18,8 @@ import {
     User,
     Calendar,
     Grid3X3,
-    X
+    X,
+    LogOut
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,6 +27,7 @@ import { useState } from "react";
 
 export function MainNavigation({ showOnlyIcons = false }) {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const { user, isAuthenticated, signOut } = useAuth();
 
     if (showOnlyIcons) {
         return (
@@ -37,8 +41,8 @@ export function MainNavigation({ showOnlyIcons = false }) {
                         <Input
                             placeholder="Search campus, people, or topics..."
                             className={`pl-10 pr-4 bg-gray-50 dark:bg-gray-700 border rounded-full transition-all duration-200 ${isSearchFocused
-                                    ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md bg-white dark:bg-gray-600"
-                                    : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+                                ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md bg-white dark:bg-gray-600"
+                                : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                                 }`}
                             onFocus={() => setIsSearchFocused(true)}
                             onBlur={() => setIsSearchFocused(false)}
@@ -77,11 +81,23 @@ export function MainNavigation({ showOnlyIcons = false }) {
                     </Button>
                 </Link>
 
-                <Link href="/profile">
-                    <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <User className="w-5 h-5" />
-                    </Button>
-                </Link>
+                {isAuthenticated ? (
+                    <Link href="/profile">
+                        <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-gray-700 relative">
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={user?.image} alt={user?.name} />
+                                <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                            </Avatar>
+                            <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white" />
+                        </Button>
+                    </Link>
+                ) : (
+                    <Link href="/auth/signin">
+                        <Button variant="ghost" size="icon" className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <User className="w-5 h-5" />
+                        </Button>
+                    </Link>
+                )}
             </div>
         );
     }
@@ -163,16 +179,16 @@ export function BottomNavigation() {
                             className="flex flex-col items-center justify-center min-w-0 flex-1 py-2 group"
                         >
                             <div className={`relative p-2.5 rounded-2xl transition-all duration-300 transform group-active:scale-95 ${isSpecial
-                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg scale-110 shadow-blue-500/25"
-                                    : isActive
-                                        ? "bg-blue-50 dark:bg-blue-900/50 scale-105 shadow-sm"
-                                        : "hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105 group-active:bg-gray-200 dark:group-active:bg-gray-600"
+                                ? "bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg scale-110 shadow-blue-500/25"
+                                : isActive
+                                    ? "bg-blue-50 dark:bg-blue-900/50 scale-105 shadow-sm"
+                                    : "hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105 group-active:bg-gray-200 dark:group-active:bg-gray-600"
                                 }`}>
                                 <Icon className={`w-5 h-5 transition-all duration-200 ${isSpecial
-                                        ? "text-white drop-shadow-sm"
-                                        : isActive
-                                            ? "text-blue-600 dark:text-blue-400"
-                                            : "text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                    ? "text-white drop-shadow-sm"
+                                    : isActive
+                                        ? "text-blue-600 dark:text-blue-400"
+                                        : "text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                                     }`} />
 
                                 {/* Active indicator with animation */}
@@ -187,10 +203,10 @@ export function BottomNavigation() {
                             </div>
 
                             <span className={`text-xs mt-1.5 font-medium truncate transition-all duration-200 ${isSpecial
+                                ? "text-blue-600 dark:text-blue-400 font-semibold"
+                                : isActive
                                     ? "text-blue-600 dark:text-blue-400 font-semibold"
-                                    : isActive
-                                        ? "text-blue-600 dark:text-blue-400 font-semibold"
-                                        : "text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                    : "text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                                 }`}>
                                 {item.label}
                             </span>

@@ -1,0 +1,93 @@
+"use client";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, AlertCircle, RefreshCw } from "lucide-react";
+import Link from "next/link";
+
+const errorMessages = {
+    Configuration: "There is a problem with the server configuration.",
+    AccessDenied: "Access denied. Please use a .edu email address to sign in.",
+    Verification: "The verification token has expired or has already been used.",
+    Default: "An unexpected error occurred during authentication.",
+};
+
+export default function AuthError() {
+    const searchParams = useSearchParams();
+    const error = searchParams.get("error") || "Default";
+
+    const errorMessage = errorMessages[error] || errorMessages.Default;
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                {/* Back to Home */}
+                <Link href="/" className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 mb-8">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to home
+                </Link>
+
+                <Card className="border-0 shadow-xl">
+                    <CardHeader className="text-center pb-2">
+                        <div className="flex items-center justify-center space-x-2 mb-4">
+                            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold text-lg">U</span>
+                            </div>
+                            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Unistory
+                            </span>
+                        </div>
+
+                        <CardTitle className="text-2xl font-bold text-red-600">Authentication Error</CardTitle>
+                        <CardDescription>
+                            There was a problem signing you in
+                        </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="space-y-6">
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>{errorMessage}</AlertDescription>
+                        </Alert>
+
+                        {error === "AccessDenied" && (
+                            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+                                    College Email Required
+                                </h3>
+                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                    Unistory is exclusively for college students. Please sign in with your institutional .edu email address.
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="space-y-3">
+                            <Button asChild className="w-full">
+                                <Link href="/auth/signin">
+                                    <RefreshCw className="w-4 h-4 mr-2" />
+                                    Try Again
+                                </Link>
+                            </Button>
+
+                            <Button variant="outline" asChild className="w-full">
+                                <Link href="/">
+                                    Return to Home
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+                            <p>
+                                Need help?{" "}
+                                <Link href="/support" className="text-blue-600 hover:underline">
+                                    Contact Support
+                                </Link>
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+}

@@ -1,5 +1,5 @@
 "use client";
- export const runtime = 'edge';
+export const runtime = 'edge';
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { CircleMember } from "@/components/circles";
 import { PostCard } from "@/components/posts";
 import { CreatePostForm } from "@/components/posts";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
 import {
     Users,
     Globe,
@@ -177,6 +178,7 @@ const MOCK_CURRENT_USER = {
 
 export default function CircleDetailPage() {
     const params = useParams();
+    const { user, isAuthenticated } = useAuth();
     const [circle, setCircle] = useState(MOCK_CIRCLE);
     const [members, setMembers] = useState(MOCK_MEMBERS);
     const [posts, setPosts] = useState(MOCK_POSTS);
@@ -187,8 +189,20 @@ export default function CircleDetailPage() {
     useEffect(() => {
         // Simulating API call
         console.log(`Fetching circle with ID: ${params.id}`);
+        // In a real app, you'd fetch the circle data from an API
         // setCircle(fetchedCircleData)
-    }, [params.id]);
+
+        // Set current user's info if authenticated
+        if (isAuthenticated && user) {
+            setMockCurrentUser({
+                id: user.id || "user123",
+                name: user.name || "John Doe",
+                avatar: user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+                isVerified: true,
+                college: "Stanford University"
+            });
+        }
+    }, [params.id, isAuthenticated, user]);
 
     const handleJoinCircle = () => {
         setJoined(true);
