@@ -224,44 +224,50 @@ export default function OnboardingPage() {
                 return (
                     <div className="space-y-8 text-center">
                         <div className="animate-fade-in">
-                            <div className="w-24 h-24 mx-auto mb-6 bg-blue-600 rounded-full flex items-center justify-center">
+                            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg">
                                 <span className="text-white font-bold text-4xl">U</span>
                             </div>
-                            <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
-                                Welcome to Unistory! 🎉
+                            <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">
+                                Welcome to Unistory
                             </h1>
-                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto font-light">
                                 The exclusive social network where verified college students connect, learn, and grow together.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                <div className="text-3xl mb-3">🎓</div>
-                                <h3 className="font-semibold mb-2">Study Together</h3>
+                            <div className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border-0">
+                                <div className="w-12 h-12 bg-white dark:bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-2xl">🎓</span>
+                                </div>
+                                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Study Together</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Join virtual study rooms and connect with classmates
                                 </p>
                             </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                <div className="text-3xl mb-3">💬</div>
-                                <h3 className="font-semibold mb-2">Share Safely</h3>
+                            <div className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border-0">
+                                <div className="w-12 h-12 bg-white dark:bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-2xl">💬</span>
+                                </div>
+                                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Share Safely</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Anonymous confessions and authentic campus conversations
                                 </p>
                             </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                <div className="text-3xl mb-3">🌟</div>
-                                <h3 className="font-semibold mb-2">Grow Together</h3>
+                            <div className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border-0">
+                                <div className="w-12 h-12 bg-white dark:bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-2xl">🌟</span>
+                                </div>
+                                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Grow Together</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Track wellness, build habits, and achieve your goals
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-lg max-w-2xl mx-auto">
-                            <p className="text-gray-700 dark:text-gray-300">
-                                <strong>🔒 Your Privacy Matters:</strong> We'll ask a few questions to personalize your experience.
+                        <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl max-w-2xl mx-auto border-0">
+                            <p className="text-gray-700 dark:text-gray-300 font-light">
+                                <strong className="font-semibold">🔒 Your Privacy Matters:</strong> We'll ask a few questions to personalize your experience.
                                 You can always update these later, and we never share your personal information.
                             </p>
                         </div>
@@ -272,9 +278,11 @@ export default function OnboardingPage() {
                 return (
                     <div className="space-y-6">
                         <div className="text-center">
-                            <User className="w-16 h-16 mx-auto mb-4 text-blue-600" />
-                            <h2 className="text-2xl font-bold mb-2">Tell us about yourself</h2>
-                            <p className="text-gray-600 dark:text-gray-400">Let's start with the basics</p>
+                            <div className="w-16 h-16 mx-auto mb-4 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center">
+                                <User className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                            </div>
+                            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white tracking-tight">Tell us about yourself</h2>
+                            <p className="text-gray-600 dark:text-gray-400 font-light">Let's start with the basics</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -709,19 +717,19 @@ export default function OnboardingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="min-h-screen bg-white dark:bg-gray-900 py-8">
             <div className="max-w-2xl mx-auto px-4">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center space-x-3 mb-4">
-                        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
                             <span className="text-white font-bold text-xl">U</span>
                         </div>
-                        <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Welcome to Unistory!
+                        <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            Welcome to Unistory
                         </span>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600 dark:text-gray-400 font-light">
                         Let's personalize your experience to help you make the most of college life
                     </p>
                 </div>
@@ -729,16 +737,21 @@ export default function OnboardingPage() {
                 {/* Progress */}
                 {currentStep > 0 && (
                     <div className="mb-8">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium">Step {currentStep} of {totalSteps}</span>
-                            <span className="text-sm text-gray-500">{Math.round(progress)}% complete</span>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">Step {currentStep} of {totalSteps}</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{Math.round(progress)}% complete</span>
                         </div>
-                        <Progress value={progress} className="h-2" />
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div
+                                className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
                     </div>
                 )}
 
                 {/* Content */}
-                <Card className="onboarding-card">
+                <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-2xl">
                     <CardContent className="p-8">
                         <div className="animate-fade-in">
                             {renderStep()}
@@ -752,7 +765,7 @@ export default function OnboardingPage() {
                         variant="outline"
                         onClick={handleBack}
                         disabled={currentStep === 0}
-                        className="flex items-center space-x-2"
+                        className="flex items-center space-x-2 border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                     >
                         <ChevronLeft className="w-4 h-4" />
                         <span>Back</span>
@@ -761,7 +774,7 @@ export default function OnboardingPage() {
                     <Button
                         onClick={handleNext}
                         disabled={!canProceed()}
-                        className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700"
+                        className="flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 rounded-full px-6"
                     >
                         <span>
                             {currentStep === 0 ? "Let's Get Started!" :
@@ -773,7 +786,7 @@ export default function OnboardingPage() {
 
                 {/* Help Text */}
                 <div className="text-center mt-6">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 font-light">
                         This information helps us create a personalized experience for you.
                         <br />
                         You can always update these preferences later in your profile settings.

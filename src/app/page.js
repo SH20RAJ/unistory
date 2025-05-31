@@ -1,15 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Heart, Users, BookOpen, Shield, Zap, Star } from "lucide-react";
+import { LoadingScreen } from "@/components/ui/loading";
+import { Heart, Users, BookOpen, Shield, Zap, Star, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate app loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -20,108 +30,179 @@ export default function Home() {
   }, [router]);
 
   const handleGetStarted = () => {
-    router.push('/signup');
+    router.push('/onboarding');
   };
 
-  const handleJoinCampus = () => {
-    router.push('/signup');
-  };
-  return (<div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">      {/* Header */}      <header className="border-b bg-white/80 backdrop-blur-md dark:bg-gray-900/80">        <div className="container mx-auto px-4 py-4 flex items-center justify-between">          <div className="flex items-center space-x-2">            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">              <span className="text-white font-bold text-lg">U</span>            </div>            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">              Unistory            </span>          </div>          <div className="flex items-center space-x-4">            <Button variant="ghost">Sign In</Button>            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">              Join Campus            </Button>          </div>        </div>      </header>      {/* Hero Section */}      <section className="container mx-auto px-4 py-20 text-center">        <Badge className="mb-6 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-100">          🎓 College Students Only        </Badge>                <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">          Your Campus,          <br />          Your Story        </h1>                <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">          Connect with verified college students, share confessions anonymously,           find study buddies, and build meaningful relationships in a safe, psychology-driven environment.        </p>        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">          <div className="flex w-full sm:w-auto">            <Input placeholder="Enter your .edu email" className="rounded-r-none w-64" />            <Button className="rounded-l-none bg-gradient-to-r from-blue-600 to-purple-600">              Get Started            </Button>          </div>        </div>        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto text-sm text-gray-600 dark:text-gray-400">          <div className="flex items-center justify-center space-x-2">            <Shield className="w-4 h-4" />            <span>Verified Only</span>          </div>          <div className="flex items-center justify-center space-x-2">            <Heart className="w-4 h-4" />            <span>Mental Wellness</span>          </div>          <div className="flex items-center justify-center space-x-2">            <Users className="w-4 h-4" />            <span>Safe Community</span>          </div>          <div className="flex items-center justify-center space-x-2">            <BookOpen className="w-4 h-4" />            <span>Study Together</span>          </div>        </div>      </section>      {/* Features Section */}      <section className="container mx-auto px-4 py-20">        <div className="text-center mb-16">          <h2 className="text-4xl font-bold mb-4">Everything You Need for College Life</h2>          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">            From anonymous confessions to study groups, we've built features that understand college student psychology          </p>        </div>        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">          {/* Secret Crush Feature */}          <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-pink-50 to-red-50 dark:from-pink-900/20 dark:to-red-900/20">            <CardHeader>              <CardTitle className="flex items-center space-x-2">                <Heart className="w-6 h-6 text-pink-600" />                <span>Secret Crush</span>              </CardTitle>            </CardHeader>            <CardContent>              <p className="text-gray-600 dark:text-gray-300">                Anonymously choose up to 5 people. If there's a match, both get notified. Safe, private, and exciting.              </p>            </CardContent>          </Card>          {/* Confession Wall */}
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Shield className="w-6 h-6 text-purple-600" />
-          <span>Confession Wall</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 dark:text-gray-300">
-          Share your thoughts anonymously in a moderated, safe space. Express yourself without judgment.
-        </p>
-      </CardContent>
-    </Card>
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
-    {/* Study Rooms */}
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <BookOpen className="w-6 h-6 text-green-600" />
-          <span>Virtual Study Rooms</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 dark:text-gray-300">
-          Join focus sessions with Pomodoro timers, share notes, and collaborate on assignments with classmates.
-        </p>
-      </CardContent>
-    </Card>
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Clean Header */}
+      <header className="border-b border-gray-100 dark:border-gray-800 bg-white/80 backdrop-blur-xl dark:bg-gray-900/80 sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">U</span>
+            </div>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+              Unistory
+            </span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+              Sign In
+            </Button>
+            <Button onClick={handleGetStarted} className="bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 rounded-full px-6">
+              Get Started
+            </Button>
+          </div>
+        </div>
+      </header>
 
-    {/* Mood Tracking */}
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Star className="w-6 h-6 text-yellow-600" />
-          <span>Mood & Growth Tracking</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 dark:text-gray-300">
-          Daily check-ins, reflective journaling, and AI insights to support your mental wellness journey.
-        </p>
-      </CardContent>
-    </Card>
+      {/* Minimalistic Hero Section */}
+      <section className="container mx-auto px-6 py-20 lg:py-32">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="mb-8">
+            <span className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium">
+              🎓 For College Students
+            </span>
+          </div>
 
-    {/* Campus Feed */}
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Users className="w-6 h-6 text-blue-600" />
-          <span>Campus Community</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 dark:text-gray-300">
-          Connect with classmates, join clubs, discover events, and build your college social network.
-        </p>
-      </CardContent>
-    </Card>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white mb-8 leading-tight tracking-tight">
+            Your Campus
+            <br />
+            <span className="text-gray-400">Your Story</span>
+          </h1>
 
-    {/* Gamification */}
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Zap className="w-6 h-6 text-indigo-600" />
-          <span>Growth Gamification</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 dark:text-gray-300">
-          Earn badges for helpfulness, maintain streaks, and level up your college experience.
-        </p>
-      </CardContent>
-    </Card>
-  </div>
-  </section>
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+            Connect authentically with verified students in a safe, supportive environment designed for college life.
+          </p>
 
-    {/* CTA Section */}
-    <section className="container mx-auto px-4 py-20 text-center">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
-        <h2 className="text-4xl font-bold mb-4">Ready to Transform Your College Experience?</h2>
-        <p className="text-xl mb-8 text-blue-100">
-          Join thousands of students already connecting, learning, and growing together
-        </p>
-        <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8">
-          Join Your Campus Community
-        </Button>
-      </div>
-    </section>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20">
+            <Button
+              onClick={handleGetStarted}
+              size="lg"
+              className="bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 px-8 py-4 text-lg rounded-full group shadow-lg"
+            >
+              Start Your Journey
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
 
-    {/* Footer */}
-    <footer className="border-t bg-white/80 backdrop-blur-md dark:bg-gray-900/80 py-8">
-      <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-        <p>&copy; 2025 Unistory. Built for college students, by college students.</p>
-      </div>
-    </footer>
-  </div>
+          {/* Clean Trust Indicators */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {[
+              { icon: Shield, text: "Verified Only" },
+              { icon: Heart, text: "Safe Space" },
+              { icon: Users, text: "Real Connections" },
+              { icon: BookOpen, text: "Academic Focus" }
+            ].map((item, index) => (
+              <div key={index} className="flex flex-col items-center space-y-3 p-6">
+                <div className="w-12 h-12 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center">
+                  <item.icon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                </div>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Clean Features Section */}
+      <section className="bg-gray-50 dark:bg-gray-800/30 py-20 lg:py-32">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+              Built for College Life
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 font-light">
+              Essential features designed with student wellbeing in mind
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {[
+              {
+                icon: Heart,
+                title: "Anonymous Connections",
+                description: "Connect authentically without judgment in a safe environment."
+              },
+              {
+                icon: Shield,
+                title: "Private Sharing",
+                description: "Share thoughts and experiences in moderated, supportive spaces."
+              },
+              {
+                icon: BookOpen,
+                title: "Study Together",
+                description: "Find study partners and collaborative learning opportunities."
+              },
+              {
+                icon: Users,
+                title: "Verified Community",
+                description: "Connect only with verified students from your campus."
+              },
+              {
+                icon: Zap,
+                title: "Real-time Chat",
+                description: "Instant messaging with privacy and safety at the core."
+              },
+              {
+                icon: Star,
+                title: "Campus Events",
+                description: "Discover and participate in campus activities and gatherings."
+              }
+            ].map((feature, index) => (
+              <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-white dark:bg-gray-800 rounded-2xl p-8">
+                <div className="flex flex-col space-y-4">
+                  <div className="w-12 h-12 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Elegant CTA Section */}
+      <section className="container mx-auto px-6 py-20 lg:py-32">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gray-900 dark:bg-white rounded-3xl p-16 lg:p-20">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white dark:text-gray-900 tracking-tight">
+              Ready to Connect?
+            </h2>
+            <p className="text-xl mb-10 text-gray-300 dark:text-gray-600 max-w-2xl mx-auto font-light">
+              Join students creating meaningful connections and building supportive communities.
+            </p>
+            <Button
+              onClick={handleGetStarted}
+              size="lg"
+              className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 text-lg px-8 py-4 rounded-full group shadow-lg"
+            >
+              Join Your Campus
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Clean Footer */}
+      <footer className="border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 py-12">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-gray-500 dark:text-gray-500 font-light">
+            © 2025 Unistory. Built for students, by students.
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }
