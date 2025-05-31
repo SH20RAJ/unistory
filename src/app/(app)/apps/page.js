@@ -356,7 +356,7 @@ export default function AppsPage() {
         }
     ];
 
-    const allApps = [...datingApps, ...studyApps, ...socialApps, ...gameApps, ...startupApps, ...wellnessApps];
+    const allApps = [...essentialApps, ...datingApps, ...studyApps, ...socialApps, ...gameApps, ...startupApps, ...wellnessApps];
 
     const filteredApps = searchQuery
         ? allApps.filter(app =>
@@ -406,6 +406,41 @@ export default function AppsPage() {
             {/* App Sections */}
             {!searchQuery && (
                 <div className="space-y-8">
+                    {/* Essential Apps Section */}
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-2xl text-white shadow-lg">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                <Star className="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold">Essential Apps</h2>
+                                <p className="text-blue-100">Your daily campus essentials in one place</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {essentialApps.map((app, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-white/20"
+                                    onClick={app.onClick}
+                                >
+                                    <div className="flex items-center space-x-3 mb-3">
+                                        <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <app.icon className="w-6 h-6" />
+                                        </div>
+                                        {app.popular && (
+                                            <Badge className="bg-orange-500 hover:bg-orange-500 text-white text-xs">
+                                                🔥 Popular
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    <h3 className="font-semibold text-lg mb-2">{app.name}</h3>
+                                    <p className="text-blue-100 text-sm leading-relaxed">{app.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     <AppSection
                         icon={Heart}
                         title="Dating & Connections"
