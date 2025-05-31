@@ -217,9 +217,57 @@ const PostCard = ({ post }) => {
 
 export default function Dashboard() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* Left Sidebar */}
+      {/* Main Feed */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Create Post */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-3">
+              <Avatar>
+                <AvatarFallback className="bg-blue-500 text-white">JD</AvatarFallback>
+              </Avatar>
+              <Input
+                placeholder="What's on your mind, John?"
+                className="flex-1 bg-gray-100 dark:bg-gray-700 border-0"
+              />
+              <Button>Post</Button>
+            </div>
+            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+              <div className="flex space-x-4">
+                <Button variant="ghost" size="sm">
+                  <Shield className="w-4 h-4 mr-1" />
+                  Confession
+                </Button>
+                <Button variant="ghost" size="sm">
+                  <BookOpen className="w-4 h-4 mr-1" />
+                  Study Group
+                </Button>
+                <Button variant="ghost" size="sm">
+                  <Calendar className="w-4 h-4 mr-1" />
+                  Event
+                </Button>
+              </div>
+              <Badge variant="outline" className="text-xs">
+                😊 Feeling good
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Feed Posts */}
+        {mockPosts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+
+        {/* Load More */}
+        <div className="text-center">
+          <Button variant="outline">Load More Posts</Button>
+        </div>
+      </div>
+
+      {/* Right Sidebar - Merged Content */}
       <div className="lg:col-span-1 space-y-6">
         {/* Quick Actions */}
         <Card>
@@ -297,58 +345,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Main Feed */}
-      <div className="lg:col-span-2 space-y-6">
-        {/* Create Post */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-3">
-              <Avatar>
-                <AvatarFallback className="bg-blue-500 text-white">JD</AvatarFallback>
-              </Avatar>
-              <Input
-                placeholder="What's on your mind, John?"
-                className="flex-1 bg-gray-100 dark:bg-gray-700 border-0"
-              />
-              <Button>Post</Button>
-            </div>
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
-              <div className="flex space-x-4">
-                <Button variant="ghost" size="sm">
-                  <Shield className="w-4 h-4 mr-1" />
-                  Confession
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <BookOpen className="w-4 h-4 mr-1" />
-                  Study Group
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Calendar className="w-4 h-4 mr-1" />
-                  Event
-                </Button>
-              </div>
-              <Badge variant="outline" className="text-xs">
-                😊 Feeling good
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Feed Posts */}
-        {mockPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
-
-        {/* Load More */}
-        <div className="text-center">
-          <Button variant="outline">Load More Posts</Button>
-        </div>
-      </div>
-
-      {/* Right Sidebar */}
-      <div className="lg:col-span-1 space-y-6">
         {/* Campus Events */}
         <Card>
           <CardHeader>
