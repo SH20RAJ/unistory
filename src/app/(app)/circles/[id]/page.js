@@ -7,9 +7,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CircleMember } from "@/components/ui/circles";
-import { Post } from "@/components/ui/post";
-import { CreatePostForm } from "@/components/ui/post";
+import { CircleMember } from "@/components/circles";
+import { PostCard } from "@/components/posts";
+import { CreatePostForm } from "@/components/posts";
 import { Badge } from "@/components/ui/badge";
 import {
     Users,
@@ -352,7 +352,7 @@ export default function CircleDetailPage() {
                                 </div>
                             ) : (
                                 posts.map((post) => (
-                                    <Post
+                                    <PostCard
                                         key={post.id}
                                         post={post}
                                         currentUser={MOCK_CURRENT_USER}

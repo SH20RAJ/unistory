@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MediaGallery } from "@/components/ui/media";
-import { CommentsList } from "@/components/ui/comments";
-import { Post } from "@/components/ui/post";
+import { MediaGallery } from "@/components/media";
+import { CommentsList } from "@/components/comments";
+import { PostCard } from "@/components/posts";
+import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import {
     Heart,
@@ -16,8 +18,10 @@ import {
     Bookmark,
     MoreHorizontal,
     ArrowLeft,
-    Users
+    Users,
+    Send
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 // Mock data for the post
 const MOCK_CURRENT_USER = {
@@ -270,6 +274,71 @@ const MOCK_SUGGESTED_USERS = [
         isVerified: true,
         college: "Stanford University",
         major: "Biology"
+    }
+];
+
+const SUGGESTED_USERS = [
+  {
+    id: "user456",
+    name: "Alex Johnson",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    isVerified: true,
+    college: "Stanford University",
+    major: "Computer Science"
+  },
+  {
+    id: "user789",
+    name: "Maya Smith",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maya",
+    isVerified: true,
+    college: "Stanford University",
+    major: "Design"
+  },
+  {
+    id: "user567",
+    name: "Jason Park",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jason",
+    isVerified: true,
+    college: "Stanford University",
+    major: "Economics"
+  },
+  {
+    id: "user890",
+    name: "Elena Rodriguez",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elena",
+    isVerified: true,
+    college: "Stanford University",
+    major: "Biology"
+  }
+];
+
+const SUGGESTED_CIRCLES = [
+    {
+        id: "circle1",
+        name: "Computer Science Hub",
+        description: "For CS students to discuss coursework, projects, and career opportunities.",
+        memberCount: 1250,
+        isPrivate: false,
+        isMember: true,
+        category: "Academic"
+    },
+    {
+        id: "circle2",
+        name: "Campus Photography Club",
+        description: "Share your campus shots and photography techniques. Weekly challenges and contests.",
+        memberCount: 743,
+        isPrivate: false,
+        isMember: false,
+        category: "Hobby"
+    },
+    {
+        id: "circle3",
+        name: "Stanford Entrepreneurs",
+        description: "For student entrepreneurs to connect, share ideas, and find co-founders.",
+        memberCount: 892,
+        isPrivate: true,
+        isMember: false,
+        category: "Career"
     }
 ];
 
@@ -681,6 +750,3 @@ export default function PostDetailPage() {
         </div>
     );
 }
-
-// Add this import at the top
-import Image from "next/image";

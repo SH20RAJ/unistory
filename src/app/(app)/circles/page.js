@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleCard, CircleList, CreateCircleForm } from "@/components/ui/circles";
+import { CircleCard, CircleList, CreateCircleForm } from "@/components/circles";
 import {
     Search,
     Globe,

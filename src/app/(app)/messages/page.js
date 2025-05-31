@@ -187,8 +187,8 @@ const ConversationItem = ({ conversation, isSelected, onClick }) => {
         <div
             onClick={onClick}
             className={`group relative p-3 cursor-pointer transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isSelected
-                ? 'bg-blue-50 dark:bg-blue-900/20 border-r-3 border-r-blue-500 shadow-sm'
-                : 'border-b border-gray-100 dark:border-gray-800'
+                    ? 'bg-blue-50 dark:bg-blue-900/20 border-r-3 border-r-blue-500 shadow-sm'
+                    : 'border-b border-gray-100 dark:border-gray-800'
                 }`}
         >
             <div className="flex items-start space-x-3">
@@ -292,8 +292,8 @@ const MessageBubble = ({ message, isOwnMessage }) => {
                 <div className="relative">
                     <div
                         className={`px-3 py-2 rounded-2xl shadow-sm transition-all duration-200 ${isOwnMessage
-                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white ml-8'
-                            : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 mr-8'
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white ml-8'
+                                : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 mr-8'
                             } ${isOwnMessage ? 'rounded-br-md' : 'rounded-bl-md'}`}
                     >
                         <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
@@ -302,8 +302,8 @@ const MessageBubble = ({ message, isOwnMessage }) => {
                     {/* Message tail */}
                     <div className={`absolute top-4 ${isOwnMessage ? '-right-1' : '-left-1'}`}>
                         <div className={`w-3 h-3 transform rotate-45 ${isOwnMessage
-                            ? 'bg-blue-500 shadow-sm'
-                            : 'bg-white dark:bg-gray-700 border-r border-b border-gray-200 dark:border-gray-600'
+                                ? 'bg-blue-500 shadow-sm'
+                                : 'bg-white dark:bg-gray-700 border-r border-b border-gray-200 dark:border-gray-600'
                             }`}></div>
                     </div>
                 </div>
@@ -337,8 +337,8 @@ export default function Messages() {
         console.log('Sending message:', newMessage);
         setNewMessage('');
     }; return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+            <div className="max-w-7xl mx-auto ">
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden h-[calc(100vh-140px)]">
                     <div className="flex h-full">
                         {/* Conversations Sidebar */}

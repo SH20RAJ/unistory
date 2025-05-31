@@ -36,7 +36,7 @@ export default function AppLayout({ children }) {
             {/* Mobile Content */}
             <div className="md:hidden">
                 <main className="pb-20">
-                    <div className="container mx-auto px-4 py-4">
+                    <div className="container mx-auto mpx-4 mpy-4">
                         {children}
                     </div>
                 </main>

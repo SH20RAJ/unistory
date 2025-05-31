@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
-    ImageIcon,
     VideoIcon,
-    AudioIcon,
     FilePlus,
     Upload,
     X,
     Loader2,
     Play,
     Pause,
-    Volume2
+    Volume2,
+    AudioLinesIcon
 } from "lucide-react";
 
 /**
@@ -159,7 +158,7 @@ export function MediaUpload({ onUpload, maxFiles = 5, allowedTypes = ["image", "
             case 'audio':
                 return (
                     <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center h-32">
-                        <AudioIcon className="h-8 w-8 text-white" />
+                        <AudioLinesIcon className="h-8 w-8 text-white" />
                         <div className="absolute bottom-2 left-2 right-2 text-xs text-white truncate">
                             {file.name}
                         </div>

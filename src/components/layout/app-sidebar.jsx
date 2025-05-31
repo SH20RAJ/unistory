@@ -105,7 +105,7 @@ export function AppSidebar() {
                     <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">U</span>
                     </div>
-                    <span className="text-xl font-bold text-gray-900 dark:text-white">
+                    <span className="text-xl text-gray-900 dark:text-white font-bold font-display tracking-tight">
                         Unistory
                     </span>
                 </Link>
@@ -121,13 +121,18 @@ export function AppSidebar() {
                             return (
                                 <Link key={item.href} href={item.href}>
                                     <Button
-                                        variant="ghost"
+                                        variant={item.title === "Create" ? "default" : "ghost"}
                                         className={cn(
                                             "w-full justify-start h-10 px-3",
-                                            isActive && "bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                                            item.title === "Create"
+                                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                                : isActive && "bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
                                         )}
                                     >
-                                        <item.icon className="mr-3 h-4 w-4" />
+                                        <item.icon className={cn(
+                                            "mr-3 h-4 w-4",
+                                            item.title === "Create" && "animate-pulse"
+                                        )} />
                                         <span className="flex-1 text-left">{item.title}</span>
                                         {item.badge && (
                                             <Badge className="ml-auto bg-red-500 text-white text-xs">
@@ -138,6 +143,7 @@ export function AppSidebar() {
                                 </Link>
                             );
                         })}
+
                     </div>
 
                     {/* Quick Access Section */}

@@ -95,7 +95,7 @@ export function MainNavigation({ showOnlyIcons = false }) {
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
                             <span className="text-white font-bold text-lg">U</span>
                         </div>
-                        <span className="text-xl font-bold text-gray-900 dark:text-white">
+                        <span className="text-xl font-bold text-gray-900 dark:text-white font-bold font-display tracking-tight">
                             Unistory
                         </span>
                     </Link>
