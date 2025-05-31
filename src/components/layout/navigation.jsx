@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
     Search,
     Bell,
@@ -46,6 +47,8 @@ export function MainNavigation() {
 
                     {/* Navigation Icons */}
                     <div className="flex items-center space-x-4">
+                        <ThemeToggle />
+
                         <Link href="/notifications">
                             <Button variant="ghost" size="icon" className="relative">
                                 <Bell className="w-5 h-5" />

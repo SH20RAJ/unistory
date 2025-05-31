@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -530,9 +531,9 @@ export default function SignUp() {
                                     </AlertDescription>
                                 </Alert>
 
-                                <Link href="/dashboard">
+                                <Link href="/onboarding">
                                     <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                                        Continue to Dashboard
+                                        Continue to Onboarding
                                     </Button>
                                 </Link>
                             </div>
