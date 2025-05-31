@@ -1,0 +1,92 @@
+{
+    "name": "Unistory - College Social Network",
+    "short_name": "Unistory",
+    "description": "Connect, learn, and grow with verified college students. Join the exclusive social platform built for your campus community.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#3b82f6",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": [
+        "social",
+        "education",
+        "productivity"
+    ],
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/logo-256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "/logo-128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Messages",
+            "short_name": "Messages",
+            "description": "View your messages",
+            "url": "/messages",
+            "icons": [
+                {
+                    "src": "/logo-128.png",
+                    "sizes": "128x128"
+                }
+            ]
+        },
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "description": "Your dashboard",
+            "url": "/dashboard",
+            "icons": [
+                {
+                    "src": "/logo-128.png",
+                    "sizes": "128x128"
+                }
+            ]
+        },
+        {
+            "name": "Confessions",
+            "short_name": "Confessions",
+            "description": "Anonymous confessions",
+            "url": "/confessions",
+            "icons": [
+                {
+                    "src": "/logo-128.png",
+                    "sizes": "128x128"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/logo-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ]
+}
