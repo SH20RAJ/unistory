@@ -168,9 +168,9 @@ design/
 
 ## 📫 Questions or Feedback?
 
-- UI Lead: [@YourName](mailto:ui@unistory.app)
+- UI Lead: [@YourName](mailto:ui@unistory.in)
 - Design Repo: [https://github.com/unistory/design-system](https://github.com/unistory/design-system)
-- Figma Invite: request via [design@unistory.app](mailto:design@unistory.app)
+- Figma Invite: request via [design@unistory.in](mailto:design@unistory.in)
 
 ---
 

@@ -43,12 +43,11 @@ export const metadata = {
     title: "Unistory",
   },
   applicationName: "Unistory",
-  themeColor: "#3b82f6",
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   formatDetection: {
     telephone: false,
   },
-  metadataBase: new URL("https://unistory.app"),
+  metadataBase: new URL("https://unistory.in"),
   openGraph: {
     type: "website",
     siteName: "Unistory",

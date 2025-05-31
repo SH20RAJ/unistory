@@ -7,35 +7,42 @@ Welcome to **Unistory**, the exclusive social media platform for **verified coll
 ## 🌟 Features
 
 ### 🧑‍🎓 Verified College-Only Access
+
 - Register with your `.edu` or institutional email
 - Create a profile including your course, year, interests, and societies
 
 ### 💬 Campus-Centered Social Networking
+
 - College-wide feed, club groups, event boards, and class discussions
 - **Confession Wall**: Anonymous, moderated posts for safe self-expression
 - **Find a Buddy**: Match with roommates, collaborators, or new friends
 
 ### 📚 Academic Collaboration Tools
+
 - Join virtual **study rooms** with Pomodoro timers
 - Ask questions, share notes, and bookmark resources
 - AI-powered content summarizer and flashcard generator
 
 ### 🧠 Mental Wellness & Personal Growth
+
 - Daily **mood and energy tracker**
 - Reflective journaling with **AI insights**
 - Peer support spaces & optional mental health check-ins
 
 ### 🏆 Growth Through Gamification
+
 - Earn **badges** for helpfulness, consistency, creativity, and leadership
 - Track your contribution and learning journey with **levels**
 - Weekly missions and challenges to stay motivated
 
 ### 📷 Expression & Campus Life
+
 - Post short videos, stories, and personal achievements
 - Showcase talents: design, poetry, code, music, blogs
 - Follow clubs, attend campus fests, and get involved
 
 ### 🔐 Safety & Privacy-First Design
+
 - AI content moderation to detect toxicity and bullying
 - Detailed privacy settings for posts, DMs, and visibility
 - Easy blocking, reporting, and community standards
@@ -63,6 +70,7 @@ College is a story worth sharing — and growing through. **Unistory** brings st
 ---
 
 ## 🧩 Tech Stack (MVP Example)
+>
 > *(Optional for open-source or internal dev teams)*
 
 - **Frontend**: React / Next.js
@@ -82,8 +90,8 @@ Want to join the mission of building a healthier, happier college internet? Fork
 
 ## 📫 Contact
 
-- Website: [https://unistory.app](https://unistory.app)
-- Email: hello@unistory.app
+- Website: [https://unistory.in](https://unistory.in)
+- Email: <hello@unistory.in>
 - Social: [@UnistoryHQ](https://twitter.com/unistoryhq)
 
 ---

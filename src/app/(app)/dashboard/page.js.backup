@@ -1,3 +1,4 @@
+// filepath: /Users/shaswatraj/Desktop/startups/unistory/src/app/dashboard/page.js
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,15 +21,6 @@ import {
   Clock,
   Eye
 } from "lucide-react";
-
-// Import modular dashboard components
-import {
-  FocusSession,
-  UpcomingEvents,
-  StudyStreak,
-  StudyBuddies,
-  PersonalStats
-} from "@/components/dashboard";
 
 const mockPosts = [
   {
@@ -226,6 +218,7 @@ const PostCard = ({ post }) => {
 export default function Dashboard() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
       {/* Main Feed */}
       <div className="lg:col-span-2 space-y-6">
         {/* Create Post */}
@@ -272,7 +265,6 @@ export default function Dashboard() {
         <div className="text-center">
           <Button variant="outline">Load More Posts</Button>
         </div>
-      </div>
 
       {/* Right Sidebar - Clean Modular Components */}
       <div className="lg:col-span-1 space-y-6">
