@@ -224,10 +224,10 @@ export default function OnboardingPage() {
                 return (
                     <div className="space-y-8 text-center">
                         <div className="animate-fade-in">
-                            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                            <div className="w-24 h-24 mx-auto mb-6 bg-blue-600 rounded-full flex items-center justify-center">
                                 <span className="text-white font-bold text-4xl">U</span>
                             </div>
-                            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
                                 Welcome to Unistory! 🎉
                             </h1>
                             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
@@ -236,21 +236,21 @@ export default function OnboardingPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                            <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                                 <div className="text-3xl mb-3">🎓</div>
                                 <h3 className="font-semibold mb-2">Study Together</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Join virtual study rooms and connect with classmates
                                 </p>
                             </div>
-                            <div className="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                                 <div className="text-3xl mb-3">💬</div>
                                 <h3 className="font-semibold mb-2">Share Safely</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Anonymous confessions and authentic campus conversations
                                 </p>
                             </div>
-                            <div className="p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <div className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                                 <div className="text-3xl mb-3">🌟</div>
                                 <h3 className="font-semibold mb-2">Grow Together</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -259,8 +259,8 @@ export default function OnboardingPage() {
                             </div>
                         </div>
 
-                        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg max-w-2xl mx-auto">
-                            <p className="text-yellow-800 dark:text-yellow-200">
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-lg max-w-2xl mx-auto">
+                            <p className="text-gray-700 dark:text-gray-300">
                                 <strong>🔒 Your Privacy Matters:</strong> We'll ask a few questions to personalize your experience.
                                 You can always update these later, and we never share your personal information.
                             </p>
@@ -460,7 +460,7 @@ export default function OnboardingPage() {
                                     key={interest.id}
                                     onClick={() => toggleInterest(interest.id)}
                                     className={`p-4 rounded-lg border-2 transition-all text-left interest-button ${formData.selectedInterests.includes(interest.id)
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                        ? 'border-blue-500 bg-gray-50 dark:bg-gray-700'
                                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                                         }`}
                                 >
@@ -519,7 +519,7 @@ export default function OnboardingPage() {
                                     key={goal.id}
                                     onClick={() => toggleGoal(goal.id)}
                                     className={`p-4 rounded-lg border-2 transition-all text-left goal-button ${formData.selectedGoals.includes(goal.id)
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                        ? 'border-blue-500 bg-gray-50 dark:bg-gray-700'
                                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                                         }`}
                                 >
@@ -695,8 +695,8 @@ export default function OnboardingPage() {
                             </div>
                         </div>
 
-                        <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg text-center">
-                            <p className="text-green-800 dark:text-green-200">
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-lg text-center">
+                            <p className="text-gray-700 dark:text-gray-300">
                                 <strong>🎉 Almost done!</strong> These details will help us create your personalized campus experience.
                             </p>
                         </div>
@@ -714,13 +714,12 @@ export default function OnboardingPage() {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center space-x-3 mb-4">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span className="text-white font-bold text-xl">U</span>
                         </div>
-                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <span className="text-2xl font-bold text-gray-900 dark:text-white">
                             Welcome to Unistory!
                         </span>
-                        <Sparkles className="w-6 h-6 text-yellow-500" />
                     </div>
                     <p className="text-gray-600 dark:text-gray-400">
                         Let's personalize your experience to help you make the most of college life
@@ -762,7 +761,7 @@ export default function OnboardingPage() {
                     <Button
                         onClick={handleNext}
                         disabled={!canProceed()}
-                        className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600"
+                        className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700"
                     >
                         <span>
                             {currentStep === 0 ? "Let's Get Started!" :
