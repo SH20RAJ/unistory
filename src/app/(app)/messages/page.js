@@ -186,9 +186,9 @@ const ConversationItem = ({ conversation, isSelected, onClick }) => {
     return (
         <div
             onClick={onClick}
-            className={`group relative p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isSelected
-                    ? 'bg-blue-50 dark:bg-blue-900/20 border-r-3 border-r-blue-500 shadow-sm'
-                    : 'border-b border-gray-100 dark:border-gray-800'
+            className={`group relative p-3 cursor-pointer transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isSelected
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-r-3 border-r-blue-500 shadow-sm'
+                : 'border-b border-gray-100 dark:border-gray-800'
                 }`}
         >
             <div className="flex items-start space-x-3">
@@ -276,7 +276,7 @@ const MessageBubble = ({ message, isOwnMessage }) => {
     };
 
     return (
-        <div className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-3 group`}>
+        <div className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-2 group`}>
             <div className={`max-w-xs lg:max-w-md ${isOwnMessage ? 'order-1' : 'order-2'}`}>
                 {!isOwnMessage && (
                     <div className="flex items-center space-x-2 mb-2 ml-1">
@@ -291,9 +291,9 @@ const MessageBubble = ({ message, isOwnMessage }) => {
 
                 <div className="relative">
                     <div
-                        className={`px-4 py-3 rounded-2xl shadow-sm transition-all duration-200 ${isOwnMessage
-                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white ml-8'
-                                : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 mr-8'
+                        className={`px-3 py-2 rounded-2xl shadow-sm transition-all duration-200 ${isOwnMessage
+                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white ml-8'
+                            : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 mr-8'
                             } ${isOwnMessage ? 'rounded-br-md' : 'rounded-bl-md'}`}
                     >
                         <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
@@ -302,8 +302,8 @@ const MessageBubble = ({ message, isOwnMessage }) => {
                     {/* Message tail */}
                     <div className={`absolute top-4 ${isOwnMessage ? '-right-1' : '-left-1'}`}>
                         <div className={`w-3 h-3 transform rotate-45 ${isOwnMessage
-                                ? 'bg-blue-500 shadow-sm'
-                                : 'bg-white dark:bg-gray-700 border-r border-b border-gray-200 dark:border-gray-600'
+                            ? 'bg-blue-500 shadow-sm'
+                            : 'bg-white dark:bg-gray-700 border-r border-b border-gray-200 dark:border-gray-600'
                             }`}></div>
                     </div>
                 </div>
@@ -338,14 +338,14 @@ export default function Messages() {
         setNewMessage('');
     }; return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-7xl mx-auto px-4 py-6">
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden h-[calc(100vh-180px)]">
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden h-[calc(100vh-140px)]">
                     <div className="flex h-full">
                         {/* Conversations Sidebar */}
                         <div className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50 dark:bg-gray-800/50">
                             {/* Header */}
-                            <div className="p-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                                <div className="flex items-center justify-between mb-4">
+                            <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                                <div className="flex items-center justify-between mb-3">
                                     <div>
                                         <h1 className="text-xl font-bold text-gray-900 dark:text-white">Messages</h1>
                                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -444,7 +444,7 @@ export default function Messages() {
                         <div className="hidden md:flex md:flex-1 flex-col bg-white dark:bg-gray-800">
                             {/* Chat Header */}
                             {selectedConversation && (
-                                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4">
                                             {selectedConversation.type === 'anonymous' ? (
@@ -520,7 +520,7 @@ export default function Messages() {
                             )}
 
                             {/* Messages Area */}
-                            <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+                            <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
                                 {selectedConversation ? (
                                     <div className="space-y-1">
                                         {mockMessages.map((message) => (
@@ -546,7 +546,7 @@ export default function Messages() {
 
                             {/* Message Input */}
                             {selectedConversation && (
-                                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                                <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                                     <div className="flex items-end space-x-3">
                                         <div className="flex-1">
                                             <Textarea
@@ -572,7 +572,7 @@ export default function Messages() {
                                     </div>
 
                                     {/* Quick Actions */}
-                                    <div className="flex items-center space-x-2 mt-3 overflow-x-auto pb-1">
+                                    <div className="flex items-center space-x-2 mt-2 overflow-x-auto pb-1">
                                         <Button variant="ghost" size="sm" className="flex-shrink-0 hover:bg-pink-50 hover:text-pink-600 dark:hover:bg-pink-900/20 rounded-lg">
                                             <Heart className="w-4 h-4 mr-2" />
                                             Send Crush

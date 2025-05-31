@@ -35,6 +35,7 @@ import {
     Bookmark,
     DollarSign
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) => {
     const colorClasses = {
@@ -113,6 +114,8 @@ const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, o
 export default function AppsPage() {
     const [searchQuery, setSearchQuery] = useState("");
 
+    const router = useRouter();
+
     // Essential Apps - Top Priority
     const essentialApps = [
         {
@@ -149,7 +152,7 @@ export default function AppsPage() {
             name: "Secret Crush",
             description: "Choose up to 5 people anonymously. Get notified when there's a mutual match!",
             popular: true,
-            onClick: () => console.log("Navigate to Secret Crush")
+            onClick: () => router.push("/matches")
         },
         {
             icon: Sparkles,

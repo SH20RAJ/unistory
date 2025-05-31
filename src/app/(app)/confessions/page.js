@@ -24,7 +24,7 @@ export default function ConfessionWall() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                             <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
@@ -88,9 +88,9 @@ export default function ConfessionWall() {
                 </div>
             </header>
 
-            <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="max-w-4xl mx-auto px-4 py-4">
                 {/* Filters and Search */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-4">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -115,7 +115,7 @@ export default function ConfessionWall() {
                 </div>
 
                 {/* Guidelines Card */}
-                <Card className="mb-6 border-l-4 border-l-blue-500">
+                <Card className="mb-4 border-l-4 border-l-blue-500">
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center">
                             <Shield className="w-5 h-5 mr-2 text-blue-600" />
@@ -141,7 +141,7 @@ export default function ConfessionWall() {
                 </Card>
 
                 {/* Confessions Feed */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Featured Confession */}
                     <Card className="border-l-4 border-l-purple-500 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
                         <CardHeader>
@@ -328,7 +328,7 @@ export default function ConfessionWall() {
                 </div>
 
                 {/* Load More */}
-                <div className="text-center mt-8">
+                <div className="text-center mt-6">
                     <Button variant="outline" size="lg">
                         Load More Confessions
                     </Button>
