@@ -27,7 +27,13 @@ import {
     Lightbulb,
     Shield,
     TrendingUp,
-    Gamepad2
+    Gamepad2,
+    Newspaper,
+    ShoppingBag,
+    CalendarDays,
+    NotebookPen,
+    Bookmark,
+    DollarSign
 } from "lucide-react";
 
 const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) => {
@@ -97,6 +103,36 @@ const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, o
 
 export default function AppsPage() {
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Essential Apps - Top Priority
+    const essentialApps = [
+        {
+            icon: Newspaper,
+            name: "Newsroom",
+            description: "Campus news, announcements, and trending topics. Stay updated with everything happening around you",
+            popular: true,
+            onClick: () => console.log("Navigate to Newsroom")
+        },
+        {
+            icon: ShoppingBag,
+            name: "Buy & Sell",
+            description: "Marketplace for students to buy, sell, and exchange textbooks, electronics, and more",
+            popular: true,
+            onClick: () => console.log("Navigate to Buy & Sell")
+        },
+        {
+            icon: CalendarDays,
+            name: "Class Routine",
+            description: "Smart timetable management with room notifications, reminders, and schedule sharing",
+            onClick: () => console.log("Navigate to Class Routine")
+        },
+        {
+            icon: NotebookPen,
+            name: "Journal",
+            description: "Private journaling with mood tracking, goal setting, and reflection prompts",
+            onClick: () => console.log("Navigate to Journal")
+        }
+    ];
 
     const datingApps = [
         {
