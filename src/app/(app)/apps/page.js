@@ -38,19 +38,28 @@ import {
 
 const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) => {
     const colorClasses = {
-        blue: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800",
-        purple: "bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800",
-        green: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800",
-        orange: "bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800",
-        pink: "bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800",
-        indigo: "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800"
+        blue: "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800",
+        purple: "bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800",
+        green: "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800",
+        orange: "bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800",
+        pink: "bg-pink-50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-800",
+        indigo: "bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-800"
+    };
+
+    const iconColorClasses = {
+        blue: "text-blue-600 dark:text-blue-400",
+        purple: "text-purple-600 dark:text-purple-400",
+        green: "text-green-600 dark:text-green-400",
+        orange: "text-orange-600 dark:text-orange-400",
+        pink: "text-pink-600 dark:text-pink-400",
+        indigo: "text-indigo-600 dark:text-indigo-400"
     };
 
     return (
         <div className={`p-6 rounded-lg border ${colorClasses[color] || colorClasses.blue}`}>
-            <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border">
-                    <Icon className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+            <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border shadow-sm">
+                    <Icon className={`w-6 h-6 ${iconColorClasses[color] || iconColorClasses.blue}`} />
                 </div>
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h2>
@@ -68,29 +77,29 @@ const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) =>
 
 const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, onClick }) => {
     return (
-        <Card className="relative hover:shadow-md transition-shadow cursor-pointer group" onClick={onClick}>
+        <Card className="relative hover:shadow-md transition-all duration-300 cursor-pointer group hover:border-gray-300 dark:hover:border-gray-600" onClick={onClick}>
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                            <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
+                            <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                         </div>
                         <div>
-                            <CardTitle className="text-base">{name}</CardTitle>
+                            <CardTitle className="text-base font-semibold">{name}</CardTitle>
                         </div>
                     </div>
                     <div className="flex flex-col items-end space-y-1">
                         {popular && <Badge variant="secondary" className="text-xs">🔥 Popular</Badge>}
                         {comingSoon && <Badge variant="outline" className="text-xs">Coming Soon</Badge>}
-                        {status && <Badge className="text-xs">{status}</Badge>}
+                        {status && <Badge className="text-xs bg-blue-600 hover:bg-blue-600">{status}</Badge>}
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="pt-0">
-                <CardDescription className="text-sm">{description}</CardDescription>
+                <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
             </CardContent>
             {comingSoon && (
-                <div className="absolute inset-0 bg-gray-50/80 dark:bg-gray-900/80 rounded-lg flex items-center justify-center">
+                <div className="absolute inset-0 bg-gray-50/90 dark:bg-gray-900/90 rounded-lg flex items-center justify-center backdrop-blur-sm">
                     <div className="text-center">
                         <Clock className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Coming Soon</p>
@@ -368,23 +377,28 @@ export default function AppsPage() {
     return (
         <div>
             {/* Header */}
-            <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                    Campus Apps 📱
-                </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto">
+            <div className="text-center mb-10">
+                <div className="inline-flex items-center space-x-3 mb-4">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                        <span className="text-2xl">📱</span>
+                    </div>
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                        Campus Apps
+                    </h1>
+                </div>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
                     Discover all the amazing features that make campus life more connected,
                     fun, and productive. From dating to studying, we've got you covered!
                 </p>
 
                 {/* Search */}
                 <div className="relative max-w-md mx-auto">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <Input
                         placeholder="Search apps..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10"
+                        className="pl-12 pr-4 py-3 rounded-full border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
                     />
                 </div>
             </div>
@@ -407,36 +421,42 @@ export default function AppsPage() {
             {!searchQuery && (
                 <div className="space-y-8">
                     {/* Essential Apps Section */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-2xl text-white shadow-lg">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
                         <div className="flex items-center space-x-3 mb-6">
-                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                                <Star className="w-7 h-7" />
+                            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                                <Star className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold">Essential Apps</h2>
-                                <p className="text-blue-100">Your daily campus essentials in one place</p>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Essential Apps</h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Your daily campus essentials in one place</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {essentialApps.map((app, index) => (
-                                <div
+                                <Card
                                     key={index}
-                                    className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-white/20"
+                                    className="relative hover:shadow-md transition-all duration-300 cursor-pointer group border-2 hover:border-blue-200 dark:hover:border-blue-700"
                                     onClick={app.onClick}
                                 >
-                                    <div className="flex items-center space-x-3 mb-3">
-                                        <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <app.icon className="w-6 h-6" />
+                                    <CardHeader className="pb-3">
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
+                                                <app.icon className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                                            </div>
+                                            {app.popular && (
+                                                <Badge variant="secondary" className="text-xs">
+                                                    🔥 Popular
+                                                </Badge>
+                                            )}
                                         </div>
-                                        {app.popular && (
-                                            <Badge className="bg-orange-500 hover:bg-orange-500 text-white text-xs">
-                                                🔥 Popular
-                                            </Badge>
-                                        )}
-                                    </div>
-                                    <h3 className="font-semibold text-lg mb-2">{app.name}</h3>
-                                    <p className="text-blue-100 text-sm leading-relaxed">{app.description}</p>
-                                </div>
+                                        <CardTitle className="text-base font-semibold">{app.name}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pt-0">
+                                        <CardDescription className="text-sm leading-relaxed">
+                                            {app.description}
+                                        </CardDescription>
+                                    </CardContent>
+                                </Card>
                             ))}
                         </div>
                     </div>
