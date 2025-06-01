@@ -44,3 +44,7 @@ next-env.d.ts
 public/sw.js
 public/workbox-*
 .gitignore
+.env
+
+# development database
+.dev/
