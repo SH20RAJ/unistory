@@ -1,5 +1,5 @@
 "use client";
- export const runtime = 'edge';
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -278,38 +278,38 @@ const MOCK_SUGGESTED_USERS = [
 ];
 
 const SUGGESTED_USERS = [
-  {
-    id: "user456",
-    name: "Alex Johnson",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-    isVerified: true,
-    college: "Stanford University",
-    major: "Computer Science"
-  },
-  {
-    id: "user789",
-    name: "Maya Smith",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maya",
-    isVerified: true,
-    college: "Stanford University",
-    major: "Design"
-  },
-  {
-    id: "user567",
-    name: "Jason Park",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jason",
-    isVerified: true,
-    college: "Stanford University",
-    major: "Economics"
-  },
-  {
-    id: "user890",
-    name: "Elena Rodriguez",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elena",
-    isVerified: true,
-    college: "Stanford University",
-    major: "Biology"
-  }
+    {
+        id: "user456",
+        name: "Alex Johnson",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+        isVerified: true,
+        college: "Stanford University",
+        major: "Computer Science"
+    },
+    {
+        id: "user789",
+        name: "Maya Smith",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maya",
+        isVerified: true,
+        college: "Stanford University",
+        major: "Design"
+    },
+    {
+        id: "user567",
+        name: "Jason Park",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jason",
+        isVerified: true,
+        college: "Stanford University",
+        major: "Economics"
+    },
+    {
+        id: "user890",
+        name: "Elena Rodriguez",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elena",
+        isVerified: true,
+        college: "Stanford University",
+        major: "Biology"
+    }
 ];
 
 const SUGGESTED_CIRCLES = [

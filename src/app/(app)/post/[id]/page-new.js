@@ -1,5 +1,5 @@
 "use client";
- export const runtime = 'edge';
+
 import { useState, useEffect } from "react";
 import { PostDetail } from "@/components/posts/PostDetail";
 import { CommentsList } from "@/components/comments";

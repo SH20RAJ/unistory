@@ -1,6 +1,6 @@
 "use client";
- export const runtime = 'edge';
- 
+
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -175,8 +175,8 @@ export default function CreatePage() {
                                             key={type.id}
                                             onClick={() => setSelectedType(type.id)}
                                             className={`p-4 rounded-lg border-2 transition-all text-left ${selectedType === type.id
-                                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                                                 }`}
                                         >
                                             <div className={`inline-flex p-2 rounded-lg mb-2 ${type.color}`}>
@@ -322,8 +322,8 @@ export default function CreatePage() {
                                                     key={index}
                                                     onClick={() => setSelectedMood(selectedMood?.emoji === mood.emoji ? null : mood)}
                                                     className={`p-2 rounded-lg border transition-all ${selectedMood?.emoji === mood.emoji
-                                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                                                         }`}
                                                 >
                                                     <span className="text-xl">{mood.emoji}</span>

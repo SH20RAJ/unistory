@@ -45,7 +45,6 @@ export const metadata = {
     title: "Unistory",
   },
   applicationName: "Unistory",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   formatDetection: {
     telephone: false,
   },
