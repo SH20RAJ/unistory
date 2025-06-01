@@ -23,7 +23,7 @@
 			"binding": "DB",
 			"database_name": "unistory-db",
 			"database_id": "bbee891a-2a31-4ec3-ac65-cb26639cb753",
-			"migrations_dir": "src/lib/db/migrations"
+			"migrations_dir": "src/db/migrations"
 		}
 	]
 	/**
