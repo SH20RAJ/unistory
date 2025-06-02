@@ -1,7 +1,9 @@
 import React from 'react'
+import CreateCircleClient from './client'
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
+// Prevent static prerendering which causes issues with client components
+export const dynamic = 'force-dynamic';
+
+export default function CreateCirclePage() {
+  return <CreateCircleClient />
 }

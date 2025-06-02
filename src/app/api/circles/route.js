@@ -3,6 +3,9 @@ import { circles, users, posts, circleMemberships } from '@/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 import { generateSimpleId } from '@/utils/idGenerator';
 
+// Prevent static prerendering which causes issues with accessing 'w' before initialization
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const db = getDB();

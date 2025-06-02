@@ -47,12 +47,12 @@ const nextConfig = {
                 aggregateTimeout: 300,
             }
         }
-        
+
         // Optimize bundle size
         config.resolve.alias = {
             ...config.resolve.alias,
         }
-        
+
         return config
     },
     // Reduce memory usage during development
