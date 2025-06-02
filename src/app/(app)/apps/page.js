@@ -179,19 +179,19 @@ export default function AppsPage() {
             icon: MessageSquare,
             name: "Flirt Zone",
             description: "Time-limited anonymous flirting. Messages disappear after 24hrs unless matched",
-            onClick: () => console.log("Navigate to Flirt Zone")
+            onClick: () => router.push("/flirt-zone")
         },
         {
             icon: Target,
             name: "Virtual Date Ideas",
             description: "Fun conversation starters and date prompts for easier first conversations",
-            onClick: () => console.log("Navigate to Date Ideas")
+            onClick: () => router.push("/virtual-date-ideas")
         },
         {
             icon: Star,
             name: "Couple of the Week",
             description: "Campus couples voted by the community. Share your love story!",
-            onClick: () => console.log("Navigate to Couple of the Week")
+            onClick: () => router.push("/couple-of-the-week")
         }
     ];
 

@@ -217,5 +217,4 @@ export function ReferralRewards({
   );
 }
 
-export { ReferralRewards };
 export default ReferralRewards;
