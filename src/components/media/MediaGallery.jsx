@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,14 @@ import {
 export function MediaGallery({ items = [], maxHeight = "500px" }) {
     const [activeIndex, setActiveIndex] = useState(0);
 
+    const handlePrev = useCallback(() => {
+        setActiveIndex(prev => (prev === 0 ? items.length - 1 : prev - 1));
+    }, [items.length]);
+
+    const handleNext = useCallback(() => {
+        setActiveIndex(prev => (prev === items.length - 1 ? 0 : prev + 1));
+    }, [items.length]);
+
     // Handle keyboard navigation
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -33,15 +41,7 @@ export function MediaGallery({ items = [], maxHeight = "500px" }) {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [activeIndex, items.length]);
-
-    const handlePrev = () => {
-        setActiveIndex(prev => (prev === 0 ? items.length - 1 : prev - 1));
-    };
-
-    const handleNext = () => {
-        setActiveIndex(prev => (prev === items.length - 1 ? 0 : prev + 1));
-    };
+    }, [handlePrev, handleNext]);
 
     if (!items || items.length === 0) return null;
 

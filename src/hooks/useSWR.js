@@ -117,13 +117,11 @@ export function usePost(id) {
 }
 
 /**
- * Hook to fetch circles with pagination
- * @param {number} page - Current page number
- * @param {number} limit - Number of items per page
- * @returns {object} Circles data with pagination info
+ * Hook to fetch circles
+ * @returns {object} Circles data
  */
-export function useCircles(page = 1, limit = 10) {
-  return useSWRFetch(`/api/circles?page=${page}&limit=${limit}`);
+export function useCircles() {
+  return useSWRFetch('/api/circles');
 }
 
 /**

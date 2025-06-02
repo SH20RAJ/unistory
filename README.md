@@ -98,4 +98,4 @@ Want to join the mission of building a healthier, happier college internet? Fork
 
 ## 📜 License
 
-MIT License © 2025 [Your Name or Organization]
+MIT License © 2025 Shade

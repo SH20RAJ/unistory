@@ -88,13 +88,6 @@ export default function OnboardingPage() {
     }
   }, [suggestedUsersData, suggestedUsersError])
 
-  useEffect(() => {
-    if (currentStep === 2 && !user?.university) {
-      // Fallback for when university is not set
-      fetchSuggestedUsers()
-    }
-  }, [currentStep, user, fetchSuggestedUsers])
-
   // Fallback method for when we don't have university information
   const fetchSuggestedUsers = useCallback(async () => {
     try {
@@ -110,6 +103,13 @@ export default function OnboardingPage() {
       setLoadingUsers(false)
     }
   }, [user?.email])
+
+  useEffect(() => {
+    if (currentStep === 2 && !user?.university) {
+      // Fallback for when university is not set
+      fetchSuggestedUsers()
+    }
+  }, [currentStep, user, fetchSuggestedUsers])
 
   const handleNext = async () => {
     if (currentStep < STEPS.length - 1) {

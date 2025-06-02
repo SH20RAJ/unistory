@@ -143,13 +143,13 @@ export function AuthProvider({ children }) {
     await signOut({ callbackUrl: '/' })
   }
 
-  const redirectToApp = () => {
+  const redirectToApp = useCallback(() => {
     if (isOnboarded) {
       router.push('/dashboard')
     } else {
       router.push('/onboarding')
     }
-  }
+  }, [isOnboarded, router])
 
   const value = {
     // Session data
