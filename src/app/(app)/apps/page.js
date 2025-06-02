@@ -166,14 +166,14 @@ export default function AppsPage() {
             name: "MatchMe AI",
             description: "AI-powered matches based on interests, classes, and campus activities",
             status: "Beta",
-            onClick: () => console.log("Navigate to MatchMe AI")
+            onClick: () => router.push("/matchme-ai")
         },
         {
             icon: Zap,
             name: "Hot/Not Swiping",
             description: "Anonymous swipe feature. Filter by interests, branch, or year",
             popular: true,
-            onClick: () => console.log("Navigate to Hot/Not")
+            onClick: () => router.push("/hot-not-swiping")
         },
         {
             icon: MessageSquare,
@@ -430,7 +430,15 @@ export default function AppsPage() {
             {/* App Sections */}
             {!searchQuery && (
                 <div className="space-y-8">
-                    {/* Essential Apps Section */}
+                   <AppSection
+                        icon={Heart}
+                        title="Dating & Connections"
+                        description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
+                        apps={datingApps}
+                        color="pink"
+                    />
+                    
+                     {/* Essential Apps Section */}
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
                         <div className="flex items-center space-x-3 mb-6">
                             <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -471,13 +479,7 @@ export default function AppsPage() {
                         </div>
                     </div>
 
-                    <AppSection
-                        icon={Heart}
-                        title="Dating & Connections"
-                        description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
-                        apps={datingApps}
-                        color="pink"
-                    />
+                    
 
                     <AppSection
                         icon={BookOpen}
