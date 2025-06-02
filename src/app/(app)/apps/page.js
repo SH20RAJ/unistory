@@ -123,26 +123,33 @@ export default function AppsPage() {
             name: "Newsroom",
             description: "Campus news, announcements, and trending topics. Stay updated with everything happening around you",
             popular: true,
-            onClick: () => console.log("Navigate to Newsroom")
+            onClick: () => router.push("/newsroom")
         },
         {
             icon: ShoppingBag,
             name: "Buy & Sell",
             description: "Marketplace for students to buy, sell, and exchange textbooks, electronics, and more",
             popular: true,
-            onClick: () => console.log("Navigate to Buy & Sell")
+            onClick: () => router.push("/buy-sell")
         },
         {
             icon: CalendarDays,
             name: "Class Routine",
             description: "Smart timetable management with room notifications, reminders, and schedule sharing",
-            onClick: () => console.log("Navigate to Class Routine")
+            onClick: () => router.push("/class-routine")
         },
         {
             icon: NotebookPen,
             name: "Journal",
             description: "Private journaling with mood tracking, goal setting, and reflection prompts",
-            onClick: () => console.log("Navigate to Journal")
+            onClick: () => router.push("/journal")
+        },
+        {
+            icon: Gift,
+            name: "Referrals",
+            description: "Invite friends and earn rewards together. Build your campus network",
+            popular: true,
+            onClick: () => router.push("/referrals")
         }
     ];
 

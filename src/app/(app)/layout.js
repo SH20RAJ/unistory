@@ -1,5 +1,6 @@
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { ReferralNotifications } from "@/components/referrals/ReferralNotifications";
 
 export default function AppLayout({ children }) {
     return (
@@ -42,6 +43,9 @@ export default function AppLayout({ children }) {
                 </main>
                 <BottomNavigation />
             </div>
+
+            {/* Global Referral Notifications */}
+            <ReferralNotifications />
         </div>
     );
 }

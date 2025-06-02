@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,9 +23,11 @@ import {
     EyeOff,
     Shield,
     Calendar,
-    MapPin
+    MapPin,
+    Gift
 } from "lucide-react";
 import Link from "next/link";
+import { ReferralCodeInput } from "@/components/referrals/ReferralCodeInput";
 
 const universities = [
     'Stanford University',
@@ -58,6 +60,8 @@ const majors = [
 const graduationYears = Array.from({ length: 8 }, (_, i) => 2025 + i);
 
 export default function SignUp() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -69,11 +73,26 @@ export default function SignUp() {
         university: '',
         major: '',
         graduationYear: '',
+        referralCode: '',
         agreeTerms: false,
         emailVerified: false
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [referralValidation, setReferralValidation] = useState({
+        state: null, // null, 'valid', 'invalid', 'loading'
+        error: null,
+        referrerInfo: null
+    });
+
+    // Handle referral code from URL parameters
+    useEffect(() => {
+        const refCode = searchParams.get('ref');
+        if (refCode) {
+            setFormData(prev => ({ ...prev, referralCode: refCode }));
+            validateReferralCode(refCode);
+        }
+    }, [searchParams]);
 
     const validateStep1 = () => {
         const newErrors = {};
@@ -142,11 +161,57 @@ export default function SignUp() {
         }
 
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
+        
+        try {
+            // Create user account
+            const userData = {
+                fullName: formData.fullName,
+                email: formData.email,
+                password: formData.password,
+                university: formData.university,
+                major: formData.major,
+                graduationYear: formData.graduationYear,
+                referralCode: formData.referralCode || null
+            };
+
+            // Simulate user creation API call
+            const userResponse = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+
+            const userResult = await userResponse.json();
+
+            if (userResult.success) {
+                // Process referral if code was provided and valid
+                if (formData.referralCode && referralValidation.state === 'valid') {
+                    try {
+                        await fetch('/api/referrals', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'use_code',
+                                code: formData.referralCode,
+                                userId: userResult.userId
+                            })
+                        });
+                    } catch (error) {
+                        console.error('Error processing referral:', error);
+                        // Don't fail the entire registration for referral errors
+                    }
+                }
+                
+                setStep(4);
+            } else {
+                setErrors({ submit: userResult.error || 'Failed to create account' });
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            setErrors({ submit: 'An error occurred. Please try again.' });
+        } finally {
             setIsLoading(false);
-            setStep(4); // Success step
-        }, 2000);
+        }
     };
 
     const sendVerificationEmail = () => {
@@ -159,6 +224,50 @@ export default function SignUp() {
         // Clear error for this field
         if (errors[field]) {
             setErrors({ ...errors, [field]: null });
+        }
+    };
+
+    const validateReferralCode = async (code) => {
+        if (!code || code.length < 6) {
+            setReferralValidation({ state: null, error: null, referrerInfo: null });
+            return;
+        }
+
+        setReferralValidation({ state: 'loading', error: null, referrerInfo: null });
+
+        try {
+            const response = await fetch('/api/referrals', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'validate_code',
+                    code,
+                    userId: 'temp_user' // Temporary user ID for validation
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.valid) {
+                setReferralValidation({
+                    state: 'valid',
+                    error: null,
+                    referrerInfo: data.referralCode
+                });
+            } else {
+                setReferralValidation({
+                    state: 'invalid',
+                    error: data.error || 'Invalid referral code',
+                    referrerInfo: null
+                });
+            }
+        } catch (error) {
+            console.error('Error validating referral code:', error);
+            setReferralValidation({
+                state: 'invalid',
+                error: 'Unable to validate code. Please try again.',
+                referrerInfo: null
+            });
         }
     };
 
@@ -344,6 +453,32 @@ export default function SignUp() {
                                             <AlertCircle className="w-3 h-3 mr-1" />
                                             {errors.confirmPassword}
                                         </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium flex items-center">
+                                        <Gift className="w-4 h-4 mr-2" />
+                                        Referral Code (Optional)
+                                    </label>
+                                    <ReferralCodeInput
+                                        value={formData.referralCode}
+                                        onChange={(value) => {
+                                            updateFormData('referralCode', value);
+                                            validateReferralCode(value);
+                                        }}
+                                        validation={referralValidation}
+                                        placeholder="Enter referral code"
+                                    />
+                                    {referralValidation.state === 'valid' && referralValidation.referrerInfo && (
+                                        <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                                            <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+                                                🎉 Great! You've been referred by {referralValidation.referrerInfo.referrerName}
+                                            </p>
+                                            <p className="text-xs text-green-600 dark:text-green-300 mt-1">
+                                                You'll both get rewards when you complete your profile!
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
 

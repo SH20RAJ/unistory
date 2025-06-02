@@ -18,7 +18,8 @@ import {
     Settings,
     Search,
     Bell,
-    Plus
+    Plus,
+    Gift
 } from "lucide-react";
 
 const sidebarItems = [
@@ -46,6 +47,12 @@ const sidebarItems = [
         href: "/events",
         icon: Calendar,
         description: "Campus events and meetups"
+    },
+    {
+        title: "Referrals",
+        href: "/referrals",
+        icon: Gift,
+        description: "Invite friends and earn rewards"
     },
     {
         title: "Search",
