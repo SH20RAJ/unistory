@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { parseHashtags } from "@/utils/hashtagParser";
 import { Input } from "@/components/ui/input";
 import {
   Heart,
@@ -160,7 +161,9 @@ const PostCard = ({ post }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="mb-4">{post.content}</p>
+        <div className="mb-4">
+          {parseHashtags(post.content)}
+        </div>
 
         {post.image && (
           <div className="mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">

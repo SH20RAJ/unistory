@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
 import {
     Heart,
     Users,
@@ -33,7 +34,10 @@ import {
     CalendarDays,
     NotebookPen,
     Bookmark,
-    DollarSign
+    DollarSign,
+    Car,
+    Utensils,
+    PlusCircle
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -57,17 +61,17 @@ const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) =>
     };
 
     return (
-        <div className={`p-6 rounded-lg border ${colorClasses[color] || colorClasses.blue}`}>
-            <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border shadow-sm">
-                    <Icon className={`w-6 h-6 ${iconColorClasses[color] || iconColorClasses.blue}`} />
+        <div className={`p-8 rounded-2xl border-2 ${colorClasses[color] || colorClasses.blue} hover:shadow-lg transition-all duration-300`}>
+            <div className="flex items-center space-x-4 mb-8">
+                <div className="w-14 h-14 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center border-2 shadow-lg">
+                    <Icon className={`w-7 h-7 ${iconColorClasses[color] || iconColorClasses.blue}`} />
                 </div>
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
+                    <p className="text-gray-600 dark:text-gray-400">{description}</p>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {apps.map((app, index) => (
                     <AppCard key={index} {...app} />
                 ))}
@@ -76,28 +80,29 @@ const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) =>
     );
 };
 
-const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, onClick }) => {
+const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, trending, onClick }) => {
     return (
-        <Card className="relative hover:shadow-md transition-all duration-300 cursor-pointer group hover:border-gray-300 dark:hover:border-gray-600" onClick={onClick}>
-            <CardHeader className="pb-3">
+        <Card className="relative hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-purple-300 dark:hover:border-purple-600 hover:scale-105 border-2" onClick={onClick}>
+            <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
-                            <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 dark:group-hover:from-purple-800/50 dark:group-hover:to-pink-800/50 transition-all">
+                            <Icon className="w-6 h-6 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
                         </div>
                         <div>
-                            <CardTitle className="text-base font-semibold">{name}</CardTitle>
+                            <CardTitle className="text-lg font-bold">{name}</CardTitle>
                         </div>
                     </div>
                     <div className="flex flex-col items-end space-y-1">
-                        {popular && <Badge variant="secondary" className="text-xs">🔥 Popular</Badge>}
-                        {comingSoon && <Badge variant="outline" className="text-xs">Coming Soon</Badge>}
-                        {status && <Badge className="text-xs bg-blue-600 hover:bg-blue-600">{status}</Badge>}
+                        {popular && <Badge variant="secondary" className="text-xs bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300">🔥 Popular</Badge>}
+                        {trending && <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">📈 Trending</Badge>}
+                        {comingSoon && <Badge variant="outline" className="text-xs">⏳ Coming Soon</Badge>}
+                        {status && <Badge className="text-xs bg-purple-600 hover:bg-purple-600">{status}</Badge>}
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="pt-0">
-                <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
+                <CardDescription className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{description}</CardDescription>
             </CardContent>
             {comingSoon && (
                 <div className="absolute inset-0 bg-gray-50/90 dark:bg-gray-900/90 rounded-lg flex items-center justify-center backdrop-blur-sm">

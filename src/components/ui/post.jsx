@@ -23,6 +23,7 @@ import {
     LucideIcon,
     Loader2
 } from "lucide-react";
+import { parseHashtags } from "@/utils/hashtagParser";
 
 /**
  * Post Component
@@ -102,7 +103,9 @@ export function Post({
 
             <CardContent className="pt-3">
                 {post.content && (
-                    <p className="text-base mb-4">{post.content}</p>
+                    <div className="text-base mb-4">
+                        {parseHashtags(post.content)}
+                    </div>
                 )}
 
                 {post.media && post.media.length > 0 && (

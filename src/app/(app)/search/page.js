@@ -475,15 +475,44 @@ export default function SearchPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
 
-            <div className="max-w-7xl mx-auto ">
-                {/* Search Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold mb-2">Search Campus</h1>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Find people, posts, events, clubs, and more across your university
-                    </p>
+            <div className="max-w-7xl mx-auto">
+                {/* Enhanced Search Header */}
+                <div className="mb-12 text-center">
+                    <div className="inline-flex items-center space-x-3 mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Search className="w-8 h-8 text-white" />
+                        </div>
+                        <div className="text-left">
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Discover Campus
+                            </h1>
+                            <p className="text-lg text-gray-600 dark:text-gray-400">
+                                Find anything and anyone across your university
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border">
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">2.5K+</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Students</div>
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border">
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">150+</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Clubs</div>
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border">
+                            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">500+</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Events</div>
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border">
+                            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">50+</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">Topics</div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Search Bar */}

@@ -22,6 +22,7 @@ import {
     Send
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { parseHashtags } from "@/utils/hashtagParser";
 
 // Mock data for the post
 const MOCK_CURRENT_USER = {
@@ -529,7 +530,9 @@ export default function PostDetailPage() {
 
                         <CardContent className="pt-3">
                             {post.content && (
-                                <p className="text-base mb-4">{post.content}</p>
+                                <div className="text-base mb-4">
+                                    {parseHashtags(post.content)}
+                                </div>
                             )}
 
                             {post.media && post.media.length > 0 && (

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, Reply, MoreHorizontal } from "lucide-react";
 import { CommentReplyForm } from "./CommentReplyForm";
+import { parseHashtags } from "@/utils/hashtagParser";
 
 /**
  * Comment Component
@@ -56,7 +57,9 @@ export function Comment({
                 <MoreHorizontal className="h-3 w-3" />
               </Button>
             </div>
-            <p className="text-sm mt-1">{comment.content}</p>
+            <div className="text-sm mt-1">
+              {parseHashtags(comment.content)}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 mt-1 px-1">
