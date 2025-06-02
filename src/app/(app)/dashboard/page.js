@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { usePosts } from "@/hooks/useSWR";
+import { toast } from "sonner";
 import {
   Heart,
   MessageCircle,
@@ -38,6 +41,10 @@ import {
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const [posts, setPosts] = useState([]);
+
+  // Use SWR to fetch posts data
+  const { data: postsData, error: postsError, isLoading: postsLoading } = usePosts();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -45,12 +52,49 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  // Transform posts data when it changes
   useEffect(() => {
-    if (isAuthenticated) {
-      console.log("User authenticated:", user);
-      // You could make API calls here to fetch user-specific data
+    if (postsData) {
+      // Transform API data to match component expectations
+      const transformedPosts = postsData.map(post => ({
+        id: post.id,
+        type: post.type || 'social',
+        content: post.content,
+        author: post.user?.name || 'Anonymous',
+        authorId: post.authorId,
+        authorAvatar: post.user?.avatar,
+        authorInitials: post.user?.name?.split(' ').map(n => n[0]).join('') ||
+          post.user?.username?.slice(0, 2).toUpperCase() || 'UN',
+        timestamp: formatTimeAgo(new Date(post.createdAt)),
+        likes: parseInt(post.likeCount) || 0,
+        comments: parseInt(post.commentCount) || 0,
+        isLiked: false, // Could be enhanced with user-specific data
+        mood: post.mood || null,
+        tags: post.tags || null,
+        circleId: post.circleId || null,
+        circleName: post.circle?.name
+      }));
+      setPosts(transformedPosts);
     }
-  }, [isAuthenticated, user]);
+  }, [postsData]);
+
+  // Show error toast if posts fetch fails
+  useEffect(() => {
+    if (postsError) {
+      console.error('Error fetching posts:', postsError);
+      toast.error("Failed to load posts. Please try again later.");
+    }
+  }, [postsError]);
+
+  const formatTimeAgo = (date) => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
@@ -59,77 +103,6 @@ export default function DashboardPage() {
   if (!isAuthenticated) {
     return null; // Will redirect in useEffect
   }
-
-  const mockPosts = [
-    {
-      id: 1,
-      type: 'confession',
-      content: "Sometimes I feel like I'm the only one struggling with calculus. Everyone else seems to get it so easily, but I spend hours on homework and still feel lost. Anyone else feeling this way?",
-      anonymous: true,
-      mood: '😔',
-      category: 'Academic',
-      timestamp: '2 hours ago',
-      likes: 23,
-      comments: 8,
-      trending: true,
-      isLiked: false,
-      authorInitials: 'AN'
-    },
-    {
-      id: 2,
-      type: 'social',
-      content: "Just finished my first hackathon! 36 hours of coding, pizza, and very little sleep. Built an app to help students find study groups. Thanks to everyone who supported me! 🚀",
-      author: 'Alex Chen',
-      major: 'Computer Science',
-      mood: '🎉',
-      timestamp: '4 hours ago',
-      likes: 45,
-      comments: 12,
-      image: true,
-      isLiked: true,
-      authorInitials: 'AC'
-    },
-    {
-      id: 3,
-      type: 'study',
-      content: "Looking for people to join a machine learning study group! We'll meet twice a week to go through Andrew Ng's course together. DM me if interested!",
-      author: 'Sarah Kim',
-      major: 'Data Science',
-      timestamp: '6 hours ago',
-      likes: 18,
-      comments: 6,
-      isLiked: false,
-      authorInitials: 'SK'
-    },
-    {
-      id: 4,
-      type: 'confession',
-      content: "I have a crush on someone in my organic chemistry lab but I'm too shy to talk to them. They're so smart and funny. What should I do?? 😅",
-      anonymous: true,
-      mood: '😊',
-      category: 'Relationships',
-      timestamp: '8 hours ago',
-      likes: 67,
-      comments: 24,
-      trending: true,
-      isLiked: false,
-      authorInitials: 'AN'
-    },
-    {
-      id: 5,
-      type: 'event',
-      content: "Hosting a mental health awareness workshop this Friday at 3 PM in the student center. Free pizza and good vibes! Let's break the stigma around mental health on campus. 💙",
-      author: 'Maya Rodriguez',
-      major: 'Psychology',
-      timestamp: '1 day ago',
-      likes: 89,
-      comments: 31,
-      eventDate: 'Friday, 3 PM',
-      location: 'Student Center',
-      isLiked: true,
-      authorInitials: 'MR'
-    }
-  ];
 
   const PostCard = ({ post }) => {
     const getPostTypeColor = (type) => {
@@ -192,9 +165,27 @@ export default function DashboardPage() {
         <CardContent>
           <p className="mb-4">{post.content}</p>
 
-          {post.image && (
-            <div className="mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
-              <div className="text-gray-500">📸 Image Placeholder</div>
+          {post.imageUrl && (
+            <div className="mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <Image
+                src={post.imageUrl}
+                alt="Post image"
+                width={800}
+                height={400}
+                className="w-full h-auto max-h-96 object-cover"
+              />
+            </div>
+          )}
+
+          {post.videoUrl && (
+            <div className="mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <video
+                src={post.videoUrl}
+                controls
+                className="w-full h-auto max-h-96"
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
           )}
 
@@ -296,9 +287,22 @@ export default function DashboardPage() {
         </Card>
 
         {/* Feed Posts */}
-        {mockPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
+        {postsLoading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-2 text-gray-500">Loading posts...</p>
+          </div>
+        ) : posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))
+        ) : (
+          <Card>
+            <CardContent className="text-center py-8">
+              <p className="text-gray-500">No posts yet. Be the first to share something!</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Load More */}
         <div className="text-center">

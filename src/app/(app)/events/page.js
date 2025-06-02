@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,6 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
+import { useEvents } from "@/hooks/useSWR";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { toast } from "sonner";
 import {
     Calendar,
     MapPin,
@@ -335,49 +339,154 @@ const EventCard = ({ event, onRSVP, onInterested }) => {
 };
 
 export default function Events() {
-    const [events, setEvents] = useState(mockEvents);
+    const { user } = useAuth();
+    const { data: apiEvents, error, isLoading, mutate } = useEvents();
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
-
-    const filteredEvents = events.filter(event => {
-        const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
-        const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchesCategory && matchesSearch;
+    const [userEventPreferences, setUserEventPreferences] = useState({
+        going: new Set(),
+        interested: new Set()
     });
+
+    // Form state for event creation
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        category: '',
+        price: '',
+        date: '',
+        time: '',
+        location: '',
+        tags: ''
+    });
+
+    const { submitForm, isSubmitting } = useFormSubmit({
+        onSubmit: async (url, data) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to submit');
+            }
+
+            return response.json();
+        }
+    });
+
+    // Transform API events data
+    const events = useMemo(() => {
+        if (!apiEvents) return [];
+
+        return apiEvents.map(event => ({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            category: event.category,
+            date: event.date,
+            time: event.time,
+            location: event.location,
+            organizer: event.organizer,
+            organizerAvatar: event.organizerAvatar || event.organizer?.substring(0, 2).toUpperCase(),
+            attendees: event.attendees || 0,
+            interested: event.interested || 0,
+            price: event.price || 'Free',
+            tags: event.tags ? JSON.parse(event.tags) : [],
+            image: !!event.image,
+            isGoing: userEventPreferences.going.has(event.id),
+            isInterested: userEventPreferences.interested.has(event.id),
+            featured: event.isFeatured || false,
+            club: event.club,
+            organizerUser: event.organizerUser
+        }));
+    }, [apiEvents, userEventPreferences]);
+
+    const filteredEvents = useMemo(() => {
+        return events.filter(event => {
+            const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
+            const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            return matchesCategory && matchesSearch;
+        });
+    }, [events, selectedCategory, searchQuery]);
 
     const featuredEvents = filteredEvents.filter(event => event.featured);
     const regularEvents = filteredEvents.filter(event => !event.featured);
+    const myEvents = events.filter(event => event.isGoing);
+    const interestedEvents = events.filter(event => event.isInterested);
+
+    const handleCreateEvent = async (e) => {
+        e.preventDefault();
+
+        if (!user) {
+            toast.error('You must be logged in to create events');
+            return;
+        }
+
+        const eventData = {
+            ...formData,
+            organizer: user.displayName || user.email,
+            organizerAvatar: user.displayName?.substring(0, 2).toUpperCase() || user.email?.substring(0, 2).toUpperCase(),
+            tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+        };
+
+        try {
+            await submitForm('/api/events', eventData);
+            toast.success('Event created successfully!');
+            setShowCreateDialog(false);
+            setFormData({
+                title: '',
+                description: '',
+                category: '',
+                price: '',
+                date: '',
+                time: '',
+                location: '',
+                tags: ''
+            });
+            // Refresh events data
+            mutate();
+        } catch (error) {
+            toast.error(error.message || 'Failed to create event');
+        }
+    };
 
     const handleRSVP = (eventId) => {
-        setEvents(events.map(event =>
-            event.id === eventId
-                ? {
-                    ...event,
-                    isGoing: !event.isGoing,
-                    attendees: event.isGoing ? event.attendees - 1 : event.attendees + 1,
-                    isInterested: false
-                }
-                : event
-        ));
+        setUserEventPreferences(prev => {
+            const newGoing = new Set(prev.going);
+            const newInterested = new Set(prev.interested);
+
+            if (newGoing.has(eventId)) {
+                newGoing.delete(eventId);
+            } else {
+                newGoing.add(eventId);
+                newInterested.delete(eventId); // Remove from interested if going
+            }
+
+            return { going: newGoing, interested: newInterested };
+        });
     };
 
     const handleInterested = (eventId) => {
-        setEvents(events.map(event =>
-            event.id === eventId
-                ? {
-                    ...event,
-                    isInterested: !event.isInterested,
-                    interested: event.isInterested ? event.interested - 1 : event.interested + 1
-                }
-                : event
-        ));
-    };
+        setUserEventPreferences(prev => {
+            const newInterested = new Set(prev.interested);
 
-    const myEvents = events.filter(event => event.isGoing);
-    const interestedEvents = events.filter(event => event.isInterested);
+            if (newInterested.has(eventId)) {
+                newInterested.delete(eventId);
+            } else {
+                newInterested.add(eventId);
+            }
+
+            return { ...prev, interested: newInterested };
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -405,19 +514,33 @@ export default function Events() {
                             <DialogHeader>
                                 <DialogTitle>Create New Event</DialogTitle>
                             </DialogHeader>
-                            <div className="space-y-4 py-4">
+                            <form onSubmit={handleCreateEvent} className="space-y-4 py-4">
                                 <div>
                                     <label className="text-sm font-medium">Event Title</label>
-                                    <Input placeholder="Enter event title..." />
+                                    <Input
+                                        placeholder="Enter event title..."
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        required
+                                    />
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium">Description</label>
-                                    <Textarea placeholder="Describe your event..." />
+                                    <Textarea
+                                        placeholder="Describe your event..."
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        required
+                                    />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-sm font-medium">Category</label>
-                                        <Select>
+                                        <Select
+                                            value={formData.category}
+                                            onValueChange={(value) => setFormData({ ...formData, category: value })}
+                                            required
+                                        >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select category" />
                                             </SelectTrigger>
@@ -432,36 +555,64 @@ export default function Events() {
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium">Price</label>
-                                        <Input placeholder="Free or $X" />
+                                        <Input
+                                            placeholder="Free or $X"
+                                            value={formData.price}
+                                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                        />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-sm font-medium">Date</label>
-                                        <Input type="date" />
+                                        <Input
+                                            type="date"
+                                            value={formData.date}
+                                            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                            required
+                                        />
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium">Time</label>
-                                        <Input type="time" />
+                                        <Input
+                                            placeholder="e.g., 2:00 PM - 4:00 PM"
+                                            value={formData.time}
+                                            onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                                            required
+                                        />
                                     </div>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium">Location</label>
-                                    <Input placeholder="Event location..." />
+                                    <Input
+                                        placeholder="Event location..."
+                                        value={formData.location}
+                                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                        required
+                                    />
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium">Tags</label>
-                                    <Input placeholder="Comma-separated tags..." />
+                                    <Input
+                                        placeholder="Comma-separated tags..."
+                                        value={formData.tags}
+                                        onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                    />
                                 </div>
                                 <div className="flex justify-end space-x-2">
-                                    <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setShowCreateDialog(false)}
+                                        disabled={isSubmitting}
+                                    >
                                         Cancel
                                     </Button>
-                                    <Button onClick={() => setShowCreateDialog(false)}>
-                                        Create Event
+                                    <Button type="submit" disabled={isSubmitting}>
+                                        {isSubmitting ? 'Creating...' : 'Create Event'}
                                     </Button>
                                 </div>
-                            </div>
+                            </form>
                         </DialogContent>
                     </Dialog>
                 </div>
@@ -568,16 +719,83 @@ export default function Events() {
                                 <TabsTrigger value="interested">Interested ({interestedEvents.length})</TabsTrigger>
                             </TabsList>
 
-                            <TabsContent value="all" className="space-y-6 mt-6">
-                                {/* Featured Events */}
-                                {featuredEvents.length > 0 && (
-                                    <div>
-                                        <h2 className="text-xl font-semibold mb-4 flex items-center">
-                                            <TrendingUp className="w-5 h-5 mr-2" />
-                                            Featured Events
-                                        </h2>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                            {featuredEvents.map((event) => (
+                            {/* Loading State */}
+                            {isLoading && (
+                                <div className="flex items-center justify-center py-12">
+                                    <div className="text-center">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                                        <p className="text-muted-foreground">Loading events...</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Error State */}
+                            {error && !isLoading && (
+                                <div className="flex items-center justify-center py-12">
+                                    <div className="text-center">
+                                        <p className="text-muted-foreground mb-4">
+                                            {error.message || 'Failed to load events'}
+                                        </p>
+                                        <Button onClick={() => mutate()} variant="outline">
+                                            Try Again
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Content - only show when not loading and no error */}
+                            {!isLoading && !error && (
+                                <>
+                                    <TabsContent value="all" className="space-y-6 mt-6">
+                                        {/* Featured Events */}
+                                        {featuredEvents.length > 0 && (
+                                            <div>
+                                                <h2 className="text-xl font-semibold mb-4 flex items-center">
+                                                    <TrendingUp className="w-5 h-5 mr-2" />
+                                                    Featured Events
+                                                </h2>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                                    {featuredEvents.map((event) => (
+                                                        <EventCard
+                                                            key={event.id}
+                                                            event={event}
+                                                            onRSVP={handleRSVP}
+                                                            onInterested={handleInterested}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* All Events */}
+                                        <div>
+                                            <h2 className="text-xl font-semibold mb-4">
+                                                {selectedCategory === 'all' ? 'All Events' : categories.find(c => c.value === selectedCategory)?.label}
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {regularEvents.map((event) => (
+                                                    <EventCard
+                                                        key={event.id}
+                                                        event={event}
+                                                        onRSVP={handleRSVP}
+                                                        onInterested={handleInterested}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {filteredEvents.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                                                <h3 className="text-lg font-medium text-gray-500 mb-2">No events found</h3>
+                                                <p className="text-gray-400">Try adjusting your filters or search terms</p>
+                                            </div>
+                                        )}
+                                    </TabsContent>
+
+                                    <TabsContent value="going" className="space-y-6 mt-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {myEvents.map((event) => (
                                                 <EventCard
                                                     key={event.id}
                                                     event={event}
@@ -586,74 +804,36 @@ export default function Events() {
                                                 />
                                             ))}
                                         </div>
-                                    </div>
-                                )}
+                                        {myEvents.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <CheckCircle className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                                                <h3 className="text-lg font-medium text-gray-500 mb-2">No events yet</h3>
+                                                <p className="text-gray-400">RSVP to events to see them here</p>
+                                            </div>
+                                        )}
+                                    </TabsContent>
 
-                                {/* All Events */}
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">
-                                        {selectedCategory === 'all' ? 'All Events' : categories.find(c => c.value === selectedCategory)?.label}
-                                    </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {regularEvents.map((event) => (
-                                            <EventCard
-                                                key={event.id}
-                                                event={event}
-                                                onRSVP={handleRSVP}
-                                                onInterested={handleInterested}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {filteredEvents.length === 0 && (
-                                    <div className="text-center py-12">
-                                        <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                                        <h3 className="text-lg font-medium text-gray-500 mb-2">No events found</h3>
-                                        <p className="text-gray-400">Try adjusting your filters or search terms</p>
-                                    </div>
-                                )}
-                            </TabsContent>
-
-                            <TabsContent value="going" className="space-y-6 mt-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {myEvents.map((event) => (
-                                        <EventCard
-                                            key={event.id}
-                                            event={event}
-                                            onRSVP={handleRSVP}
-                                            onInterested={handleInterested}
-                                        />
-                                    ))}
-                                </div>
-                                {myEvents.length === 0 && (
-                                    <div className="text-center py-12">
-                                        <CheckCircle className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                                        <h3 className="text-lg font-medium text-gray-500 mb-2">No events yet</h3>
-                                        <p className="text-gray-400">RSVP to events to see them here</p>
-                                    </div>
-                                )}
-                            </TabsContent>
-
-                            <TabsContent value="interested" className="space-y-6 mt-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {interestedEvents.map((event) => (
-                                        <EventCard
-                                            key={event.id}
-                                            event={event}
-                                            onRSVP={handleRSVP}
-                                            onInterested={handleInterested}
-                                        />
-                                    ))}
-                                </div>
-                                {interestedEvents.length === 0 && (
-                                    <div className="text-center py-12">
-                                        <Star className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                                        <h3 className="text-lg font-medium text-gray-500 mb-2">No interested events</h3>
-                                        <p className="text-gray-400">Mark events as interested to see them here</p>
-                                    </div>
-                                )}
-                            </TabsContent>
+                                    <TabsContent value="interested" className="space-y-6 mt-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {interestedEvents.map((event) => (
+                                                <EventCard
+                                                    key={event.id}
+                                                    event={event}
+                                                    onRSVP={handleRSVP}
+                                                    onInterested={handleInterested}
+                                                />
+                                            ))}
+                                        </div>
+                                        {interestedEvents.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <Star className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                                                <h3 className="text-lg font-medium text-gray-500 mb-2">No interested events</h3>
+                                                <p className="text-gray-400">Mark events as interested to see them here</p>
+                                            </div>
+                                        )}
+                                    </TabsContent>
+                                </>
+                            )}
                         </Tabs>
                     </div>
                 </div>

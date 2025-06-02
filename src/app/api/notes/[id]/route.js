@@ -6,7 +6,7 @@ import { getDB } from "@/db";
 // GET single note
 export async function GET(request, { params }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const db = getDB();
         const note = await db.select().from(notes).where(eq(notes.id, parseInt(id))).limit(1);
 
@@ -24,7 +24,7 @@ export async function GET(request, { params }) {
 // PUT update note
 export async function PUT(request, { params }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const { title, content } = await request.json();
 
         if (!title || !content) {
@@ -56,7 +56,7 @@ export async function PUT(request, { params }) {
 // DELETE note
 export async function DELETE(request, { params }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const db = getDB();
 
         const deletedNote = await db

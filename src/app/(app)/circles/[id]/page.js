@@ -29,180 +29,106 @@ import {
     Info
 } from "lucide-react";
 
-// Mock data for the circle
-const MOCK_CIRCLE = {
-    id: "circle1",
-    name: "Computer Science Hub",
-    description: "For CS students to discuss coursework, projects, and career opportunities. Share study resources, ask questions about assignments, and connect with peers in your major.",
-    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
-    avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=CS",
-    memberCount: 1250,
-    isPrivate: false,
-    isMember: true,
-    isMuted: false,
-    category: "Academic",
-    college: "Stanford University",
-    createdAt: "2023-09-15T12:00:00Z",
-    rules: [
-        "Be respectful and constructive in discussions",
-        "No spam or self-promotion without permission",
-        "No cheating or sharing of exam materials",
-        "Credit sources when sharing resources",
-        "Respect intellectual property and copyright"
-    ]
-};
-
-// Mock data for members
-const MOCK_MEMBERS = [
-    {
-        id: "user1",
-        name: "Emma Wilson",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-        isAdmin: true,
-        college: "Stanford University",
-        joined: "2023-09-15T12:00:00Z"
-    },
-    {
-        id: "user2",
-        name: "Noah Martinez",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Noah",
-        isAdmin: true,
-        college: "Stanford University",
-        joined: "2023-09-15T13:00:00Z"
-    },
-    {
-        id: "user3",
-        name: "Sophia Chen",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
-        isAdmin: false,
-        college: "Stanford University",
-        joined: "2023-09-16T09:00:00Z"
-    },
-    {
-        id: "user4",
-        name: "Liam Johnson",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Liam",
-        isAdmin: false,
-        college: "Stanford University",
-        joined: "2023-09-17T10:30:00Z"
-    },
-    {
-        id: "user5",
-        name: "Olivia Brown",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia",
-        isAdmin: false,
-        college: "Stanford University",
-        joined: "2023-09-18T14:20:00Z"
-    }
-];
-
-// Mock data for posts
-const MOCK_POSTS = [
-    {
-        id: "post1",
-        author: {
-            id: "user2",
-            name: "Noah Martinez",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Noah",
-            isVerified: true
-        },
-        content: "Just released my open-source project for graph algorithm visualization! Perfect for anyone taking Algorithm Design. Check it out and let me know what you think! #CS #Algorithms #OpenSource",
-        media: [
-            {
-                id: "media1",
-                type: "image",
-                src: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=2070&auto=format&fit=crop",
-                title: "Graph Visualization"
-            }
-        ],
-        createdAt: "2023-10-10T15:45:00Z",
-        likes: 48,
-        comments: 13,
-        isInCircle: true,
-        circleName: "Computer Science Hub"
-    },
-    {
-        id: "post2",
-        author: {
-            id: "user3",
-            name: "Sophia Chen",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
-            isVerified: true
-        },
-        content: "Study group for the upcoming Operating Systems midterm! Meeting at the Engineering Library this Friday from 6-9pm. BYOC (bring your own coffee) ☕ Comment if you're joining! #StudyGroup #OS #Midterm",
-        createdAt: "2023-10-09T11:20:00Z",
-        likes: 32,
-        comments: 17,
-        isInCircle: true,
-        circleName: "Computer Science Hub"
-    },
-    {
-        id: "post3",
-        author: {
-            id: "user1",
-            name: "Emma Wilson",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-            isVerified: true
-        },
-        content: "Just dropped a comprehensive set of notes for CS246: Machine Learning. Covers everything from basic regression to neural networks with examples. Link in the comments! #MachineLearning #CS246 #StudyResources",
-        media: [
-            {
-                id: "media3",
-                type: "image",
-                src: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop",
-                title: "Machine Learning Notes"
-            },
-            {
-                id: "media4",
-                type: "image",
-                src: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop",
-                title: "Neural Network Diagram"
-            }
-        ],
-        createdAt: "2023-10-08T09:15:00Z",
-        likes: 75,
-        comments: 23,
-        isInCircle: true,
-        circleName: "Computer Science Hub"
-    }
-];
-
-// Mock current user
-const MOCK_CURRENT_USER = {
-    id: "user123",
-    name: "John Doe",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-    isVerified: true,
-    college: "Stanford University"
-};
-
 export default function CircleDetailPage() {
     const params = useParams();
     const { user, isAuthenticated } = useAuth();
-    const [circle, setCircle] = useState(MOCK_CIRCLE);
-    const [members, setMembers] = useState(MOCK_MEMBERS);
-    const [posts, setPosts] = useState(MOCK_POSTS);
-    const [joined, setJoined] = useState(circle.isMember);
-    const [muted, setMuted] = useState(circle.isMuted);
+    const [circle, setCircle] = useState(null);
+    const [members, setMembers] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [joined, setJoined] = useState(false);
+    const [muted, setMuted] = useState(false);
 
-    // In a real app, you'd fetch the circle data based on the ID
+    // Fetch circle data from API
     useEffect(() => {
-        // Simulating API call
-        console.log(`Fetching circle with ID: ${params.id}`);
-        // In a real app, you'd fetch the circle data from an API
-        // setCircle(fetchedCircleData)
+        const fetchCircleData = async () => {
+            try {
+                setLoading(true);
+                console.log(`Fetching circle with ID: ${params.id}`);
 
-        // Set current user's info if authenticated
-        if (isAuthenticated && user) {
-            setMockCurrentUser({
-                id: user.id || "user123",
-                name: user.name || "John Doe",
-                avatar: user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-                isVerified: true,
-                college: "Stanford University"
-            });
+                const response = await fetch(`/api/circles/${params.id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const { circle: circleData, members: membersData, posts: postsData } = result.data;
+
+                    // Transform API data to match component interface
+                    const transformedCircle = {
+                        id: circleData.id,
+                        name: circleData.name,
+                        description: circleData.description,
+                        coverImage: circleData.imageUrl || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
+                        avatar: circleData.imageUrl || "https://api.dicebear.com/7.x/shapes/svg?seed=CS",
+                        memberCount: membersData.length,
+                        isPrivate: circleData.isPrivate,
+                        isMember: true, // TODO: Check actual membership status
+                        isMuted: false,
+                        category: "Academic", // TODO: Add category to API
+                        college: "Stanford University", // TODO: Add college to API  
+                        createdAt: circleData.createdAt,
+                        rules: [
+                            "Be respectful and constructive in discussions",
+                            "No spam or self-promotion without permission",
+                            "No cheating or sharing of exam materials",
+                            "Credit sources when sharing resources",
+                            "Respect intellectual property and copyright"
+                        ] // TODO: Add rules to API
+                    };
+
+                    // Transform members data
+                    const transformedMembers = membersData.map(member => ({
+                        id: member.id,
+                        name: member.displayName || member.username,
+                        avatar: member.profilePicture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.username}`,
+                        isAdmin: member.role === 'admin',
+                        college: "Stanford University", // TODO: Add to API
+                        joined: member.joinedAt
+                    }));
+
+                    // Transform posts data
+                    const transformedPosts = postsData.map(post => ({
+                        id: post.id,
+                        author: {
+                            id: post.user.id,
+                            name: post.user.displayName || post.user.username,
+                            avatar: post.user.profilePicture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.user.username}`,
+                            isVerified: true
+                        },
+                        content: post.content,
+                        media: post.imageUrl ? [{
+                            id: `media-${post.id}`,
+                            type: "image",
+                            src: post.imageUrl,
+                            title: "Post Image"
+                        }] : [],
+                        createdAt: post.createdAt,
+                        likes: 0, // TODO: Add to API
+                        comments: 0, // TODO: Add to API
+                        isInCircle: true,
+                        circleName: transformedCircle.name
+                    }));
+
+                    setCircle(transformedCircle);
+                    setMembers(transformedMembers);
+                    setPosts(transformedPosts);
+                    setJoined(transformedCircle.isMember);
+                    setMuted(transformedCircle.isMuted);
+                } else {
+                    setError(result.error || 'Failed to fetch circle data');
+                }
+            } catch (err) {
+                console.error('Error fetching circle data:', err);
+                setError('Failed to fetch circle data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (params.id) {
+            fetchCircleData();
         }
-    }, [params.id, isAuthenticated, user]);
+    }, [params.id]);
 
     const handleJoinCircle = () => {
         setJoined(true);
@@ -220,19 +146,79 @@ export default function CircleDetailPage() {
     };
 
     const handleCreatePost = (postData) => {
+        const currentUser = isAuthenticated && user ? {
+            id: user.id || "user123",
+            name: user.name || "John Doe",
+            avatar: user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+            isVerified: true
+        } : {
+            id: "user123",
+            name: "John Doe",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+            isVerified: true
+        };
+
         const newPost = {
             id: `post-${Date.now()}`,
-            author: MOCK_CURRENT_USER,
+            author: currentUser,
             createdAt: new Date().toISOString(),
             likes: 0,
             comments: 0,
             isInCircle: true,
-            circleName: circle.name,
+            circleName: circle?.name || "Circle",
             ...postData
         };
 
         setPosts([newPost, ...posts]);
     };
+
+    // Loading state
+    if (loading) {
+        return (
+            <div className="container max-w-7xl py-6 space-y-8">
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="/circles">
+                            <ArrowLeft className="h-4 w-4" />
+                        </Link>
+                    </Button>
+                    <span className="text-sm text-muted-foreground">Back to Circles</span>
+                </div>
+                <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Loading circle...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (error || !circle) {
+        return (
+            <div className="container max-w-7xl py-6 space-y-8">
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="/circles">
+                            <ArrowLeft className="h-4 w-4" />
+                        </Link>
+                    </Button>
+                    <span className="text-sm text-muted-foreground">Back to Circles</span>
+                </div>
+                <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                        <p className="text-muted-foreground mb-4">
+                            {error || "Circle not found"}
+                        </p>
+                        <Button asChild>
+                            <Link href="/circles">Return to Circles</Link>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container max-w-7xl py-6 space-y-8">

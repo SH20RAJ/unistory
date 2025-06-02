@@ -9,7 +9,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             authorization: {
                 params: {
                     scope: "openid email profile",
-                    hd: "*.edu" // This restricts to .edu domains only
+                    // Temporarily disabled for testing, enable in production
+                    // hd: "*.edu" // This restricts to .edu domains only
                 }
             }
         }),
@@ -19,10 +20,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // Validate that the user has a .edu email address
             if (account?.provider === "google") {
                 const email = user.email || profile?.email
+                // For production, uncomment this to enforce .edu domains
                 // if (!email?.endsWith('.edu')) {
                 //     console.log(`Sign-in rejected: ${email} is not a .edu email`)
                 //     return false
                 // }
+
+                // Track user auth provider for better onboarding flow
+                user.provider = "google";
             }
             return true
         },
@@ -51,16 +56,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return session
         },
         async redirect({ url, baseUrl }) {
-            // Allows relative callback URLs
+            console.log('Auth redirect:', { url, baseUrl })
+            
+            // Simplified redirect logic to prevent hanging
             if (url.startsWith("/")) return `${baseUrl}${url}`
             // Allows callback URLs on the same origin
             else if (new URL(url).origin === baseUrl) return url
-            return baseUrl
+            return `${baseUrl}/dashboard` // Default to dashboard
         }
     },
     pages: {
-        signIn: '/auth/signin',
-        signUp: '/auth/signup',
+        signIn: '/signin', // Updated to match our actual signin page
         error: '/auth/error',
     },
     session: {

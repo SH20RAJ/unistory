@@ -150,7 +150,7 @@ export default function AppsPage() {
         {
             icon: Heart,
             name: "Secret Crush",
-            description: "Choose up to 5 people anonymously. Get notified when there's a mutual match!",
+            description: "Choose up to 5 people anonymously. Get notified when there&apos;s a mutual match!",
             popular: true,
             onClick: () => router.push("/matches")
         },
@@ -266,7 +266,7 @@ export default function AppsPage() {
         {
             icon: Music,
             name: "Daily Vibe Check",
-            description: "Share how you're really feeling today with GIFs and mood tracking",
+            description: "Share how you&apos;re really feeling today with GIFs and mood tracking",
             onClick: () => console.log("Navigate to Vibe Check")
         }
     ];
@@ -328,7 +328,7 @@ export default function AppsPage() {
         {
             icon: Brain,
             name: "Learning Path AI",
-            description: "Personalized skill recommendations: 'You liked React → Try Next.js'",
+            description: "Personalized skill recommendations: &lsquo;You liked React → Try Next.js&rsquo;",
             comingSoon: true,
             onClick: () => console.log("Navigate to Learning Path")
         },
@@ -391,7 +391,7 @@ export default function AppsPage() {
                 </div>
                 <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
                     Discover all the amazing features that make campus life more connected,
-                    fun, and productive. From dating to studying, we've got you covered!
+                    fun, and productive. From dating to studying, we&apos;ve got you covered!
                 </p>
 
                 {/* Search */}
@@ -520,7 +520,7 @@ export default function AppsPage() {
                     Missing something? 🤔
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    We're always adding new features! Let us know what you'd love to see on campus.
+                    We&apos;re always adding new features! Let us know what you&apos;d love to see on campus.
                 </p>
                 <Button className="bg-blue-600 hover:bg-blue-700">
                     Suggest a Feature

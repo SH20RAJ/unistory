@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
+import { usePosts, useEvents, useClubs, useUserSuggestions } from "@/hooks/useSWR";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import {
     Search,
     Filter,
@@ -32,164 +35,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// Mock search data
-const mockSearchData = {
-    users: [
-        {
-            id: 1,
-            name: "Sarah Kim",
-            major: "Data Science",
-            year: "Junior",
-            avatar: "SK",
-            bio: "Machine learning enthusiast, study group organizer",
-            connections: 127,
-            studyScore: 1250,
-            isOnline: true
-        },
-        {
-            id: 2,
-            name: "Alex Chen",
-            major: "Computer Science",
-            year: "Senior",
-            avatar: "AC",
-            bio: "Hackathon winner, full-stack developer",
-            connections: 89,
-            studyScore: 980,
-            isOnline: false
-        },
-        {
-            id: 3,
-            name: "Maya Rodriguez",
-            major: "Psychology",
-            year: "Sophomore",
-            avatar: "MR",
-            bio: "Mental health advocate, event organizer",
-            connections: 156,
-            studyScore: 750,
-            isOnline: true
-        },
-        {
-            id: 4,
-            name: "Jordan Mitchell",
-            major: "Business",
-            year: "Junior",
-            avatar: "JM",
-            bio: "Entrepreneur, startup enthusiast",
-            connections: 203,
-            studyScore: 890,
-            isOnline: true
-        }
-    ],
-    posts: [
-        {
-            id: 1,
-            type: "confession",
-            content: "Sometimes I feel overwhelmed with coursework and wonder if I'm choosing the right major...",
-            author: "Anonymous",
-            timestamp: "2 hours ago",
-            likes: 45,
-            comments: 23,
-            category: "Academic",
-            trending: true
-        },
-        {
-            id: 2,
-            type: "study",
-            content: "Looking for study partners for organic chemistry! Let's form a group and tackle this together",
-            author: "Emma Wilson",
-            avatar: "EW",
-            timestamp: "4 hours ago",
-            likes: 12,
-            comments: 8,
-            category: "Study Groups"
-        },
-        {
-            id: 3,
-            type: "social",
-            content: "Just finished my first internship presentation! Feeling proud and excited for what's next 🚀",
-            author: "David Park",
-            avatar: "DP",
-            timestamp: "6 hours ago",
-            likes: 67,
-            comments: 15,
-            category: "Career"
-        }
-    ],
-    events: [
-        {
-            id: 1,
-            title: "Mental Health Awareness Workshop",
-            description: "Free workshop on stress management and campus resources",
-            date: "Tomorrow, 3:00 PM",
-            location: "Student Center, Room 204",
-            organizer: "Maya Rodriguez",
-            attendees: 45,
-            category: "Wellness",
-            isFeatured: true
-        },
-        {
-            id: 2,
-            title: "Hackathon 2024: Build the Future",
-            description: "36-hour coding competition with $10,000 in prizes",
-            date: "Next Friday, 6:00 PM",
-            location: "Engineering Building",
-            organizer: "Tech Society",
-            attendees: 234,
-            category: "Technology",
-            isFeatured: true
-        },
-        {
-            id: 3,
-            title: "Study Group: Machine Learning Basics",
-            description: "Weekly meetup for beginners in ML and AI",
-            date: "Every Tuesday, 7:00 PM",
-            location: "Library, Group Study Room 3",
-            organizer: "Sarah Kim",
-            attendees: 18,
-            category: "Academic"
-        }
-    ],
-    clubs: [
-        {
-            id: 1,
-            name: "Robotics Society",
-            description: "Building the future with cutting-edge robotics projects",
-            members: 156,
-            category: "Technology",
-            rating: 4.8,
-            isActive: true,
-            recentActivity: "Posted new competition guidelines"
-        },
-        {
-            id: 2,
-            name: "Mental Health Advocates",
-            description: "Supporting student wellness and breaking mental health stigma",
-            members: 89,
-            category: "Wellness",
-            rating: 4.9,
-            isActive: true,
-            recentActivity: "Organizing workshop next week"
-        },
-        {
-            id: 3,
-            name: "Entrepreneurship Club",
-            description: "Connecting future business leaders and startup founders",
-            members: 112,
-            category: "Business",
-            rating: 4.7,
-            isActive: true,
-            recentActivity: "Pitch competition announced"
-        }
-    ],
-    hashtags: [
-        { tag: "#StudyTogether", posts: 245, trend: "up" },
-        { tag: "#MentalHealth", posts: 189, trend: "up" },
-        { tag: "#Finals2024", posts: 167, trend: "stable" },
-        { tag: "#CampusLife", posts: 134, trend: "up" },
-        { tag: "#Hackathon", posts: 98, trend: "down" },
-        { tag: "#Wellness", posts: 87, trend: "up" }
-    ]
-};
+// Mock trending hashtags for when no search term is provided
+const mockTrendingHashtags = [
+    { tag: "#StudyTogether", posts: 245, trend: "up" },
+    { tag: "#MentalHealth", posts: 189, trend: "up" },
+    { tag: "#Finals2024", posts: 167, trend: "stable" },
+    { tag: "#CampusLife", posts: 134, trend: "up" },
+    { tag: "#Hackathon", posts: 98, trend: "down" },
+    { tag: "#Wellness", posts: 87, trend: "up" }
+];
 
 const SearchResultCard = ({ type, item, searchTerm }) => {
     const highlightText = (text, term) => {
@@ -403,67 +257,181 @@ const SearchResultCard = ({ type, item, searchTerm }) => {
 };
 
 export default function SearchPage() {
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState("all");
     const [sortBy, setSortBy] = useState("relevance");
     const [filterCategory, setFilterCategory] = useState("all");
-    const [searchResults, setSearchResults] = useState({
-        users: [],
-        posts: [],
-        events: [],
-        clubs: [],
-        hashtags: []
-    });
     const [isSearching, setIsSearching] = useState(false);
 
+    // Fetch data using SWR hooks
+    const { data: posts, error: postsError, isLoading: postsLoading } = usePosts();
+    const { data: events, error: eventsError, isLoading: eventsLoading } = useEvents();
+    const { data: clubs, error: clubsError, isLoading: clubsLoading } = useClubs();
+    const { data: users, error: usersError, isLoading: usersLoading } = useUserSuggestions();
+
+    // Show error toasts if any data fetch fails
     useEffect(() => {
-        if (searchTerm.length > 0) {
-            setIsSearching(true);
-            // Simulate search delay
-            const timer = setTimeout(() => {
-                performSearch(searchTerm);
-                setIsSearching(false);
-            }, 300);
-            return () => clearTimeout(timer);
-        } else {
-            setSearchResults({
+        if (postsError) {
+            console.error('Error fetching posts:', postsError);
+            toast.error("Failed to load posts data");
+        }
+        if (eventsError) {
+            console.error('Error fetching events:', eventsError);
+            toast.error("Failed to load events data");
+        }
+        if (clubsError) {
+            console.error('Error fetching clubs:', clubsError);
+            toast.error("Failed to load clubs data");
+        }
+        if (usersError) {
+            console.error('Error fetching users:', usersError);
+            toast.error("Failed to load users data");
+        }
+    }, [postsError, eventsError, clubsError, usersError]);
+
+    // Perform search on actual data using useMemo for performance
+    const searchResults = useMemo(() => {
+        if (!searchTerm || searchTerm.length === 0) {
+            return {
                 users: [],
                 posts: [],
                 events: [],
                 clubs: [],
                 hashtags: []
-            });
+            };
+        }
+
+        const term = searchTerm.toLowerCase();
+
+        // Search users
+        const filteredUsers = (users || []).filter(user =>
+            user.name?.toLowerCase().includes(term) ||
+            user.email?.toLowerCase().includes(term) ||
+            user.university?.toLowerCase().includes(term) ||
+            user.department?.toLowerCase().includes(term)
+        ).map(user => ({
+            id: user.id,
+            name: user.name || 'Anonymous',
+            major: user.department || 'N/A',
+            year: 'Student',
+            avatar: user.name?.split(' ').map(n => n[0]).join('') || 'U',
+            bio: user.university || 'University Student',
+            connections: Math.floor(Math.random() * 200) + 50, // Mock data
+            studyScore: Math.floor(Math.random() * 1000) + 500, // Mock data
+            isOnline: Math.random() > 0.5 // Mock data
+        }));
+
+        // Search posts
+        const filteredPosts = (posts || []).filter(post =>
+            post.content?.toLowerCase().includes(term) ||
+            post.user?.name?.toLowerCase().includes(term) ||
+            post.type?.toLowerCase().includes(term) ||
+            post.mood?.toLowerCase().includes(term) ||
+            (post.tags && post.tags.toLowerCase().includes(term))
+        ).map(post => ({
+            id: post.id,
+            type: post.type || 'social',
+            content: post.content || '',
+            author: post.user?.name || 'Anonymous',
+            avatar: post.user?.name?.split(' ').map(n => n[0]).join('') || 'A',
+            timestamp: formatTimeAgo(new Date(post.createdAt)),
+            likes: parseInt(post.likeCount) || 0,
+            comments: parseInt(post.commentCount) || 0,
+            category: post.type === 'confession' ? 'Confession' :
+                post.type === 'study' ? 'Study' : 'Social',
+            trending: post.likeCount > 20 // Simple trending logic
+        }));
+
+        // Search events
+        const filteredEvents = (events || []).filter(event =>
+            event.title?.toLowerCase().includes(term) ||
+            event.description?.toLowerCase().includes(term) ||
+            event.category?.toLowerCase().includes(term) ||
+            event.location?.toLowerCase().includes(term)
+        ).map(event => ({
+            id: event.id,
+            title: event.title || 'Untitled Event',
+            description: event.description || 'No description',
+            date: formatEventDate(event.date, event.time),
+            location: event.location || 'TBA',
+            organizer: event.organizer || 'Campus',
+            attendees: Math.floor(Math.random() * 100) + 10, // Mock data
+            category: event.category || 'General',
+            isFeatured: Math.random() > 0.7 // Mock data
+        }));
+
+        // Search clubs
+        const filteredClubs = (clubs || []).filter(club =>
+            club.name?.toLowerCase().includes(term) ||
+            club.description?.toLowerCase().includes(term) ||
+            club.category?.toLowerCase().includes(term)
+        ).map(club => ({
+            id: club.id,
+            name: club.name || 'Unnamed Club',
+            description: club.description || 'No description available',
+            members: Math.floor(Math.random() * 200) + 20, // Mock data
+            category: club.category || 'General',
+            rating: (Math.random() * 2 + 3).toFixed(1), // Mock rating 3.0-5.0
+            isActive: true,
+            recentActivity: 'Recent updates available'
+        }));
+
+        // Generate hashtags based on search term and content
+        const hashtags = [
+            { tag: `#${searchTerm}`, posts: filteredPosts.length, trend: "up" },
+            { tag: "#StudyTogether", posts: filteredPosts.filter(p => p.type === 'study').length, trend: "up" },
+            { tag: "#CampusLife", posts: filteredPosts.length, trend: "stable" },
+            { tag: "#Events", posts: filteredEvents.length, trend: "up" }
+        ].filter(hashtag => hashtag.posts > 0);
+
+        return {
+            users: filteredUsers,
+            posts: filteredPosts,
+            events: filteredEvents,
+            clubs: filteredClubs,
+            hashtags
+        };
+    }, [searchTerm, users, posts, events, clubs]);
+
+    // Helper function to format time ago
+    const formatTimeAgo = (date) => {
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) return 'Just now';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+        return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    };
+
+    // Helper function to format event date
+    const formatEventDate = (date, time) => {
+        if (!date) return 'TBA';
+        try {
+            const eventDate = new Date(date);
+            const now = new Date();
+            const diffDays = Math.floor((eventDate - now) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return `Today${time ? `, ${time}` : ''}`;
+            if (diffDays === 1) return `Tomorrow${time ? `, ${time}` : ''}`;
+            if (diffDays < 7) return `${eventDate.toLocaleDateString('en-US', { weekday: 'long' })}${time ? `, ${time}` : ''}`;
+            return `${eventDate.toLocaleDateString()}${time ? `, ${time}` : ''}`;
+        } catch (error) {
+            return date;
+        }
+    };
+
+    // Simulate search loading
+    useEffect(() => {
+        if (searchTerm.length > 0) {
+            setIsSearching(true);
+            const timer = setTimeout(() => {
+                setIsSearching(false);
+            }, 300);
+            return () => clearTimeout(timer);
         }
     }, [searchTerm]);
-
-    const performSearch = (term) => {
-        const results = {
-            users: mockSearchData.users.filter(user =>
-                user.name.toLowerCase().includes(term.toLowerCase()) ||
-                user.major.toLowerCase().includes(term.toLowerCase()) ||
-                user.bio.toLowerCase().includes(term.toLowerCase())
-            ),
-            posts: mockSearchData.posts.filter(post =>
-                post.content.toLowerCase().includes(term.toLowerCase()) ||
-                post.author.toLowerCase().includes(term.toLowerCase()) ||
-                post.category.toLowerCase().includes(term.toLowerCase())
-            ),
-            events: mockSearchData.events.filter(event =>
-                event.title.toLowerCase().includes(term.toLowerCase()) ||
-                event.description.toLowerCase().includes(term.toLowerCase()) ||
-                event.category.toLowerCase().includes(term.toLowerCase())
-            ),
-            clubs: mockSearchData.clubs.filter(club =>
-                club.name.toLowerCase().includes(term.toLowerCase()) ||
-                club.description.toLowerCase().includes(term.toLowerCase()) ||
-                club.category.toLowerCase().includes(term.toLowerCase())
-            ),
-            hashtags: mockSearchData.hashtags.filter(hashtag =>
-                hashtag.tag.toLowerCase().includes(term.toLowerCase())
-            )
-        };
-        setSearchResults(results);
-    };
 
     const getTotalResults = () => {
         return Object.values(searchResults).reduce((total, category) => total + category.length, 0);
@@ -474,10 +442,28 @@ export default function SearchPage() {
         return searchResults[tab]?.length || 0;
     };
 
+    // Loading state
+    const isLoading = postsLoading || eventsLoading || clubsLoading || usersLoading;
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <MainNavigation />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <span className="ml-3 text-gray-600 dark:text-gray-400">Loading search data...</span>
+                    </div>
+                </div>
+                <BottomNavigation />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
-            <div className="max-w-7xl mx-auto ">
+            <MainNavigation />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {/* Search Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold mb-2">Search Campus</h1>
@@ -807,7 +793,7 @@ export default function SearchPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {mockSearchData.hashtags.slice(0, 6).map((hashtag) => (
+                                    {mockTrendingHashtags.slice(0, 6).map((hashtag) => (
                                         <Button
                                             key={hashtag.tag}
                                             variant="outline"

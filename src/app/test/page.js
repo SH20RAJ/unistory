@@ -3,7 +3,7 @@ import { SignInButton } from '@/components/auth/SignIn'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 
-export default function page() {
+export default function TestPage() {
 
   // if session exists, redirect to home page
   const { data: session } = useSession()

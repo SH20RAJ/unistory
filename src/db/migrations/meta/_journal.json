@@ -8,6 +8,34 @@
       "when": 1748765666612,
       "tag": "0000_ordinary_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1748766742249,
+      "tag": "0001_sturdy_shooting_star",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1748797562173,
+      "tag": "0002_lush_kid_colt",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1748828377735,
+      "tag": "0003_awesome_iron_patriot",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1748847440653,
+      "tag": "0004_wild_impossible_man",
+      "breakpoints": true
     }
   ]
 }

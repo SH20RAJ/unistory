@@ -23,30 +23,25 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-// Mock data for the post
 const MOCK_CURRENT_USER = {
     id: "user123",
     name: "John Doe",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
     isVerified: true,
-    college: "Stanford University"
+    college: "Stanford University",
+    major: "Computer Science"
 };
 
 const MOCK_POST = {
     id: "post123",
-    author: {
-        id: "author456",
-        name: "Alex Johnson",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-        isVerified: true
-    },
-    content: "Just finished my final project for CS50! Been working on this adaptive learning platform for the past month. It uses machine learning to personalize education content based on student performance and learning style. Check out the demo!",
+    authorId: "user456",
+    content: "Exploring the nuances of machine learning algorithms. It's fascinating how they can learn and adapt!",
     media: [
         {
             id: "media1",
             type: "image",
-            src: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop",
-            title: "Project Demo Screenshot"
+            src: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=2073&auto=format&fit=crop",
+            title: "Machine Learning"
         },
         {
             id: "media2",
@@ -344,29 +339,73 @@ const SUGGESTED_CIRCLES = [
 
 export default function PostDetailPage() {
     const params = useParams();
-    const [post, setPost] = useState(MOCK_POST);
+    const [post, setPost] = useState(null);
     const [comments, setComments] = useState(MOCK_COMMENTS);
     const [suggestedPosts, setSuggestedPosts] = useState(SUGGESTED_POSTS);
     const [suggestedUsers, setSuggestedUsers] = useState(SUGGESTED_USERS);
     const [suggestedCircles, setSuggestedCircles] = useState(SUGGESTED_CIRCLES);
-    const [isLiked, setIsLiked] = useState(post.isLiked);
-    const [likeCount, setLikeCount] = useState(post.likes);
-    const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // In a real application, fetch post data based on params.id
+    // Fetch post data from API
     useEffect(() => {
-        // Simulating API fetch for the post
-        console.log(`Fetching post with id: ${params.id}`);
+        const fetchPost = async () => {
+            try {
+                setLoading(true);
+                console.log(`Fetching post with id: ${params.id}`);
 
-        // This would be an API call in a real app
-        // const fetchPost = async () => {
-        //   const response = await fetch(`/api/posts/${params.id}`);
-        //   const data = await response.json();
-        //   setPost(data.post);
-        //   setComments(data.comments);
-        // };
-        // 
-        // fetchPost();
+                // Fetch all posts and find the specific one
+                const response = await fetch('/api/posts');
+                const result = await response.json();
+
+                if (result.success) {
+                    const foundPost = result.data.find(p => p.id === params.id);
+                    if (foundPost) {
+                        setPost(foundPost);
+                        setIsLiked(foundPost.isLiked || false);
+                        setLikeCount(foundPost.likeCount || 0);
+                        setIsBookmarked(foundPost.isBookmarked || false);
+                    } else {
+                        setError('Post not found');
+                    }
+                } else {
+                    setError('Failed to fetch post');
+                }
+            } catch (err) {
+                console.error('Error fetching post:', err);
+                setError('Failed to load post');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Also fetch suggested posts
+        const fetchSuggestedPosts = async () => {
+            try {
+                const response = await fetch('/api/posts');
+                const result = await response.json();
+
+                if (result.success) {
+                    // Get 2 random posts that aren't the current one
+                    const otherPosts = result.data
+                        .filter(p => p.id !== params.id)
+                        .sort(() => 0.5 - Math.random())
+                        .slice(0, 2);
+
+                    setSuggestedPosts(otherPosts);
+                }
+            } catch (err) {
+                console.error('Error fetching suggested posts:', err);
+            }
+        };
+
+        if (params.id) {
+            fetchPost();
+            fetchSuggestedPosts();
+        }
     }, [params.id]);
 
     const handleLike = () => {
@@ -492,260 +531,280 @@ export default function PostDetailPage() {
                     </div>
 
                     {/* Main post content */}
-                    <Card>
-                        <CardHeader className="pt-4 pb-0">
-                            <div className="flex justify-between">
-                                <Link href={`/profile/${post.author.id}`} className="flex items-center space-x-3">
-                                    <Avatar>
-                                        <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                                        <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-
-                                    <div>
-                                        <div className="font-medium flex items-center">
-                                            {post.author.name}
-                                            {post.author.isVerified && (
-                                                <span className="ml-1 text-blue-500 text-xs">✓</span>
-                                            )}
-                                        </div>
-                                        <div className="text-xs text-gray-500 flex items-center">
-                                            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-
-                                            {post.audience && (
-                                                <span className="flex items-center ml-1">
-                                                    <span className="mx-1">•</span>
-                                                    {post.audience}
-                                                </span>
-                                            )}
-                                        </div>
+                    {loading ? (
+                        <Card className="p-6">
+                            <div className="animate-pulse">
+                                <div className="flex items-center space-x-3 mb-4">
+                                    <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-10 w-10"></div>
+                                    <div className="flex-1">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+                                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
                                     </div>
-                                </Link>
-
-                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                                    <MoreHorizontal className="h-4 w-4" />
+                                </div>
+                                <div className="space-y-2 mb-4">
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                                </div>
+                                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                            </div>
+                        </Card>
+                    ) : error ? (
+                        <Card className="p-6">
+                            <div className="text-center py-10">
+                                <h3 className="text-lg font-medium text-red-500 mb-2">Error</h3>
+                                <p className="text-gray-500">{error}</p>
+                                <Button className="mt-4" variant="outline" asChild>
+                                    <Link href="/dashboard">Go to Dashboard</Link>
                                 </Button>
                             </div>
-                        </CardHeader>
+                        </Card>
+                    ) : post ? (
+                        <Card>
+                            <CardHeader className="pt-4 pb-0">
+                                <div className="flex justify-between">
+                                    <Link href={`/profile/${post.authorId}`} className="flex items-center space-x-3">
+                                        <Avatar>
+                                            <AvatarImage src={post.user?.avatar} alt={post.user?.name} />
+                                            <AvatarFallback>{post.user?.name?.[0] || 'U'}</AvatarFallback>
+                                        </Avatar>
 
-                        <CardContent className="pt-3">
-                            {post.content && (
-                                <p className="text-base mb-4">{post.content}</p>
-                            )}
+                                        <div>
+                                            <div className="font-medium flex items-center">
+                                                {post.user?.name || 'Anonymous'}
+                                                {post.user?.isVerified && (
+                                                    <span className="ml-1 text-blue-500 text-xs">✓</span>
+                                                )}
+                                            </div>
+                                            <div className="text-xs text-gray-500 flex items-center">
+                                                {post.createdAt && formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
 
-                            {post.media && post.media.length > 0 && (
-                                <div className="mt-2 mb-4">
-                                    <MediaGallery items={post.media} />
-                                </div>
-                            )}
-
-                            {post.topics && post.topics.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-3">
-                                    {post.topics.map((topic) => (
-                                        <Link
-                                            href={`/topic/${topic}`}
-                                            key={topic}
-                                            className="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full px-3 py-1 transition-colors"
-                                        >
-                                            #{topic}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Post circle info */}
-                            {post.circle && (
-                                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
-                                    <Link href={`/circles/${post.circle.id}`} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                                        <Users className="h-4 w-4" />
-                                        <span>Posted in {post.circle.name}</span>
-                                        {post.circle.isPrivate && (
-                                            <span className="text-xs bg-gray-100 dark:bg-gray-800 rounded-full px-2">Private</span>
-                                        )}
+                                                {post.audience && (
+                                                    <span className="flex items-center ml-1">
+                                                        <span className="mx-1">•</span>
+                                                        {post.audience}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </Link>
-                                </div>
-                            )}
 
-                            {/* Post stats and actions */}
-                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                                <div className="flex items-center text-sm text-gray-500">
-                                    <span className="mr-4">{likeCount} likes</span>
-                                    <span>{comments.length} comments</span>
-                                </div>
-
-                                <div className="flex items-center space-x-1">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={`flex items-center ${isLiked ? 'text-red-500' : 'text-gray-600'}`}
-                                        onClick={handleLike}
-                                    >
-                                        <Heart className={`h-4 w-4 mr-1 ${isLiked ? 'fill-red-500' : ''}`} />
-                                        Like
-                                    </Button>
-
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center text-gray-600"
-                                    >
-                                        <Share className="h-4 w-4 mr-1" />
-                                        Share
-                                    </Button>
-
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center text-gray-600"
-                                        onClick={handleBookmark}
-                                    >
-                                        <Bookmark className={`h-4 w-4 mr-1 ${isBookmarked ? 'fill-gray-600' : ''}`} />
-                                        Save
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                        <MoreHorizontal className="h-4 w-4" />
                                     </Button>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardHeader>
 
-                    {/* Comments section */}
-                    <Card>
-                        <CardContent className="p-4 sm:p-6">
-                            <CommentsList
-                                comments={comments}
-                                currentUser={MOCK_CURRENT_USER}
-                                onAddComment={handleAddComment}
-                                onLike={handleCommentLike}
-                                onReply={handleCommentReply}
-                            />
-                        </CardContent>
-                    </Card>
+                            <CardContent className="pt-3">
+                                {post.content && (
+                                    <p className="text-base mb-4">{post.content}</p>
+                                )}
+
+                                {post.media && post.media.length > 0 && (
+                                    <div className="mt-2 mb-4">
+                                        <MediaGallery items={post.media} />
+                                    </div>
+                                )}
+
+                                {post.tags && (
+                                    <div className="flex flex-wrap gap-1 mt-3">
+                                        {post.tags.split(',').map((tag) => (
+                                            <Link
+                                                href={`/topic/${tag.trim()}`}
+                                                key={tag}
+                                                className="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full px-3 py-1 transition-colors"
+                                            >
+                                                #{tag.trim()}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Post circle info */}
+                                {post.circleId && (
+                                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+                                        <Link href={`/circles/${post.circleId}`} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                            <Users className="h-4 w-4" />
+                                            <span>Posted in a circle</span>
+                                        </Link>
+                                    </div>
+                                )}
+
+                                {/* Post stats and actions */}
+                                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                                    <div className="flex items-center text-sm text-gray-500">
+                                        <span className="mr-4">{likeCount} likes</span>
+                                        <span>{post.commentCount || 0} comments</span>
+                                    </div>
+
+                                    <div className="flex items-center space-x-1">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className={`flex items-center ${isLiked ? 'text-red-500' : 'text-gray-600'}`}
+                                            onClick={handleLike}
+                                        >
+                                            <Heart className={`h-4 w-4 mr-1 ${isLiked ? 'fill-red-500' : ''}`} />
+                                            Like
+                                        </Button>
+
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="flex items-center text-gray-600"
+                                        >
+                                            <Share className="h-4 w-4 mr-1" />
+                                            Share
+                                        </Button>
+
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="flex items-center text-gray-600"
+                                            onClick={handleBookmark}
+                                        >
+                                            <Bookmark className={`h-4 w-4 mr-1 ${isBookmarked ? 'fill-gray-600' : ''}`} />
+                                            Save
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ) : null}
+
+                    {/* Comments section - Only show if post is loaded */}
+                    {post && (
+                        <Card>
+                            <CardContent className="p-4 sm:p-6">
+                                <CommentsList
+                                    comments={comments}
+                                    currentUser={MOCK_CURRENT_USER}
+                                    onAddComment={handleAddComment}
+                                    onLike={handleCommentLike}
+                                    onReply={handleCommentReply}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
-                {/* Right sidebar with suggestions */}
-                <div className="space-y-6">
-                    {/* Author Card */}
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">Posted by</h3>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                                    <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <div className="font-medium">{post.author.name}</div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {post.author.college || "Stanford University"}
+                {/* Right sidebar with suggestions - Only show if post is loaded */}
+                {post && (
+                    <div className="space-y-6">
+                        {/* Author Card */}
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <h3 className="text-sm font-medium text-muted-foreground">Posted by</h3>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center gap-3">
+                                    <Avatar>
+                                        <AvatarImage src={post.user?.avatar} alt={post.user?.name} />
+                                        <AvatarFallback>{post.user?.name?.[0] || 'U'}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <div className="font-medium">{post.user?.name || 'Anonymous'}</div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {post.user?.university || "University Student"}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <Button className="w-full mt-4" variant="outline" asChild>
-                                <Link href={`/profile/${post.author.id}`}>
-                                    View Profile
-                                </Link>
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                <Button className="w-full mt-4" variant="outline" asChild>
+                                    <Link href={`/profile/${post.authorId}`}>
+                                        View Profile
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
 
-                    {/* Suggested Posts */}
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">You might also like</h3>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {MOCK_SUGGESTED_POSTS.map(post => (
-                                <Link key={post.id} href={`/post/${post.id}`} className="block">
-                                    <div className="rounded-lg border p-3 hover:bg-accent transition-colors">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Avatar className="h-6 w-6">
-                                                <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                                                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <span className="text-sm font-medium">{post.author.name}</span>
-                                        </div>
-                                        <p className="text-sm line-clamp-2">{post.content}</p>
-                                        {post.media && post.media.length > 0 && (
-                                            <div className="mt-2 h-24 overflow-hidden rounded-md bg-muted relative">
-                                                <Image
-                                                    src={post.media[0].src}
-                                                    alt={post.media[0].title || "Media"}
-                                                    fill
-                                                    className="object-cover"
-                                                />
+                        {/* Suggested Posts */}
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <h3 className="text-sm font-medium text-muted-foreground">You might also like</h3>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {suggestedPosts.map(post => (
+                                    <Link key={post.id} href={`/post/${post.id}`} className="block">
+                                        <div className="rounded-lg border p-3 hover:bg-accent transition-colors">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Avatar className="h-6 w-6">
+                                                    <AvatarImage src={post.user?.avatar} alt={post.user?.name} />
+                                                    <AvatarFallback>{post.user?.name?.[0] || 'U'}</AvatarFallback>
+                                                </Avatar>
+                                                <span className="text-sm font-medium">{post.user?.name || 'Anonymous'}</span>
                                             </div>
-                                        )}
-                                    </div>
-                                </Link>
-                            ))}
-                        </CardContent>
-                    </Card>
+                                            <p className="text-sm line-clamp-2">{post.content}</p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </CardContent>
+                        </Card>
 
-                    {/* Suggested Circles */}
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">Suggested Circles</h3>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {MOCK_SUGGESTED_CIRCLES.map(circle => (
-                                <Link key={circle.id} href={`/circles/${circle.id}`} className="block">
-                                    <div className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors">
-                                        <div className="flex items-center gap-3">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarImage
-                                                    src={`https://api.dicebear.com/7.x/shapes/svg?seed=${circle.name}`}
-                                                    alt={circle.name}
-                                                />
-                                                <AvatarFallback>{circle.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <div className="font-medium text-sm">{circle.name}</div>
-                                                <div className="text-xs text-muted-foreground flex items-center gap-1">
-                                                    <Users className="h-3 w-3" />
-                                                    <span>{circle.memberCount} members</span>
+                        {/* Suggested Circles */}
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <h3 className="text-sm font-medium text-muted-foreground">Suggested Circles</h3>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {MOCK_SUGGESTED_CIRCLES.map(circle => (
+                                    <Link key={circle.id} href={`/circles/${circle.id}`} className="block">
+                                        <div className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors">
+                                            <div className="flex items-center gap-3">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarImage
+                                                        src={`https://api.dicebear.com/7.x/shapes/svg?seed=${circle.name}`}
+                                                        alt={circle.name}
+                                                    />
+                                                    <AvatarFallback>{circle.name.charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <div className="font-medium text-sm">{circle.name}</div>
+                                                    <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                                        <Users className="h-3 w-3" />
+                                                        <span>{circle.memberCount} members</span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <Badge variant={circle.isMember ? "outline" : "secondary"} className="ml-2 whitespace-nowrap">
+                                                {circle.category}
+                                            </Badge>
                                         </div>
-                                        <Badge variant={circle.isMember ? "outline" : "secondary"} className="ml-2 whitespace-nowrap">
-                                            {circle.category}
-                                        </Badge>
-                                    </div>
-                                </Link>
-                            ))}
-                            <Button variant="ghost" size="sm" className="w-full" asChild>
-                                <Link href="/circles">
-                                    View All Circles
-                                </Link>
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                    </Link>
+                                ))}
+                                <Button variant="ghost" size="sm" className="w-full" asChild>
+                                    <Link href="/circles">
+                                        View All Circles
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
 
-                    {/* Suggested Users */}
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">People to follow</h3>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {MOCK_SUGGESTED_USERS.map(user => (
-                                <div key={user.id} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <Avatar className="h-8 w-8">
-                                            <AvatarImage src={user.avatar} alt={user.name} />
-                                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <div className="font-medium text-sm">{user.name}</div>
-                                            <div className="text-xs text-muted-foreground">{user.major}</div>
+                        {/* Suggested Users */}
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <h3 className="text-sm font-medium text-muted-foreground">People to follow</h3>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {MOCK_SUGGESTED_USERS.map(user => (
+                                    <div key={user.id} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={user.avatar} alt={user.name} />
+                                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="font-medium text-sm">{user.name}</div>
+                                                <div className="text-xs text-muted-foreground">{user.major}</div>
+                                            </div>
                                         </div>
+                                        <Button variant="outline" size="sm">
+                                            Follow
+                                        </Button>
                                     </div>
-                                    <Button variant="outline" size="sm">
-                                        Follow
-                                    </Button>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                </div>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
             </div>
         </div>
     );

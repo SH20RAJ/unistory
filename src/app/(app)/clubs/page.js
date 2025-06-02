@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
+import { useClubs } from "@/hooks/useSWR";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { toast } from "sonner";
 import {
     Users,
     Star,
@@ -402,35 +408,136 @@ const ClubDetailsDialog = ({ club, isOpen, onClose, onJoin }) => {
 };
 
 export default function ClubsPage() {
+    const { user } = useAuth();
+    const { data: apiClubs, error, isLoading, mutate } = useClubs();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedClub, setSelectedClub] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    const [clubs, setClubs] = useState(mockClubs);
-
-    const filteredClubs = clubs.filter(club => {
-        const matchesCategory = selectedCategory === "All" || club.category === selectedCategory;
-        const matchesSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            club.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            club.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchesCategory && matchesSearch;
+    const [showCreateDialog, setShowCreateDialog] = useState(false);
+    const [userClubPreferences, setUserClubPreferences] = useState({
+        joined: new Set()
     });
 
+    // Form state for club creation
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        category: '',
+        tags: ''
+    });
+
+    const { submitForm, isSubmitting } = useFormSubmit({
+        onSubmit: async (url, data) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to submit');
+            }
+
+            return response.json();
+        }
+    });
+
+    // Transform API clubs data
+    const clubs = useMemo(() => {
+        if (!apiClubs) return [];
+
+        return apiClubs.map(club => ({
+            id: club.id,
+            name: club.name,
+            description: club.description || "No description available",
+            category: club.category || "General",
+            members: parseInt(club.memberCount) || 0,
+            rating: parseFloat(club.rating) || 4.5,
+            image: club.image || "🏛️",
+            isJoined: userClubPreferences.joined.has(club.id),
+            nextEvent: club.nextEvent || "TBA",
+            eventDate: club.nextEventDate || "TBA",
+            location: club.location || "Campus",
+            tags: club.tags ? JSON.parse(club.tags) : [club.category || "General"],
+            president: club.president || "TBA",
+            founded: club.founded || new Date(club.createdAt).getFullYear().toString(),
+            achievements: [],
+            social: {
+                instagram: "",
+                twitter: "",
+                email: ""
+            },
+            isActive: club.isActive
+        }));
+    }, [apiClubs, userClubPreferences]);
+
+    const filteredClubs = useMemo(() => {
+        return clubs.filter(club => {
+            const matchesCategory = selectedCategory === "All" || club.category === selectedCategory;
+            const matchesSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                club.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                club.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            return matchesCategory && matchesSearch;
+        });
+    }, [clubs, selectedCategory, searchQuery]);
+
+    const joinedClubs = clubs.filter(club => club.isJoined);
+    const recommendedClubs = clubs.filter(club => !club.isJoined).slice(0, 3);
+
+    const handleCreateClub = async (e) => {
+        e.preventDefault();
+
+        if (!user) {
+            toast.error('You must be logged in to create clubs');
+            return;
+        }
+
+        const clubData = {
+            ...formData,
+            creatorId: user.id,
+            president: user.displayName || user.email,
+            tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+        };
+
+        try {
+            await submitForm('/api/clubs', clubData);
+            toast.success('Club created successfully!');
+            setShowCreateDialog(false);
+            setFormData({
+                name: '',
+                description: '',
+                category: '',
+                tags: ''
+            });
+            // Refresh clubs data
+            mutate();
+        } catch (error) {
+            toast.error(error.message || 'Failed to create club');
+        }
+    };
+
     const handleJoinClub = (clubId) => {
-        setClubs(clubs.map(club =>
-            club.id === clubId
-                ? { ...club, isJoined: !club.isJoined, members: club.isJoined ? club.members - 1 : club.members + 1 }
-                : club
-        ));
+        setUserClubPreferences(prev => {
+            const newJoined = new Set(prev.joined);
+
+            if (newJoined.has(clubId)) {
+                newJoined.delete(clubId);
+            } else {
+                newJoined.add(clubId);
+            }
+
+            return { joined: newJoined };
+        });
     };
 
     const handleViewDetails = (club) => {
         setSelectedClub(club);
         setIsDetailsOpen(true);
     };
-
-    const joinedClubs = clubs.filter(club => club.isJoined);
-    const recommendedClubs = clubs.filter(club => !club.isJoined).slice(0, 3);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -463,10 +570,82 @@ export default function ClubsPage() {
                             <Filter className="w-4 h-4 mr-2" />
                             Filters
                         </Button>
-                        <Button>
-                            <Plus className="w-4 h-4 mr-2" />
-                            Create Club
-                        </Button>
+                        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+                            <DialogTrigger asChild>
+                                <Button>
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Create Club
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                    <DialogTitle>Create New Club</DialogTitle>
+                                    <DialogDescription>
+                                        Start a new club or society to bring together students with shared interests.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleCreateClub} className="space-y-4 py-4">
+                                    <div>
+                                        <label className="text-sm font-medium">Club Name</label>
+                                        <Input
+                                            placeholder="Enter club name..."
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Description</label>
+                                        <Textarea
+                                            placeholder="Describe your club's mission and activities..."
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Category</label>
+                                        <Select
+                                            value={formData.category}
+                                            onValueChange={(value) => setFormData({ ...formData, category: value })}
+                                            required
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select category" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {categories.slice(1).map((category) => (
+                                                    <SelectItem key={category} value={category}>
+                                                        {category}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Tags</label>
+                                        <Input
+                                            placeholder="Comma-separated tags (e.g., music, performance, arts)..."
+                                            value={formData.tags}
+                                            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="flex justify-end space-x-2">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() => setShowCreateDialog(false)}
+                                            disabled={isSubmitting}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? 'Creating...' : 'Create Club'}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
                     </div>
 
                     {/* Category Filter */}
@@ -625,7 +804,7 @@ export default function ClubsPage() {
                                     Upcoming Club Events
                                 </h3>
                                 <p className="text-gray-600 dark:text-gray-300">
-                                    Don't miss out on exciting activities happening around campus
+                                    Don&apos;t miss out on exciting activities happening around campus
                                 </p>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

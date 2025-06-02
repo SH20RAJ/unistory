@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfileMutable, useUserAchievements, useUserStats, useUserActivity } from "@/hooks/useSWR";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,68 +51,8 @@ import {
     BarChart3
 } from "lucide-react";
 
-const mockUser = {
-    id: 1,
-    name: "John Doe",
-    username: "@johndoe",
-    email: "john.doe@university.edu",
-    major: "Computer Science",
-    year: "Junior",
-    university: "University of Technology",
-    bio: "Passionate about AI and machine learning. Always looking for new challenges and opportunities to grow. Love connecting with like-minded people! 🚀",
-    location: "San Francisco, CA",
-    joinedDate: "September 2022",
-    avatar: null,
-    coverImage: null,
-    isVerified: true,
-    stats: {
-        posts: 87,
-        connections: 156,
-        studyScore: 2450,
-        studyStreak: 12,
-        confessionsSent: 23,
-        crushesSent: 5,
-        eventsAttended: 34,
-        clubsMember: 4
-    },
-    social: {
-        instagram: "@johndoe",
-        twitter: "@john_doe_dev",
-        github: "johndoe",
-        linkedin: "john-doe-dev",
-        website: "johndoe.dev"
-    },
-    achievements: [
-        { id: 1, name: "Study Streak Master", description: "Maintained a 30-day study streak", icon: "🔥", unlocked: true, date: "2024-02-15" },
-        { id: 2, name: "Social Butterfly", description: "Made 50+ connections", icon: "🦋", unlocked: true, date: "2024-01-20" },
-        { id: 3, name: "Confession King", description: "Posted 20+ anonymous confessions", icon: "👑", unlocked: true, date: "2024-01-05" },
-        { id: 4, name: "Event Enthusiast", description: "Attended 25+ campus events", icon: "🎉", unlocked: true, date: "2024-02-01" },
-        { id: 5, name: "Study Leader", description: "Created 10+ study groups", icon: "📚", unlocked: true, date: "2024-02-10" },
-        { id: 6, name: "Mood Tracker", description: "Logged mood for 60 consecutive days", icon: "😊", unlocked: true, date: "2024-02-28" },
-        { id: 7, name: "Club President", description: "Become a club leader", icon: "⭐", unlocked: false, progress: 75 },
-        { id: 8, name: "Match Maker", description: "Help 10 couples get together", icon: "💕", unlocked: false, progress: 30 },
-    ],
-    recentActivity: [
-        { type: "post", content: "Just finished my machine learning project!", timestamp: "2 hours ago", likes: 15 },
-        { type: "study", content: "Completed 2-hour focus session", timestamp: "5 hours ago" },
-        { type: "connection", content: "Connected with Maria Santos", timestamp: "1 day ago" },
-        { type: "event", content: "Attended Robotics Club meetup", timestamp: "2 days ago" },
-        { type: "achievement", content: "Earned 'Study Streak Master' badge", timestamp: "3 days ago" }
-    ],
-    mood: {
-        current: "😊",
-        streak: 7,
-        weekly: ["😊", "😴", "🤔", "😆", "😊", "🎉", "😊"]
-    },
-    privacy: {
-        profileVisibility: "public",
-        showEmail: false,
-        showStats: true,
-        allowMessages: true,
-        showMood: true
-    }
-};
-
+// Mock data for features not yet implemented in the backend
+const mockTrendingHashtags = ["#StudyTime", "#CampusLife", "#Finals", "#STEM"];
 const achievementCategories = ["All", "Study", "Social", "Wellness", "Events"];
 
 const StatCard = ({ icon, title, value, subtitle, trend }) => (
@@ -203,19 +146,80 @@ const ActivityItem = ({ activity }) => {
 };
 
 export default function ProfilePage() {
-    const [user, setUser] = useState(mockUser);
+    const { user: currentUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [selectedAchievementCategory, setSelectedAchievementCategory] = useState("All");
 
-    const filteredAchievements = user.achievements.filter(achievement => {
-        if (selectedAchievementCategory === "All") return true;
-        return achievement.name.toLowerCase().includes(selectedAchievementCategory.toLowerCase());
-    });
+    // Get user ID (for now, using current user's profile)
+    const userId = currentUser?.id;
 
-    const unlockedAchievements = user.achievements.filter(a => a.unlocked);
-    const totalScore = user.stats.studyScore;
+    // SWR hooks for profile data
+    const { data: user, error: userError, isLoading: userLoading, updateProfile } = useUserProfileMutable(userId);
+    const { data: achievements = [], error: achievementsError, isLoading: achievementsLoading } = useUserAchievements(userId);
+    const { data: stats = {}, error: statsError, isLoading: statsLoading } = useUserStats(userId);
+    const { data: recentActivity = [], error: activityError, isLoading: activityLoading } = useUserActivity(userId, 5);
+
+    // Loading state
+    const isLoading = userLoading || achievementsLoading || statsLoading || activityLoading;
+
+    // Error handling
+    if (userError || achievementsError || statsError || activityError) {
+        const errorMessage = userError?.message || achievementsError?.message || statsError?.message || activityError?.message || 'Failed to load profile data';
+        toast.error(errorMessage);
+    }
+
+    // Filtered achievements based on category
+    const filteredAchievements = useMemo(() => {
+        if (!achievements) return [];
+        if (selectedAchievementCategory === "All") return achievements;
+        return achievements.filter(achievement =>
+            achievement.category?.toLowerCase().includes(selectedAchievementCategory.toLowerCase())
+        );
+    }, [achievements, selectedAchievementCategory]);
+
+    const unlockedAchievements = achievements?.filter(a => a.unlocked) || [];
+    const totalScore = stats?.studyScore || 0;
     const level = Math.floor(totalScore / 500) + 1;
     const progressToNextLevel = (totalScore % 500) / 500 * 100;
+
+    // Mock mood data (to be replaced with real API later)
+    const mockMood = {
+        current: "😊",
+        streak: 7,
+        weekly: ["😊", "😴", "🤔", "😆", "😊", "🎉", "😊"]
+    };
+
+    const handleProfileUpdate = async (updates) => {
+        try {
+            await updateProfile(updates);
+            toast.success('Profile updated successfully!');
+            setIsEditing(false);
+        } catch (error) {
+            toast.error('Failed to update profile: ' + error.message);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300">Loading profile...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">Profile not found</p>
+                    <Button onClick={() => window.location.reload()}>Reload</Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -311,27 +315,27 @@ export default function ProfilePage() {
 
                                         {/* Social Links */}
                                         <div className="flex space-x-3 mt-4">
-                                            {user.social.instagram && (
+                                            {user.instagram && (
                                                 <Button variant="ghost" size="icon">
                                                     <Instagram className="w-4 h-4" />
                                                 </Button>
                                             )}
-                                            {user.social.twitter && (
+                                            {user.twitter && (
                                                 <Button variant="ghost" size="icon">
                                                     <Twitter className="w-4 h-4" />
                                                 </Button>
                                             )}
-                                            {user.social.github && (
+                                            {user.github && (
                                                 <Button variant="ghost" size="icon">
                                                     <Github className="w-4 h-4" />
                                                 </Button>
                                             )}
-                                            {user.social.linkedin && (
+                                            {user.linkedin && (
                                                 <Button variant="ghost" size="icon">
                                                     <Linkedin className="w-4 h-4" />
                                                 </Button>
                                             )}
-                                            {user.social.website && (
+                                            {user.website && (
                                                 <Button variant="ghost" size="icon">
                                                     <Globe className="w-4 h-4" />
                                                 </Button>
@@ -388,25 +392,25 @@ export default function ProfilePage() {
                                     <StatCard
                                         icon={<MessageCircle className="w-5 h-5 text-blue-500" />}
                                         title="Posts"
-                                        value={user.stats.posts}
+                                        value={stats.posts || 0}
                                         trend={12}
                                     />
                                     <StatCard
                                         icon={<Users className="w-5 h-5 text-purple-500" />}
                                         title="Connections"
-                                        value={user.stats.connections}
+                                        value={stats.connections || 0}
                                         trend={8}
                                     />
                                     <StatCard
                                         icon={<Zap className="w-5 h-5 text-yellow-500" />}
                                         title="Study Streak"
-                                        value={`${user.stats.studyStreak}d`}
+                                        value={`${stats.studyStreak || 0}d`}
                                         subtitle="Current"
                                     />
                                     <StatCard
                                         icon={<Calendar className="w-5 h-5 text-green-500" />}
                                         title="Events"
-                                        value={user.stats.eventsAttended}
+                                        value={stats.eventsAttended || 0}
                                         subtitle="Attended"
                                     />
                                 </div>
@@ -449,16 +453,16 @@ export default function ProfilePage() {
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-center mb-4">
-                                            <div className="text-4xl mb-2">{user.mood.current}</div>
+                                            <div className="text-4xl mb-2">{mockMood.current}</div>
                                             <div className="text-sm text-gray-600">
-                                                {user.mood.streak} day streak
+                                                {mockMood.streak} day streak
                                             </div>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
                                                 <div key={day} className="text-center">
                                                     <div className="text-xs text-gray-500 mb-1">{day}</div>
-                                                    <div className="text-lg">{user.mood.weekly[index]}</div>
+                                                    <div className="text-lg">{mockMood.weekly[index]}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -529,52 +533,52 @@ export default function ProfilePage() {
                             <StatCard
                                 icon={<BarChart3 className="w-5 h-5 text-blue-500" />}
                                 title="Study Score"
-                                value={user.stats.studyScore}
+                                value={stats.studyScore || 0}
                                 subtitle="Total Points"
                                 trend={15}
                             />
                             <StatCard
                                 icon={<MessageCircle className="w-5 h-5 text-green-500" />}
                                 title="Posts Created"
-                                value={user.stats.posts}
+                                value={stats.posts || 0}
                                 subtitle="All Time"
                                 trend={12}
                             />
                             <StatCard
                                 icon={<Shield className="w-5 h-5 text-purple-500" />}
                                 title="Confessions"
-                                value={user.stats.confessionsSent}
+                                value={stats.confessionsSent || 0}
                                 subtitle="Anonymous Posts"
                             />
                             <StatCard
                                 icon={<Heart className="w-5 h-5 text-pink-500" />}
                                 title="Secret Crushes"
-                                value={user.stats.crushesSent}
+                                value={stats.crushesSent || 0}
                                 subtitle="Sent"
                             />
                             <StatCard
                                 icon={<Users className="w-5 h-5 text-orange-500" />}
                                 title="Connections"
-                                value={user.stats.connections}
+                                value={stats.connections || 0}
                                 subtitle="Friends & Peers"
                                 trend={8}
                             />
                             <StatCard
                                 icon={<Calendar className="w-5 h-5 text-red-500" />}
                                 title="Events Attended"
-                                value={user.stats.eventsAttended}
+                                value={stats.eventsAttended || 0}
                                 subtitle="Campus Activities"
                             />
                             <StatCard
                                 icon={<Zap className="w-5 h-5 text-yellow-500" />}
                                 title="Study Streak"
-                                value={user.stats.studyStreak}
+                                value={stats.studyStreak || 0}
                                 subtitle="Days"
                             />
                             <StatCard
                                 icon={<Trophy className="w-5 h-5 text-indigo-500" />}
                                 title="Club Memberships"
-                                value={user.stats.clubsMember}
+                                value={stats.clubsMember || 0}
                                 subtitle="Active"
                             />
                         </div>
@@ -616,7 +620,7 @@ export default function ProfilePage() {
                             <div>
                                 <h3 className="text-lg font-semibold">Achievements</h3>
                                 <p className="text-gray-600 dark:text-gray-300">
-                                    {unlockedAchievements.length} of {user.achievements.length} unlocked
+                                    {unlockedAchievements.length} of {achievements.length} unlocked
                                 </p>
                             </div>
                             <div className="flex space-x-2">
@@ -648,13 +652,22 @@ export default function ProfilePage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-2">
-                                    {user.recentActivity.map((activity, index) => (
-                                        <ActivityItem key={index} activity={activity} />
-                                    ))}
+                                    {recentActivity.length > 0 ? (
+                                        recentActivity.map((activity, index) => (
+                                            <ActivityItem key={activity.id || index} activity={activity} />
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-8 text-gray-500">
+                                            <Activity className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                            <p>No recent activity to show</p>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="text-center mt-6">
-                                    <Button variant="outline">Load More</Button>
-                                </div>
+                                {recentActivity.length > 0 && (
+                                    <div className="text-center mt-6">
+                                        <Button variant="outline">Load More</Button>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -674,21 +687,21 @@ export default function ProfilePage() {
                                             <div className="font-medium">Profile Visibility</div>
                                             <div className="text-sm text-gray-600">Who can see your profile</div>
                                         </div>
-                                        <Badge variant="outline">Public</Badge>
+                                        <Badge variant="outline">{user.profileVisibility || 'Public'}</Badge>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <div className="font-medium">Show Email</div>
                                             <div className="text-sm text-gray-600">Display email on profile</div>
                                         </div>
-                                        <Badge variant="outline">Hidden</Badge>
+                                        <Badge variant="outline">{user.showEmail ? 'Visible' : 'Hidden'}</Badge>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <div className="font-medium">Allow Messages</div>
                                             <div className="text-sm text-gray-600">Receive direct messages</div>
                                         </div>
-                                        <Badge variant="outline">Enabled</Badge>
+                                        <Badge variant="outline">{user.allowMessages ? 'Enabled' : 'Disabled'}</Badge>
                                     </div>
                                 </CardContent>
                             </Card>

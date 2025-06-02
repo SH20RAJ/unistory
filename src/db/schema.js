@@ -12,7 +12,7 @@ export const users = sqliteTable("users", {
   coverImage: text("cover_image"),
   major: text("major"),
   year: text("year"), // Freshman, Sophomore, Junior, Senior
-  university: text("university").notNull(),
+  university: text("university"), // Made nullable for initial OAuth registration
   location: text("location"),
   joinedDate: integer("joined_date", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
   isVerified: integer("is_verified", { mode: "boolean" }).default(false),
@@ -255,6 +255,14 @@ export const connections = sqliteTable("connections", {
   acceptedAt: integer("accepted_at", { mode: "timestamp" }),
 });
 
+// Follow relationships
+export const follows = sqliteTable("follows", {
+  id: text("id").primaryKey(),
+  followerId: text("follower_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  followingId: text("following_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString()),
+});
+
 // Messages/Conversations
 export const conversations = sqliteTable("conversations", {
   id: text("id").primaryKey(),
@@ -452,6 +460,27 @@ export const notes = sqliteTable("notes", {
     .$defaultFn(() => new Date()),
 });
 
+// Notifications table - User notifications system
+export const notifications = sqliteTable("notifications", {
+  id: text("id").primaryKey(),
+  toUserId: text("toUserId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  fromUserId: text("fromUserId").references(() => users.id, { onDelete: "set null" }),
+
+  // Notification content
+  type: text("type").notNull(), // like, comment, match, study_room, achievement, connection, event, mood_reminder, club_update
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+
+  // Notification metadata  
+  isRead: integer("isRead", { mode: "boolean" }).default(false),
+  priority: text("priority").default("medium"), // low, medium, high
+  actionUrl: text("actionUrl"),
+
+  // Timestamps
+  createdAt: text("createdAt").notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text("updatedAt").notNull().$defaultFn(() => new Date().toISOString()),
+});
+
 // Define relationships
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
@@ -464,8 +493,12 @@ export const usersRelations = relations(users, ({ many }) => ({
   studySessions: many(studySessions),
   sentConnections: many(connections, { relationName: "sentConnections" }),
   receivedConnections: many(connections, { relationName: "receivedConnections" }),
+  followers: many(follows, { relationName: "following" }),
+  following: many(follows, { relationName: "followers" }),
   sentCrushes: many(secretCrushes, { relationName: "sentCrushes" }),
   receivedCrushes: many(secretCrushes, { relationName: "receivedCrushes" }),
+  notifications: many(notifications, { relationName: "receivedNotifications" }),
+  sentNotifications: many(notifications, { relationName: "sentNotifications" }),
 }));
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
@@ -507,4 +540,26 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
     references: [clubs.id],
   }),
   attendance: many(eventAttendance),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  toUser: one(users, {
+    fields: [notifications.toUserId],
+    references: [users.id],
+  }),
+  fromUser: one(users, {
+    fields: [notifications.fromUserId],
+    references: [users.id],
+  }),
+}));
+
+export const followsRelations = relations(follows, ({ one }) => ({
+  follower: one(users, {
+    fields: [follows.followerId],
+    references: [users.id],
+  }),
+  following: one(users, {
+    fields: [follows.followingId],
+    references: [users.id],
+  }),
 }));

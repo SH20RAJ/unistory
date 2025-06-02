@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
 import { notes } from "@/db/schema";
 import { getDB } from "@/db";
+import { generateSimpleId } from '@/utils/idGenerator';
 
 // GET all notes
 export async function GET() {

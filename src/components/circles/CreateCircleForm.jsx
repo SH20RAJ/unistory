@@ -20,7 +20,7 @@ export function CreateCircleForm({ onSubmit, onCancel, categories = [] }) {
   const [coverImage, setCoverImage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -33,15 +33,26 @@ export function CreateCircleForm({ onSubmit, onCancel, categories = [] }) {
 
     // In a real app, you would upload the image
     const circleData = {
-      name,
-      description,
+      name: name.trim(),
+      description: description.trim(),
       isPrivate,
       category,
-      coverImage: coverImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${name}`,
+      coverImage: coverImage || `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(name)}`,
     };
 
-    onSubmit(circleData);
-    setIsSubmitting(false);
+    try {
+      await onSubmit(circleData);
+      // Reset form on success
+      setName('');
+      setDescription('');
+      setIsPrivate(false);
+      setCategory(categories[0] || 'Academic');
+      setCoverImage('');
+    } catch (error) {
+      console.error('Error in form submission:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

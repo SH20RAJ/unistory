@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircleCard, CircleList, CreateCircleForm } from "@/components/circles";
+import { useCircles } from "@/hooks/useSWR";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import {
     Search,
     Globe,
@@ -16,92 +19,49 @@ import {
     Plus
 } from "lucide-react";
 
-// Mock data for circles
-const MOCK_CIRCLES = [
-    {
-        id: "circle1",
-        name: "Computer Science Hub",
-        description: "For CS students to discuss coursework, projects, and career opportunities.",
-        coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
-        memberCount: 1250,
-        isPrivate: false,
-        isMember: true,
-        isMuted: false,
-        category: "Academic",
-        college: "Stanford University"
-    },
-    {
-        id: "circle2",
-        name: "Campus Photography Club",
-        description: "Share your campus shots and photography techniques. Weekly challenges and contests.",
-        coverImage: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop",
-        memberCount: 743,
-        isPrivate: false,
-        isMember: false,
-        isMuted: false,
-        category: "Hobby",
-        college: "Stanford University"
-    },
-    {
-        id: "circle3",
-        name: "Stanford Entrepreneurs",
-        description: "For student entrepreneurs to connect, share ideas, and find co-founders.",
-        coverImage: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop",
-        memberCount: 892,
-        isPrivate: true,
-        isMember: true,
-        isMuted: true,
-        category: "Career",
-        college: "Stanford University"
-    },
-    {
-        id: "circle4",
-        name: "Campus Mental Health Support",
-        description: "A safe space for discussing mental health challenges and supporting each other.",
-        coverImage: "https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?q=80&w=2070&auto=format&fit=crop",
-        memberCount: 426,
-        isPrivate: true,
-        isMember: false,
-        isMuted: false,
-        category: "Wellness",
-        college: "Stanford University"
-    },
-    {
-        id: "circle5",
-        name: "Stanford Gaming League",
-        description: "For gamers to connect, organize tournaments, and discuss latest games.",
-        coverImage: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1947&auto=format&fit=crop",
-        memberCount: 1130,
-        isPrivate: false,
-        isMember: false,
-        isMuted: false,
-        category: "Entertainment",
-        college: "Stanford University"
-    },
-    {
-        id: "circle6",
-        name: "International Students Association",
-        description: "Support network for international students. Cultural events, visa help, and more.",
-        coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop",
-        memberCount: 567,
-        isPrivate: false,
-        isMember: true,
-        isMuted: false,
-        category: "Community",
-        college: "Stanford University"
-    },
-];
-
 // Mock data for categories
 const CIRCLE_CATEGORIES = [
     "All", "Academic", "Career", "Hobby", "Entertainment", "Community", "Wellness", "Sports"
 ];
 
 export default function CirclesPage() {
-    const [circles, setCircles] = useState(MOCK_CIRCLES);
+    const { user } = useAuth();
+    const [circles, setCircles] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [showCreateForm, setShowCreateForm] = useState(false);
+
+    // Use SWR to fetch circles data
+    const { data: circlesData, error: circlesError, isLoading: circlesLoading, mutate: mutateCircles } = useCircles();
+
+    // Transform circles data when it changes
+    useEffect(() => {
+        if (circlesData) {
+            // Transform API data to match component expectations
+            const transformedCircles = circlesData.map(circle => ({
+                id: circle.id,
+                name: circle.name,
+                description: circle.description || "No description available",
+                coverImage: circle.coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
+                memberCount: parseInt(circle.memberCount) || 0,
+                isPrivate: circle.isPrivate || false,
+                isMember: false, // Could be enhanced with user-specific data
+                isMuted: false,
+                category: circle.category || "Academic",
+                college: circle.college || "University",
+                creator: circle.creator
+            }));
+            setCircles(transformedCircles);
+        }
+    }, [circlesData]);
+
+    // Show error toast if circles fetch fails
+    useEffect(() => {
+        if (circlesError) {
+            console.error('Error fetching circles:', circlesError);
+            toast.error("Failed to load circles. Please try again later.");
+        }
+    }, [circlesError]);
 
     // Filter circles based on search and category
     const filteredCircles = circles.filter(circle => {
@@ -116,18 +76,40 @@ export default function CirclesPage() {
     const myCircles = filteredCircles.filter(circle => circle.isMember);
     const discoverCircles = filteredCircles.filter(circle => !circle.isMember);
 
-    const handleCreateCircle = (circleData) => {
-        // In a real app, you would send this to your API
-        const newCircle = {
-            id: `circle-${Date.now()}`,
-            memberCount: 1, // Creator is the first member
-            isMember: true,
-            isMuted: false,
-            ...circleData
-        };
+    const handleCreateCircle = async (circleData) => {
+        if (!user) {
+            toast.error("You must be logged in to create a circle.");
+            return;
+        }
 
-        setCircles([newCircle, ...circles]);
-        setShowCreateForm(false);
+        try {
+            const response = await fetch('/api/circles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...circleData,
+                    creatorId: user.id,
+                    university: user.university
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                toast.success("Circle created successfully!");
+                setShowCreateForm(false);
+
+                // Update the circles list with the new circle using SWR mutate
+                mutateCircles();
+            } else {
+                toast.error(result.error || "Failed to create circle. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error creating circle:', error);
+            toast.error("Something went wrong. Please try again.");
+        }
     };
 
     return (
@@ -197,7 +179,12 @@ export default function CirclesPage() {
                 </TabsList>
 
                 <TabsContent value="my-circles" className="space-y-6">
-                    {myCircles.length === 0 ? (
+                    {circlesLoading ? (
+                        <div className="text-center py-12">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                            <p className="mt-2 text-gray-500">Loading your circles...</p>
+                        </div>
+                    ) : myCircles.length === 0 ? (
                         <div className="text-center py-12">
                             <Users className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
                             <h3 className="mt-4 text-lg font-medium">No circles joined yet</h3>
@@ -224,23 +211,30 @@ export default function CirclesPage() {
                 </TabsContent>
 
                 <TabsContent value="discover" className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {discoverCircles.length === 0 ? (
-                            <div className="col-span-full text-center py-12">
-                                <Compass className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-                                <h3 className="mt-4 text-lg font-medium">No circles found</h3>
-                                <p className="text-muted-foreground mt-1">
-                                    Try changing your search or category filter
-                                </p>
-                            </div>
-                        ) : (
-                            discoverCircles.map((circle) => (
-                                <Link href={`/circles/${circle.id}`} key={circle.id}>
-                                    <CircleCard circle={circle} />
-                                </Link>
-                            ))
-                        )}
-                    </div>
+                    {circlesLoading ? (
+                        <div className="text-center py-12">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                            <p className="mt-2 text-gray-500">Loading circles...</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {discoverCircles.length === 0 ? (
+                                <div className="col-span-full text-center py-12">
+                                    <Compass className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
+                                    <h3 className="mt-4 text-lg font-medium">No circles found</h3>
+                                    <p className="text-muted-foreground mt-1">
+                                        Try changing your search or category filter
+                                    </p>
+                                </div>
+                            ) : (
+                                discoverCircles.map((circle) => (
+                                    <Link href={`/circles/${circle.id}`} key={circle.id}>
+                                        <CircleCard circle={circle} />
+                                    </Link>
+                                ))
+                            )}
+                        </div>
+                    )}
                 </TabsContent>
             </Tabs>
         </div>

@@ -93,10 +93,15 @@ const moodEmojis = [
 ];
 
 export default function CreatePage() {
-    const [selectedType, setSelectedType] = useState('confession');
+    const [selectedType, setSelectedType] = useState('social');
     const [postContent, setPostContent] = useState('');
-    const [isAnonymous, setIsAnonymous] = useState(true);
+    const [isAnonymous, setIsAnonymous] = useState(false);
     const [selectedMood, setSelectedMood] = useState(null);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedCircle, setSelectedCircle] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
+    const [postSuccess, setPostSuccess] = useState(false);
     const [pollOptions, setPollOptions] = useState(['', '']);
     const [eventDetails, setEventDetails] = useState({
         title: '',
@@ -126,29 +131,71 @@ export default function CreatePage() {
         }
     };
 
-    const handlePost = () => {
-        const postData = {
-            type: selectedType,
-            content: postContent,
-            anonymous: isAnonymous,
-            mood: selectedMood,
-            ...(selectedType === 'poll' && { pollOptions: pollOptions.filter(option => option.trim()) }),
-            ...(selectedType === 'event' && { eventDetails })
-        };
+    const handlePost = async () => {
+        // Validation
+        if (!postContent.trim()) {
+            setError('Post content cannot be empty');
+            return;
+        }
 
-        console.log('Creating post:', postData);
+        setIsSubmitting(true);
+        setError(null);
 
-        // Reset form
-        setPostContent('');
-        setSelectedMood(null);
-        setPollOptions(['', '']);
-        setEventDetails({
-            title: '',
-            date: '',
-            time: '',
-            location: '',
-            description: ''
-        });
+        try {
+            const postData = {
+                type: selectedType,
+                content: postContent,
+                isAnonymous: isAnonymous,
+                mood: selectedMood?.emoji || null,
+                tags: selectedTags?.join(','),
+                authorId: 'user_001', // Hardcoded for testing, should use actual user ID in production
+                circleId: selectedCircle || null
+            };
+
+            console.log('Creating post:', postData);
+
+            // Submit to API
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                console.log('Post created successfully:', result.data);
+                setPostSuccess(true);
+
+                // Reset form
+                setPostContent('');
+                setSelectedMood(null);
+                setPollOptions(['', '']);
+                setSelectedTags([]);
+                setSelectedCircle(null);
+                setEventDetails({
+                    title: '',
+                    date: '',
+                    time: '',
+                    location: '',
+                    description: ''
+                });
+
+                // Reset success message after 3 seconds
+                setTimeout(() => {
+                    setPostSuccess(false);
+                }, 3000);
+            } else {
+                setError('Failed to create post: ' + (result.error || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error('Error creating post:', err);
+            setError('An error occurred while creating the post');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -339,7 +386,7 @@ export default function CreatePage() {
                                     <div className="space-y-2">
                                         <div className="flex justify-center space-x-4">
                                             <Button variant="outline" size="sm">
-                                                <Image className="w-4 h-4 mr-2" />
+                                                <Image className="w-4 h-4 mr-2" alt="Photo icon" />
                                                 Photo
                                             </Button>
                                             <Button variant="outline" size="sm">
@@ -351,21 +398,84 @@ export default function CreatePage() {
                                     </div>
                                 </div>
 
+                                {/* Tags selection */}
+                                <div className="mt-4">
+                                    <div className="text-sm font-medium mb-2">Add Tags</div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {['Academic', 'Social', 'Question', 'Help', 'Fun', 'Career', 'Tech', 'Arts', 'Sports'].map(tag => (
+                                            <Badge
+                                                key={tag}
+                                                variant={selectedTags?.includes(tag) ? "default" : "outline"}
+                                                className="cursor-pointer"
+                                                onClick={() => {
+                                                    if (selectedTags?.includes(tag)) {
+                                                        setSelectedTags(selectedTags.filter(t => t !== tag));
+                                                    } else {
+                                                        setSelectedTags([...(selectedTags || []), tag]);
+                                                    }
+                                                }}
+                                            >
+                                                {tag}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Circle selection */}
+                                <div className="mt-4">
+                                    <div className="text-sm font-medium mb-2">Post in Circle (optional)</div>
+                                    <Select value={selectedCircle} onValueChange={setSelectedCircle}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a circle" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="circle_001">Computer Science Hub</SelectItem>
+                                            <SelectItem value="circle_002">Photography Club</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                {/* Error message */}
+                                {error && (
+                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+                                        {error}
+                                    </div>
+                                )}
+
+                                {/* Success message */}
+                                {postSuccess && (
+                                    <div className="mt-4 p-3 bg-green-50 border border-green-200 text-green-600 rounded-md text-sm">
+                                        Post created successfully!
+                                    </div>
+                                )}
+
                                 <div className="flex justify-between items-center pt-4">
                                     <div className="text-sm text-gray-500">
                                         {postContent.length}/500 characters
                                     </div>
                                     <Button
                                         onClick={handlePost}
-                                        disabled={!postContent.trim()}
+                                        disabled={!postContent.trim() || isSubmitting}
                                         className="bg-gradient-to-r from-blue-600 to-purple-600"
                                     >
-                                        <Send className="w-4 h-4 mr-2" />
-                                        {selectedType === 'confession' ? 'Share Anonymously' :
-                                            selectedType === 'crush' ? 'Send Crush' :
-                                                selectedType === 'poll' ? 'Create Poll' :
-                                                    selectedType === 'event' ? 'Create Event' :
-                                                        'Post'}
+                                        {isSubmitting ? (
+                                            <span className="flex items-center">
+                                                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Posting...
+                                            </span>
+                                        ) : (
+                                            <>
+                                                <Send className="w-4 h-4 mr-2" />
+                                                {selectedType === 'confession' ? 'Share Anonymously' :
+                                                    selectedType === 'crush' ? 'Send Crush' :
+                                                        selectedType === 'poll' ? 'Create Poll' :
+                                                            selectedType === 'event' ? 'Create Event' :
+                                                                'Post'}
+                                            </>
+                                        )}
                                     </Button>
                                 </div>
                             </CardContent>

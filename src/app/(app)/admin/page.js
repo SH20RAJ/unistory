@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
+import {
+    useAdminReportsMutable,
+    useAdminUsersMutable,
+    useAdminAnalyticsMutable
+} from "@/hooks/useSWR";
+import { toast } from "sonner";
 import {
     Shield,
     AlertTriangle,
@@ -44,132 +50,6 @@ import {
     AlertCircle,
     Info
 } from "lucide-react";
-
-const mockReports = [
-    {
-        id: 1,
-        type: "inappropriate_content",
-        content: "This confession contains inappropriate language and offensive remarks about a specific group",
-        postId: "conf_123",
-        postType: "confession",
-        reportedBy: "Anonymous User #1",
-        reportedAt: "2024-03-10 14:30",
-        status: "pending",
-        priority: "high",
-        category: "Hate Speech",
-        moderatorNotes: "",
-        originalPost: "I hate it when [inappropriate content removed for display]",
-        reportReason: "Contains hate speech and discriminatory language"
-    },
-    {
-        id: 2,
-        type: "spam",
-        content: "User posting repetitive promotional content for external services",
-        postId: "post_456",
-        postType: "social",
-        reportedBy: "Sarah Kim",
-        reportedAt: "2024-03-10 13:15",
-        status: "pending",
-        priority: "medium",
-        category: "Spam",
-        moderatorNotes: "",
-        originalPost: "Check out this amazing service that will help you with homework! Use code SAVE50...",
-        reportReason: "Repetitive promotional posts violating community guidelines"
-    },
-    {
-        id: 3,
-        type: "harassment",
-        content: "User being targeted with personal attacks in study room comments",
-        postId: "study_789",
-        postType: "study_room",
-        reportedBy: "Alex Chen",
-        reportedAt: "2024-03-10 12:45",
-        status: "resolved",
-        priority: "high",
-        category: "Harassment",
-        moderatorNotes: "Warning issued to offending user. Content removed.",
-        originalPost: "[Personal attack content - resolved]",
-        reportReason: "Personal attacks and bullying behavior"
-    },
-    {
-        id: 4,
-        type: "false_information",
-        content: "Post spreading misinformation about mental health resources",
-        postId: "post_101",
-        postType: "wellness",
-        reportedBy: "Maya Rodriguez",
-        reportedAt: "2024-03-10 11:20",
-        status: "investigating",
-        priority: "high",
-        category: "Misinformation",
-        moderatorNotes: "Consulting with mental health professionals for verification",
-        originalPost: "Don't trust the campus counseling center, they report everything to administration...",
-        reportReason: "Spreading false information about mental health services"
-    }
-];
-
-const mockUsers = [
-    {
-        id: "user_001",
-        name: "John Doe",
-        email: "john.doe@university.edu",
-        status: "active",
-        joinDate: "2024-01-15",
-        posts: 87,
-        reports: 0,
-        warnings: 0,
-        lastActive: "2024-03-10 15:30",
-        university: "University of Technology",
-        major: "Computer Science",
-        year: "Junior"
-    },
-    {
-        id: "user_002",
-        name: "Jane Smith",
-        email: "jane.smith@university.edu",
-        status: "warned",
-        joinDate: "2024-02-01",
-        posts: 45,
-        reports: 2,
-        warnings: 1,
-        lastActive: "2024-03-10 14:20",
-        university: "University of Technology",
-        major: "Psychology",
-        year: "Sophomore"
-    },
-    {
-        id: "user_003",
-        name: "Mike Johnson",
-        email: "mike.j@university.edu",
-        status: "suspended",
-        joinDate: "2024-01-20",
-        posts: 23,
-        reports: 5,
-        warnings: 3,
-        lastActive: "2024-03-08 10:15",
-        university: "University of Technology",
-        major: "Business",
-        year: "Senior"
-    }
-];
-
-const mockAnalytics = {
-    totalUsers: 12450,
-    activeUsers: 8930,
-    totalPosts: 34580,
-    reportsToday: 23,
-    reportsThisWeek: 156,
-    resolvedReports: 1420,
-    pendingReports: 47,
-    communityScore: 8.6,
-    topCategories: [
-        { name: "Academic", posts: 12400, percentage: 35.8 },
-        { name: "Social", posts: 9800, percentage: 28.3 },
-        { name: "Wellness", posts: 6200, percentage: 17.9 },
-        { name: "Events", posts: 4100, percentage: 11.9 },
-        { name: "Confessions", posts: 2080, percentage: 6.0 }
-    ]
-};
 
 const ReportCard = ({ report, onResolve, onInvestigate, onDismiss }) => {
     const getPriorityColor = (priority) => {
@@ -297,6 +177,15 @@ const UserRow = ({ user, onAction }) => {
         }
     };
 
+    const handleStatusUpdate = async (newStatus) => {
+        try {
+            await onAction(user.id, newStatus, `User status updated to ${newStatus}`);
+            toast.success(`User ${newStatus} successfully`);
+        } catch (error) {
+            toast.error("Failed to update user status");
+        }
+    };
+
     return (
         <tr className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
             <td className="p-4">
@@ -318,23 +207,50 @@ const UserRow = ({ user, onAction }) => {
                 </Badge>
             </td>
             <td className="p-4 text-sm">
-                {user.major} • {user.year}
+                {user.major || "N/A"} • {user.year || "N/A"}
             </td>
-            <td className="p-4 text-sm">{user.posts}</td>
-            <td className="p-4 text-sm">{user.reports}</td>
-            <td className="p-4 text-sm">{user.warnings}</td>
-            <td className="p-4 text-sm">{user.lastActive}</td>
+            <td className="p-4 text-sm">{user.postCount || 0}</td>
+            <td className="p-4 text-sm">{user.reportCount || 0}</td>
+            <td className="p-4 text-sm">{user.warningCount || 0}</td>
+            <td className="p-4 text-sm">{user.lastActive ? new Date(user.lastActive).toLocaleDateString() : "N/A"}</td>
             <td className="p-4">
                 <div className="flex space-x-1">
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" title="View Profile">
                         <Eye className="w-3 h-3" />
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" title="Send Message">
                         <Mail className="w-3 h-3" />
                     </Button>
-                    <Button size="sm" variant="outline">
-                        <Ban className="w-3 h-3" />
-                    </Button>
+                    {user.status === "active" && (
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            title="Warn User"
+                            onClick={() => handleStatusUpdate("warned")}
+                        >
+                            <AlertTriangle className="w-3 h-3" />
+                        </Button>
+                    )}
+                    {user.status !== "suspended" && (
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            title="Suspend User"
+                            onClick={() => handleStatusUpdate("suspended")}
+                        >
+                            <Ban className="w-3 h-3" />
+                        </Button>
+                    )}
+                    {user.status === "suspended" && (
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            title="Reactivate User"
+                            onClick={() => handleStatusUpdate("active")}
+                        >
+                            <Unlock className="w-3 h-3" />
+                        </Button>
+                    )}
                 </div>
             </td>
         </tr>
@@ -342,36 +258,95 @@ const UserRow = ({ user, onAction }) => {
 };
 
 export default function AdminPage() {
-    const [reports, setReports] = useState(mockReports);
     const [selectedStatus, setSelectedStatus] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
+    const [userFilters, setUserFilters] = useState({});
+    const [page, setPage] = useState(1);
+    const [userPage, setUserPage] = useState(1);
+    const limit = 10;
 
-    const filteredReports = reports.filter(report => {
-        const matchesStatus = selectedStatus === "all" || report.status === selectedStatus;
-        const matchesSearch = report.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.category.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesStatus && matchesSearch;
-    });
-
-    const handleResolveReport = (reportId) => {
-        setReports(reports.map(r =>
-            r.id === reportId ? { ...r, status: "resolved" } : r
-        ));
+    // SWR hooks for data fetching
+    const reportFilters = {
+        ...(selectedStatus !== "all" && { status: selectedStatus }),
+        ...(searchQuery && { search: searchQuery })
     };
 
-    const handleInvestigateReport = (reportId) => {
-        setReports(reports.map(r =>
-            r.id === reportId ? { ...r, status: "investigating" } : r
-        ));
+    const {
+        data: reportsData,
+        error: reportsError,
+        isLoading: reportsLoading,
+        updateReportStatus
+    } = useAdminReportsMutable(reportFilters, page, limit);
+
+    const {
+        data: usersData,
+        error: usersError,
+        isLoading: usersLoading,
+        updateUserStatus
+    } = useAdminUsersMutable(userFilters, userPage, limit);
+
+    const {
+        data: analyticsData,
+        error: analyticsError,
+        isLoading: analyticsLoading
+    } = useAdminAnalyticsMutable();
+
+    // Extract data from SWR responses
+    const reports = reportsData?.reports || [];
+    const users = usersData?.users || [];
+    const analytics = analyticsData || {
+        totalUsers: 0,
+        activeUsers: 0,
+        totalPosts: 0,
+        reportsToday: 0,
+        reportsThisWeek: 0,
+        resolvedReports: 0,
+        pendingReports: 0,
+        communityScore: 0,
+        topCategories: []
     };
 
-    const handleDismissReport = (reportId) => {
-        setReports(reports.map(r =>
-            r.id === reportId ? { ...r, status: "dismissed" } : r
-        ));
+    // Handle errors
+    useEffect(() => {
+        if (reportsError) {
+            toast.error("Failed to load reports. Please try again.");
+        }
+        if (usersError) {
+            toast.error("Failed to load users. Please try again.");
+        }
+        if (analyticsError) {
+            toast.error("Failed to load analytics. Please try again.");
+        }
+    }, [reportsError, usersError, analyticsError]);
+
+    const handleResolveReport = async (reportId) => {
+        try {
+            await updateReportStatus(reportId, "resolved", "Report resolved by admin", "content_approved");
+            toast.success("Report resolved successfully");
+        } catch (error) {
+            toast.error("Failed to resolve report");
+        }
     };
 
-    const pendingReports = reports.filter(r => r.status === "pending").length;
+    const handleInvestigateReport = async (reportId) => {
+        try {
+            await updateReportStatus(reportId, "investigating", "Report under investigation", "under_review");
+            toast.success("Report marked as investigating");
+        } catch (error) {
+            toast.error("Failed to update report status");
+        }
+    };
+
+    const handleDismissReport = async (reportId) => {
+        try {
+            await updateReportStatus(reportId, "dismissed", "Report dismissed after review", "no_action_required");
+            toast.success("Report dismissed");
+        } catch (error) {
+            toast.error("Failed to dismiss report");
+        }
+    };
+
+    const pendingReports = analytics.pendingReports;
     const highPriorityReports = reports.filter(r => r.priority === "high" && r.status === "pending").length;
 
     return (
@@ -411,10 +386,12 @@ export default function AdminPage() {
                             <div className="flex items-center space-x-2">
                                 <Users className="w-5 h-5 text-blue-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{mockAnalytics.totalUsers.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">
+                                        {analyticsLoading ? "..." : analytics.totalUsers.toLocaleString()}
+                                    </div>
                                     <div className="text-sm text-gray-600">Total Users</div>
                                     <div className="text-xs text-green-600">
-                                        {mockAnalytics.activeUsers.toLocaleString()} active
+                                        {analyticsLoading ? "..." : `${analytics.activeUsers.toLocaleString()} active`}
                                     </div>
                                 </div>
                             </div>
@@ -425,9 +402,13 @@ export default function AdminPage() {
                             <div className="flex items-center space-x-2">
                                 <MessageCircle className="w-5 h-5 text-green-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{mockAnalytics.totalPosts.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">
+                                        {analyticsLoading ? "..." : analytics.totalPosts.toLocaleString()}
+                                    </div>
                                     <div className="text-sm text-gray-600">Total Posts</div>
-                                    <div className="text-xs text-blue-600">+234 today</div>
+                                    <div className="text-xs text-blue-600">
+                                        {analyticsLoading ? "..." : `+${analytics.reportsToday || 0} today`}
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
@@ -449,7 +430,9 @@ export default function AdminPage() {
                             <div className="flex items-center space-x-2">
                                 <TrendingUp className="w-5 h-5 text-purple-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{mockAnalytics.communityScore}</div>
+                                    <div className="text-2xl font-bold">
+                                        {analyticsLoading ? "..." : analytics.communityScore}
+                                    </div>
                                     <div className="text-sm text-gray-600">Community Score</div>
                                     <div className="text-xs text-green-600">+0.3 this week</div>
                                 </div>
@@ -495,16 +478,50 @@ export default function AdminPage() {
 
                         {/* Reports List */}
                         <div>
-                            {filteredReports.length > 0 ? (
-                                filteredReports.map((report) => (
-                                    <ReportCard
-                                        key={report.id}
-                                        report={report}
-                                        onResolve={handleResolveReport}
-                                        onInvestigate={handleInvestigateReport}
-                                        onDismiss={handleDismissReport}
-                                    />
-                                ))
+                            {reportsLoading ? (
+                                <div className="text-center py-12">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                                    <p className="mt-2 text-gray-500">Loading reports...</p>
+                                </div>
+                            ) : reports.length > 0 ? (
+                                <>
+                                    {reports.map((report) => (
+                                        <ReportCard
+                                            key={report.id}
+                                            report={report}
+                                            onResolve={handleResolveReport}
+                                            onInvestigate={handleInvestigateReport}
+                                            onDismiss={handleDismissReport}
+                                        />
+                                    ))}
+
+                                    {/* Reports Pagination */}
+                                    {reportsData?.pagination && (
+                                        <div className="flex items-center justify-between mt-6">
+                                            <p className="text-sm text-gray-600">
+                                                Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, reportsData.pagination.total)} of {reportsData.pagination.total} reports
+                                            </p>
+                                            <div className="flex space-x-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={page <= 1}
+                                                    onClick={() => setPage(page - 1)}
+                                                >
+                                                    Previous
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={page >= reportsData.pagination.totalPages}
+                                                    onClick={() => setPage(page + 1)}
+                                                >
+                                                    Next
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <div className="text-center py-12">
                                     <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
@@ -526,11 +543,26 @@ export default function AdminPage() {
                         <div className="flex items-center justify-between">
                             <h3 className="text-lg font-semibold">User Management</h3>
                             <div className="flex space-x-2">
-                                <Input placeholder="Search users..." className="w-64" />
-                                <Button variant="outline">
-                                    <Filter className="w-4 h-4 mr-2" />
-                                    Filter
-                                </Button>
+                                <Input
+                                    placeholder="Search users..."
+                                    className="w-64"
+                                    value={userFilters.search || ""}
+                                    onChange={(e) => setUserFilters({ ...userFilters, search: e.target.value })}
+                                />
+                                <Select
+                                    value={userFilters.status || "all"}
+                                    onValueChange={(value) => setUserFilters({ ...userFilters, status: value === "all" ? undefined : value })}
+                                >
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder="Filter by status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Users</SelectItem>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="warned">Warned</SelectItem>
+                                        <SelectItem value="suspended">Suspended</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
 
@@ -551,14 +583,57 @@ export default function AdminPage() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {mockUsers.map((user) => (
-                                                <UserRow key={user.id} user={user} onAction={() => { }} />
-                                            ))}
+                                            {usersLoading ? (
+                                                <tr>
+                                                    <td colSpan={8} className="p-8 text-center">
+                                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+                                                        <p className="mt-2 text-gray-500">Loading users...</p>
+                                                    </td>
+                                                </tr>
+                                            ) : users.length > 0 ? (
+                                                users.map((user) => (
+                                                    <UserRow key={user.id} user={user} onAction={updateUserStatus} />
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={8} className="p-8 text-center">
+                                                        <Users className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                                        <p className="text-gray-500">No users found</p>
+                                                    </td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
                             </CardContent>
                         </Card>
+
+                        {/* Users Pagination */}
+                        {usersData?.pagination && (
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm text-gray-600">
+                                    Showing {((userPage - 1) * limit) + 1} to {Math.min(userPage * limit, usersData.pagination.total)} of {usersData.pagination.total} users
+                                </p>
+                                <div className="flex space-x-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={userPage <= 1}
+                                        onClick={() => setUserPage(userPage - 1)}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={userPage >= usersData.pagination.totalPages}
+                                        onClick={() => setUserPage(userPage + 1)}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </TabsContent>
 
                     <TabsContent value="content" className="space-y-6">
@@ -582,23 +657,35 @@ export default function AdminPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {mockAnalytics.topCategories.map((category) => (
-                                        <div key={category.name} className="flex items-center justify-between">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="font-medium">{category.name}</div>
-                                                <Badge variant="secondary">{category.posts.toLocaleString()} posts</Badge>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                                    <div
-                                                        className="bg-blue-500 h-2 rounded-full"
-                                                        style={{ width: `${category.percentage}%` }}
-                                                    ></div>
-                                                </div>
-                                                <span className="text-sm text-gray-600 w-12">{category.percentage}%</span>
-                                            </div>
+                                    {analyticsLoading ? (
+                                        <div className="text-center py-8">
+                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+                                            <p className="mt-2 text-gray-500">Loading categories...</p>
                                         </div>
-                                    ))}
+                                    ) : analytics.topCategories && analytics.topCategories.length > 0 ? (
+                                        analytics.topCategories.map((category) => (
+                                            <div key={category.name} className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="font-medium">{category.name}</div>
+                                                    <Badge variant="secondary">{category.posts.toLocaleString()} posts</Badge>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                        <div
+                                                            className="bg-blue-500 h-2 rounded-full"
+                                                            style={{ width: `${category.percentage}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    <span className="text-sm text-gray-600 w-12">{category.percentage}%</span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-8">
+                                            <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                            <p className="text-gray-500">No category data available</p>
+                                        </div>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

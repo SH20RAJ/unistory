@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +10,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
 import {
-    Bell,
     Heart,
+    Bell,
     MessageCircle,
     Users,
     Calendar,
@@ -33,149 +34,6 @@ import {
     CheckCircle,
     Info
 } from "lucide-react";
-
-const mockNotifications = [
-    {
-        id: 1,
-        type: "like",
-        title: "New Like",
-        message: "Sarah Kim liked your post about machine learning study group",
-        timestamp: "2 minutes ago",
-        isRead: false,
-        avatar: "SK",
-        action: {
-            type: "post",
-            id: 123
-        },
-        priority: "low"
-    },
-    {
-        id: 2,
-        type: "comment",
-        title: "New Comment",
-        message: "Alex Chen commented on your confession: 'I totally understand this feeling!'",
-        timestamp: "15 minutes ago",
-        isRead: false,
-        avatar: "AC",
-        action: {
-            type: "confession",
-            id: 456
-        },
-        priority: "medium"
-    },
-    {
-        id: 3,
-        type: "match",
-        title: "New Match! 💕",
-        message: "You have a new secret crush match! Check who likes you back.",
-        timestamp: "1 hour ago",
-        isRead: false,
-        avatar: null,
-        action: {
-            type: "matches",
-            id: null
-        },
-        priority: "high"
-    },
-    {
-        id: 4,
-        type: "study_room",
-        title: "Study Room Invitation",
-        message: "Maya Rodriguez invited you to join 'Calculus Study Session' starting in 30 minutes",
-        timestamp: "2 hours ago",
-        isRead: false,
-        avatar: "MR",
-        action: {
-            type: "study_room",
-            id: 789
-        },
-        priority: "high"
-    },
-    {
-        id: 5,
-        type: "achievement",
-        title: "Achievement Unlocked! 🏆",
-        message: "Congratulations! You've earned the 'Study Streak Master' badge for maintaining a 30-day streak",
-        timestamp: "3 hours ago",
-        isRead: true,
-        avatar: null,
-        action: {
-            type: "achievement",
-            id: "study_streak_master"
-        },
-        priority: "medium"
-    },
-    {
-        id: 6,
-        type: "connection",
-        title: "New Connection Request",
-        message: "Jordan Mitchell wants to connect with you",
-        timestamp: "4 hours ago",
-        isRead: true,
-        avatar: "JM",
-        action: {
-            type: "connection_request",
-            id: 101
-        },
-        priority: "medium"
-    },
-    {
-        id: 7,
-        type: "event",
-        title: "Event Reminder",
-        message: "Mental Health Workshop starts tomorrow at 3 PM in Student Center",
-        timestamp: "6 hours ago",
-        isRead: true,
-        avatar: null,
-        action: {
-            type: "event",
-            id: 202
-        },
-        priority: "medium"
-    },
-    {
-        id: 8,
-        type: "mood_reminder",
-        title: "Daily Check-in",
-        message: "Don't forget to log your mood today! Keep your wellness streak going 😊",
-        timestamp: "8 hours ago",
-        isRead: true,
-        avatar: null,
-        action: {
-            type: "wellness",
-            id: null
-        },
-        priority: "low"
-    },
-    {
-        id: 9,
-        type: "club_update",
-        title: "Club Activity",
-        message: "Robotics Society posted new project guidelines for the upcoming competition",
-        timestamp: "1 day ago",
-        isRead: true,
-        avatar: null,
-        action: {
-            type: "club",
-            id: 303
-        },
-        priority: "low"
-    },
-    {
-        id: 10,
-        type: "system",
-        title: "App Update",
-        message: "New features available! Check out the enhanced study rooms and improved matching algorithm",
-        timestamp: "2 days ago",
-        isRead: true,
-        avatar: null,
-        action: {
-            type: "app_update",
-            id: null
-        },
-        priority: "low"
-    }
-];
 
 const NotificationIcon = ({ type, priority }) => {
     const getIcon = () => {
@@ -207,8 +65,8 @@ const NotificationIcon = ({ type, priority }) => {
 
     return (
         <div className={`p-2 rounded-full ${priority === "high" ? "bg-red-100 dark:bg-red-900/20" :
-                priority === "medium" ? "bg-yellow-100 dark:bg-yellow-900/20" :
-                    "bg-gray-100 dark:bg-gray-800"
+            priority === "medium" ? "bg-yellow-100 dark:bg-yellow-900/20" :
+                "bg-gray-100 dark:bg-gray-800"
             }`}>
             {getIcon()}
         </div>
@@ -216,7 +74,25 @@ const NotificationIcon = ({ type, priority }) => {
 };
 
 const NotificationCard = ({ notification, onMarkAsRead, onAction }) => {
-    const timeAgo = notification.timestamp;
+    // Format timestamp from API data
+    const formatTimeAgo = (createdAt) => {
+        const now = new Date();
+        const notificationTime = new Date(createdAt);
+        const diffInMinutes = Math.floor((now - notificationTime) / (1000 * 60));
+
+        if (diffInMinutes < 1) return 'Just now';
+        if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours} hours ago`;
+
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays < 7) return `${diffInDays} days ago`;
+
+        return notificationTime.toLocaleDateString();
+    };
+
+    const timeAgo = notification.createdAt ? formatTimeAgo(notification.createdAt) : notification.timestamp;
 
     return (
         <Card className={`transition-all hover:shadow-md ${!notification.isRead ? "bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-blue-500" : ""
@@ -224,7 +100,13 @@ const NotificationCard = ({ notification, onMarkAsRead, onAction }) => {
             <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
                     <div className="relative">
-                        {notification.avatar ? (
+                        {notification.fromUser?.name ? (
+                            <Avatar className="w-10 h-10">
+                                <AvatarFallback className="bg-blue-500 text-white">
+                                    {notification.fromUser.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                        ) : notification.avatar ? (
                             <Avatar className="w-10 h-10">
                                 <AvatarFallback className="bg-blue-500 text-white">
                                     {notification.avatar}
@@ -315,24 +197,90 @@ const NotificationCard = ({ notification, onMarkAsRead, onAction }) => {
 };
 
 export default function NotificationsPage() {
-    const [notifications, setNotifications] = useState(mockNotifications);
     const [filter, setFilter] = useState("all");
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
-    const highPriorityCount = notifications.filter(n => n.priority === "high" && !n.isRead).length;
+    // Fetch notifications using SWR
+    const { data: notificationsData, error, mutate: mutateNotifications, isLoading } = useSWR(
+        `/api/notifications?userId=1&limit=50`,
+        async (url) => {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to fetch notifications');
+            }
+            return response.json();
+        }
+    );
 
-    const handleMarkAsRead = (notificationId) => {
-        setNotifications(notifications.map(n =>
-            n.id === notificationId ? { ...n, isRead: true } : n
-        ));
+    const notifications = notificationsData?.data?.notifications || [];
+    const stats = notificationsData?.data?.stats || { total: 0, unread: 0, highPriority: 0 };
+
+    const handleMarkAsRead = async (notificationId) => {
+        try {
+            const response = await fetch('/api/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'markAsRead',
+                    notificationIds: [notificationId]
+                }),
+            });
+
+            if (response.ok) {
+                mutateNotifications(); // Refresh the data
+            }
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
     };
 
-    const handleMarkAllAsRead = () => {
-        setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+    const handleMarkAllAsRead = async () => {
+        try {
+            const response = await fetch('/api/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'markAllAsRead',
+                    userId: '1'
+                }),
+            });
+
+            if (response.ok) {
+                mutateNotifications(); // Refresh the data
+            }
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+        }
     };
 
-    const handleClearAll = () => {
-        setNotifications(notifications.filter(n => !n.isRead));
+    const handleClearAll = async () => {
+        try {
+            const unreadNotificationIds = notifications
+                .filter(n => !n.isRead)
+                .map(n => n.id);
+
+            if (unreadNotificationIds.length > 0) {
+                const response = await fetch('/api/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'delete',
+                        notificationIds: unreadNotificationIds
+                    }),
+                });
+
+                if (response.ok) {
+                    mutateNotifications(); // Refresh the data
+                }
+            }
+        } catch (error) {
+            console.error('Error clearing notifications:', error);
+        }
     };
 
     const filteredNotifications = notifications.filter(notification => {
@@ -351,6 +299,94 @@ export default function NotificationsPage() {
                 return true;
         }
     });
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            Notifications
+                        </h1>
+                        <p className="text-gray-600 dark:text-gray-300">
+                            Loading your notifications...
+                        </p>
+                    </div>
+
+                    {/* Loading skeleton for stats */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        {[1, 2, 3, 4].map((i) => (
+                            <Card key={i}>
+                                <CardContent className="pt-6">
+                                    <div className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                        <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {/* Loading skeleton for notifications */}
+                    <div className="space-y-4">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                            <Card key={i}>
+                                <CardContent className="p-4">
+                                    <div className="animate-pulse">
+                                        <div className="flex space-x-4">
+                                            <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                            <div className="flex-1 space-y-2">
+                                                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+                <BottomNavigation />
+            </div>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            Notifications
+                        </h1>
+                        <p className="text-red-600 dark:text-red-400">
+                            Failed to load notifications. Please try again.
+                        </p>
+                    </div>
+
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="text-center py-8">
+                                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                                    Unable to load notifications
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                    There was a problem fetching your notifications.
+                                </p>
+                                <Button onClick={() => mutateNotifications()}>
+                                    Try Again
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+                <BottomNavigation />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -386,7 +422,7 @@ export default function NotificationsPage() {
                             <div className="flex items-center space-x-2">
                                 <Bell className="w-5 h-5 text-blue-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{notifications.length}</div>
+                                    <div className="text-2xl font-bold">{stats.total}</div>
                                     <div className="text-sm text-gray-600">Total</div>
                                 </div>
                             </div>
@@ -397,7 +433,7 @@ export default function NotificationsPage() {
                             <div className="flex items-center space-x-2">
                                 <Eye className="w-5 h-5 text-green-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{unreadCount}</div>
+                                    <div className="text-2xl font-bold">{stats.unread}</div>
                                     <div className="text-sm text-gray-600">Unread</div>
                                 </div>
                             </div>
@@ -408,7 +444,7 @@ export default function NotificationsPage() {
                             <div className="flex items-center space-x-2">
                                 <AlertCircle className="w-5 h-5 text-red-500" />
                                 <div>
-                                    <div className="text-2xl font-bold">{highPriorityCount}</div>
+                                    <div className="text-2xl font-bold">{stats.highPriority}</div>
                                     <div className="text-sm text-gray-600">High Priority</div>
                                 </div>
                             </div>
@@ -433,10 +469,10 @@ export default function NotificationsPage() {
                             All ({notifications.length})
                         </TabsTrigger>
                         <TabsTrigger value="unread">
-                            Unread ({unreadCount})
+                            Unread ({stats.unread})
                         </TabsTrigger>
                         <TabsTrigger value="high_priority">
-                            Priority ({highPriorityCount})
+                            Priority ({stats.highPriority})
                         </TabsTrigger>
                         <TabsTrigger value="social">Social</TabsTrigger>
                         <TabsTrigger value="study">Study</TabsTrigger>
