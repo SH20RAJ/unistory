@@ -246,10 +246,9 @@ const ClassCard = ({ classInfo, isUpcoming = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <Card 
-            className={`cursor-pointer transition-all duration-200 hover:shadow-md border-l-4 ${
-                isUpcoming ? 'border-l-orange-500 bg-orange-50/30' : ''
-            }`}
+        <Card
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md border-l-4 ${isUpcoming ? 'border-l-orange-500 bg-orange-50/30' : ''
+                }`}
             onClick={() => setIsExpanded(!isExpanded)}
         >
             <CardContent className="p-4">
@@ -259,7 +258,7 @@ const ClassCard = ({ classInfo, isUpcoming = false }) => {
                             <div className="flex items-center space-x-2 mb-1">
                                 <h3 className="font-semibold text-lg">{classInfo.subject}</h3>
                                 <Badge variant="outline" className="text-xs">{classInfo.code}</Badge>
-                                <Badge 
+                                <Badge
                                     className={`text-xs ${getColorClasses(classInfo.color)}`}
                                 >
                                     {classInfo.type}
@@ -301,11 +300,10 @@ const ClassCard = ({ classInfo, isUpcoming = false }) => {
                                     <span className="text-gray-500">Attendance</span>
                                     <div className="flex items-center space-x-2">
                                         <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                            <div 
-                                                className={`h-2 rounded-full ${
-                                                    classInfo.attendance >= 85 ? 'bg-green-500' : 
+                                            <div
+                                                className={`h-2 rounded-full ${classInfo.attendance >= 85 ? 'bg-green-500' :
                                                     classInfo.attendance >= 75 ? 'bg-yellow-500' : 'bg-red-500'
-                                                }`}
+                                                    }`}
                                                 style={{ width: `${classInfo.attendance}%` }}
                                             ></div>
                                         </div>
@@ -317,7 +315,7 @@ const ClassCard = ({ classInfo, isUpcoming = false }) => {
                                     <p className="font-medium text-sm">{classInfo.nextAssignment}</p>
                                 </div>
                             </div>
-                            
+
                             <div className="flex items-center space-x-2">
                                 <Button size="sm" variant="outline">
                                     <Bell className="w-4 h-4 mr-1" />
@@ -342,7 +340,7 @@ const ClassCard = ({ classInfo, isUpcoming = false }) => {
 
 const WeekView = ({ schedule }) => {
     const [selectedDay, setSelectedDay] = useState('monday');
-    
+
     return (
         <div className="space-y-6">
             {/* Day Selector */}
@@ -412,10 +410,10 @@ const GridView = ({ schedule }) => {
                                 {time}
                             </div>
                             {weekDays.map(day => {
-                                const classAtTime = schedule[day]?.find(cls => 
+                                const classAtTime = schedule[day]?.find(cls =>
                                     cls.time.startsWith(time.slice(0, 2))
                                 );
-                                
+
                                 return (
                                     <div key={`${day}-${time}`} className="p-1">
                                         {classAtTime ? (
@@ -446,181 +444,180 @@ export default function ClassRoutinePage() {
 
     return (
         <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Today's Classes */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Clock className="w-5 h-5 text-blue-500" />
-                                    <span>Today's Classes</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {todayClasses.map((classInfo) => (
-                                    <div key={classInfo.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
-                                        <div className={`w-3 h-12 rounded ${getColorClasses(classInfo.color)}`}></div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="font-medium text-sm">{classInfo.code}</h4>
-                                            <p className="text-xs text-gray-500 truncate">{classInfo.subject}</p>
-                                            <p className="text-xs text-gray-500">{classInfo.time}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Upcoming Classes */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Timer className="w-5 h-5 text-orange-500" />
-                                    <span>Up Next</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {upcomingClasses.map((classInfo, index) => (
-                                    <div key={index} className="flex items-center space-x-3">
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                                                <span className="text-xs font-semibold text-orange-600">{classInfo.minutesUntil}m</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="font-medium text-sm">{classInfo.code}</h4>
-                                            <p className="text-xs text-gray-500">{classInfo.time} • {classInfo.location.split(' - ')[1]}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Quick Actions */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Quick Actions</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                <Button variant="outline" className="w-full justify-start">
-                                    <Bell className="w-4 h-4 mr-2" />
-                                    Set Study Reminder
-                                </Button>
-                                <Button variant="outline" className="w-full justify-start">
-                                    <Share2 className="w-4 h-4 mr-2" />
-                                    Share Schedule
-                                </Button>
-                                <Button variant="outline" className="w-full justify-start">
-                                    <Smartphone className="w-4 h-4 mr-2" />
-                                    Sync to Phone
-                                </Button>
-                                <Button variant="outline" className="w-full justify-start">
-                                    <Settings className="w-4 h-4 mr-2" />
-                                    Notification Settings
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        {/* Notifications */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Bell className="w-5 h-5 text-red-500" />
-                                    <span>Recent Alerts</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {recentNotifications.map((notification) => (
-                                    <div key={notification.id} className={`p-3 rounded-lg border-l-4 ${
-                                        notification.urgent 
-                                            ? 'border-l-red-500 bg-red-50 dark:bg-red-900/20' 
-                                            : 'border-l-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                    }`}>
-                                        <div className="flex items-start space-x-2">
-                                            {notification.urgent ? (
-                                                <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-1" />
-                                            ) : (
-                                                <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0 mt-1" />
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-medium text-sm">{notification.title}</h4>
-                                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                                    {notification.message}
-                                                </p>
-                                                <p className="text-xs text-gray-500">{notification.time}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Main Content */}
-                    <div className="lg:col-span-3 space-y-6">
-                        {/* Controls */}
-                        <Card>
-                            <CardContent className="p-4">
-                                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                                    <div className="flex-1 relative">
-                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                        <Input
-                                            placeholder="Search classes, professors, or locations..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-10"
-                                        />
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
-                                            <Button
-                                                variant={viewMode === "week" ? "default" : "ghost"}
-                                                size="sm"
-                                                onClick={() => setViewMode("week")}
-                                                className="rounded-r-none"
-                                            >
-                                                Week
-                                            </Button>
-                                            <Button
-                                                variant={viewMode === "grid" ? "default" : "ghost"}
-                                                size="sm"
-                                                onClick={() => setViewMode("grid")}
-                                                className="rounded-l-none"
-                                            >
-                                                Grid
-                                            </Button>
-                                        </div>
-                                        <Button variant="outline">
-                                            <Download className="w-4 h-4 mr-2" />
-                                            Export
-                                        </Button>
-                                        <Button>
-                                            <Plus className="w-4 h-4 mr-2" />
-                                            Add Class
-                                        </Button>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    {/* Today's Classes */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Clock className="w-5 h-5 text-blue-500" />
+                                <span>Today's Classes</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {todayClasses.map((classInfo) => (
+                                <div key={classInfo.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <div className={`w-3 h-12 rounded ${getColorClasses(classInfo.color)}`}></div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-medium text-sm">{classInfo.code}</h4>
+                                        <p className="text-xs text-gray-500 truncate">{classInfo.subject}</p>
+                                        <p className="text-xs text-gray-500">{classInfo.time}</p>
                                     </div>
                                 </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Upcoming Classes */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Timer className="w-5 h-5 text-orange-500" />
+                                <span>Up Next</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {upcomingClasses.map((classInfo, index) => (
+                                <div key={index} className="flex items-center space-x-3">
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                                            <span className="text-xs font-semibold text-orange-600">{classInfo.minutesUntil}m</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-medium text-sm">{classInfo.code}</h4>
+                                        <p className="text-xs text-gray-500">{classInfo.time} • {classInfo.location.split(' - ')[1]}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Quick Actions */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Quick Actions</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            <Button variant="outline" className="w-full justify-start">
+                                <Bell className="w-4 h-4 mr-2" />
+                                Set Study Reminder
+                            </Button>
+                            <Button variant="outline" className="w-full justify-start">
+                                <Share2 className="w-4 h-4 mr-2" />
+                                Share Schedule
+                            </Button>
+                            <Button variant="outline" className="w-full justify-start">
+                                <Smartphone className="w-4 h-4 mr-2" />
+                                Sync to Phone
+                            </Button>
+                            <Button variant="outline" className="w-full justify-start">
+                                <Settings className="w-4 h-4 mr-2" />
+                                Notification Settings
+                            </Button>
+                        </CardContent>
+                    </Card>
+
+                    {/* Notifications */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Bell className="w-5 h-5 text-red-500" />
+                                <span>Recent Alerts</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {recentNotifications.map((notification) => (
+                                <div key={notification.id} className={`p-3 rounded-lg border-l-4 ${notification.urgent
+                                    ? 'border-l-red-500 bg-red-50 dark:bg-red-900/20'
+                                    : 'border-l-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                    }`}>
+                                    <div className="flex items-start space-x-2">
+                                        {notification.urgent ? (
+                                            <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-1" />
+                                        ) : (
+                                            <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0 mt-1" />
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-medium text-sm">{notification.title}</h4>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                                {notification.message}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{notification.time}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main Content */}
+                <div className="lg:col-span-3 space-y-6">
+                    {/* Controls */}
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                                <div className="flex-1 relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                    <Input
+                                        placeholder="Search classes, professors, or locations..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-10"
+                                    />
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
+                                        <Button
+                                            variant={viewMode === "week" ? "default" : "ghost"}
+                                            size="sm"
+                                            onClick={() => setViewMode("week")}
+                                            className="rounded-r-none"
+                                        >
+                                            Week
+                                        </Button>
+                                        <Button
+                                            variant={viewMode === "grid" ? "default" : "ghost"}
+                                            size="sm"
+                                            onClick={() => setViewMode("grid")}
+                                            className="rounded-l-none"
+                                        >
+                                            Grid
+                                        </Button>
+                                    </div>
+                                    <Button variant="outline">
+                                        <Download className="w-4 h-4 mr-2" />
+                                        Export
+                                    </Button>
+                                    <Button>
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        Add Class
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Schedule View */}
+                    {viewMode === "week" ? (
+                        <WeekView schedule={mockSchedule} />
+                    ) : (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Weekly Schedule Grid</CardTitle>
+                                <CardDescription>
+                                    Complete overview of your class schedule
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <GridView schedule={mockSchedule} />
                             </CardContent>
                         </Card>
-
-                        {/* Schedule View */}
-                        {viewMode === "week" ? (
-                            <WeekView schedule={mockSchedule} />
-                        ) : (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Weekly Schedule Grid</CardTitle>
-                                    <CardDescription>
-                                        Complete overview of your class schedule
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <GridView schedule={mockSchedule} />
-                                </CardContent>
-                            </Card>
-                        )}
-                    </div>
+                    )}
                 </div>
+            </div>
         </div>
     );
 }

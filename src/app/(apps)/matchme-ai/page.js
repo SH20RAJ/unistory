@@ -167,7 +167,7 @@ const MatchCard = ({ match, onLike, onPass, onMessage, isExpanded, onToggleExpan
                     </div>
                 </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-4">
                 <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
                     <div className="flex items-start space-x-2">
@@ -243,7 +243,7 @@ const MatchCard = ({ match, onLike, onPass, onMessage, isExpanded, onToggleExpan
                         <span>{isExpanded ? 'Show Less' : 'View Details'}</span>
                         <ChevronRight className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                     </Button>
-                    
+
                     <div className="flex space-x-2">
                         <Button
                             variant="outline"
@@ -303,11 +303,11 @@ export default function MatchMeAIPage() {
 
     const filteredMatches = aiMatches.filter(match => {
         const matchesSearch = match.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            match.branch.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            match.interests.some(interest => interest.toLowerCase().includes(searchQuery.toLowerCase()));
+            match.branch.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            match.interests.some(interest => interest.toLowerCase().includes(searchQuery.toLowerCase()));
         const matchesBranch = filterBranch === "all" || match.branch === filterBranch;
         const matchesYear = filterYear === "all" || match.year === filterYear;
-        
+
         return matchesSearch && matchesBranch && matchesYear;
     });
 
@@ -458,7 +458,7 @@ export default function MatchMeAIPage() {
                                             <span className="text-lg font-bold text-purple-600">{insight.score}%</span>
                                         </div>
                                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                            <div 
+                                            <div
                                                 className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all duration-500"
                                                 style={{ width: `${insight.score}%` }}
                                             ></div>

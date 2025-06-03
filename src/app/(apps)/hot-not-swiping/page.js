@@ -152,17 +152,16 @@ const SwipeCard = ({ profile, onSwipe, isTopCard }) => {
                         alt={profile.name}
                         className="w-full h-full object-cover"
                     />
-                    
+
                     {/* Image Navigation */}
                     <div className="absolute top-4 left-4 right-4 flex justify-center space-x-1">
                         {profile.images.map((_, index) => (
                             <div
                                 key={index}
-                                className={`h-1 rounded-full transition-all ${
-                                    index === currentImageIndex 
-                                        ? 'bg-white w-8' 
+                                className={`h-1 rounded-full transition-all ${index === currentImageIndex
+                                        ? 'bg-white w-8'
                                         : 'bg-white/50 w-4'
-                                }`}
+                                    }`}
                             />
                         ))}
                     </div>
@@ -256,7 +255,7 @@ export default function HotNotSwipingPage() {
     const handleSwipe = (direction) => {
         setSwipeDirection(direction);
         setShowResult(true);
-        
+
         setTimeout(() => {
             setCurrentProfileIndex((prev) => (prev + 1) % swipeProfiles.length);
             setSwipeDirection(null);
@@ -333,15 +332,15 @@ export default function HotNotSwipingPage() {
                             <div className="lg:col-span-2">
                                 <div className="relative h-[600px] mx-auto max-w-sm">
                                     {currentProfile && (
-                                        <SwipeCard 
-                                            profile={currentProfile} 
+                                        <SwipeCard
+                                            profile={currentProfile}
                                             onSwipe={handleSwipe}
                                             isTopCard={true}
                                         />
                                     )}
                                     {nextProfile && (
-                                        <SwipeCard 
-                                            profile={nextProfile} 
+                                        <SwipeCard
+                                            profile={nextProfile}
                                             onSwipe={handleSwipe}
                                             isTopCard={false}
                                         />
@@ -350,9 +349,8 @@ export default function HotNotSwipingPage() {
                                     {/* Swipe Result Overlay */}
                                     {showResult && (
                                         <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 rounded-lg">
-                                            <div className={`text-6xl font-bold ${
-                                                swipeDirection === 'hot' ? 'text-orange-500' : 'text-gray-500'
-                                            }`}>
+                                            <div className={`text-6xl font-bold ${swipeDirection === 'hot' ? 'text-orange-500' : 'text-gray-500'
+                                                }`}>
                                                 {swipeDirection === 'hot' ? '🔥' : '❄️'}
                                             </div>
                                         </div>
@@ -478,25 +476,24 @@ export default function HotNotSwipingPage() {
                                 <div className="space-y-3">
                                     {hotLeaderboard.map((person) => (
                                         <div key={person.rank} className="flex items-center space-x-4 p-4 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                                                person.rank === 1 ? 'bg-yellow-500 text-white' :
-                                                person.rank === 2 ? 'bg-gray-400 text-white' :
-                                                person.rank === 3 ? 'bg-orange-600 text-white' :
-                                                'bg-gray-200 text-gray-700'
-                                            }`}>
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${person.rank === 1 ? 'bg-yellow-500 text-white' :
+                                                    person.rank === 2 ? 'bg-gray-400 text-white' :
+                                                        person.rank === 3 ? 'bg-orange-600 text-white' :
+                                                            'bg-gray-200 text-gray-700'
+                                                }`}>
                                                 {person.rank}
                                             </div>
-                                            
+
                                             <Avatar className="w-12 h-12">
                                                 <AvatarImage src={`/api/placeholder/50/50`} />
                                                 <AvatarFallback>{person.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                                             </Avatar>
-                                            
+
                                             <div className="flex-1">
                                                 <h3 className="font-semibold">{person.name}</h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-400">{person.branch}</p>
                                             </div>
-                                            
+
                                             <div className="text-right">
                                                 <div className="flex items-center space-x-1">
                                                     <Flame className="w-4 h-4 text-orange-500" />
@@ -504,12 +501,11 @@ export default function HotNotSwipingPage() {
                                                 </div>
                                                 <p className="text-sm text-gray-500">{person.votes} votes</p>
                                             </div>
-                                            
-                                            <div className={`text-sm font-medium ${
-                                                person.change.startsWith('+') ? 'text-green-600' :
-                                                person.change.startsWith('-') ? 'text-red-600' :
-                                                'text-gray-500'
-                                            }`}>
+
+                                            <div className={`text-sm font-medium ${person.change.startsWith('+') ? 'text-green-600' :
+                                                    person.change.startsWith('-') ? 'text-red-600' :
+                                                        'text-gray-500'
+                                                }`}>
                                                 {person.change}
                                             </div>
                                         </div>

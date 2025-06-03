@@ -252,7 +252,7 @@ const ResourceCard = ({ resource }) => {
                     </div>
                 </div>
             </CardHeader>
-            
+
             <CardContent className="pt-0">
                 <div className="flex flex-wrap gap-2 mb-4">
                     {resource.tags.map((tag, index) => (
@@ -261,7 +261,7 @@ const ResourceCard = ({ resource }) => {
                         </Badge>
                     ))}
                 </div>
-                
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                     <div className="flex items-center space-x-1">
                         <GraduationCap className="w-4 h-4" />
@@ -280,7 +280,7 @@ const ResourceCard = ({ resource }) => {
                         <span>Sem {resource.semester}</span>
                     </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
@@ -300,11 +300,11 @@ const ResourceCard = ({ resource }) => {
                         {resource.size}
                     </div>
                 </div>
-                
+
                 <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                     By {resource.author} • {resource.university} • {new Date(resource.uploadDate).toLocaleDateString()}
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                         <Button size="sm" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
@@ -358,18 +358,17 @@ const FilterSection = ({ title, options, selected, onSelect, icon: Icon }) => {
                 </div>
                 {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </button>
-            
+
             {isOpen && (
                 <div className="mt-3 space-y-2">
                     {options.map((option) => (
                         <button
                             key={option}
                             onClick={() => onSelect(option)}
-                            className={`block w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${
-                                selected === option
+                            className={`block w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${selected === option
                                     ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
                                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                            }`}
+                                }`}
                         >
                             {option}
                         </button>
@@ -393,10 +392,10 @@ export default function ResourcesPage() {
     const filteredResources = useMemo(() => {
         return resourcesData.filter(resource => {
             const matchesSearch = resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                resource.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                resource.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                                resource.author.toLowerCase().includes(searchQuery.toLowerCase());
-            
+                resource.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                resource.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                resource.author.toLowerCase().includes(searchQuery.toLowerCase());
+
             const matchesSubject = selectedSubject === "All" || resource.subject === selectedSubject;
             const matchesYear = selectedYear === "All" || resource.year === selectedYear;
             const matchesBranch = selectedBranch === "All" || resource.branch === selectedBranch;
@@ -430,7 +429,7 @@ export default function ResourcesPage() {
                         Academic Resources
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        Discover and download high-quality academic materials, notes, videos, and study resources 
+                        Discover and download high-quality academic materials, notes, videos, and study resources
                         curated by top universities and educators worldwide.
                     </p>
                 </div>

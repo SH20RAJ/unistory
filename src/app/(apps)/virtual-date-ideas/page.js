@@ -297,12 +297,12 @@ export default function VirtualDateIdeasPage() {
         { id: "fun", label: "Fun", icon: Smile }
     ];
 
-    const filteredIdeas = activeCategory === "all" 
-        ? dateIdeas 
+    const filteredIdeas = activeCategory === "all"
+        ? dateIdeas
         : dateIdeas.filter(idea => idea.category === activeCategory);
 
-    const searchedIdeas = searchQuery 
-        ? filteredIdeas.filter(idea => 
+    const searchedIdeas = searchQuery
+        ? filteredIdeas.filter(idea =>
             idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             idea.description.toLowerCase().includes(searchQuery.toLowerCase())
         )

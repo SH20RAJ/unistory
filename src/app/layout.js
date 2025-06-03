@@ -1,5 +1,6 @@
 import { Inter, Calistoga } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { PremiumProvider } from "@/hooks/use-premium";
 import "./globals.css";
 
 const inter = Inter({
@@ -68,7 +69,9 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <PremiumProvider>
+            {children}
+          </PremiumProvider>
         </ThemeProvider>
       </body>
     </html>

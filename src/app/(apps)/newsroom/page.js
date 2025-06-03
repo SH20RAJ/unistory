@@ -250,7 +250,7 @@ const NewsCard = ({ news, isCompact = false }) => {
                             <Eye className="w-4 h-4" />
                             <span>{news.views}</span>
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
                             <Button
                                 variant="ghost"
@@ -313,7 +313,7 @@ export default function NewsroomPage() {
 
     const filteredNews = mockNews.filter(news => {
         const matchesSearch = news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            news.content.toLowerCase().includes(searchQuery.toLowerCase());
+            news.content.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = selectedCategory === "All" || news.category === selectedCategory;
         return matchesSearch && matchesCategory;
     });
@@ -322,152 +322,152 @@ export default function NewsroomPage() {
 
     return (
         <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Main Content */}
-                    <div className="lg:col-span-3 space-y-6">
-                        {/* Search and Filters */}
-                        <Card>
-                            <CardContent className="p-4">
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <div className="flex-1 relative">
-                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                        <Input
-                                            placeholder="Search news and announcements..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-10"
-                                        />
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Filter className="w-4 h-4 text-gray-500" />
-                                        <select
-                                            value={selectedCategory}
-                                            onChange={(e) => setSelectedCategory(e.target.value)}
-                                            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-                                        >
-                                            {categories.map(category => (
-                                                <option key={category} value={category}>{category}</option>
-                                            ))}
-                                        </select>
-                                        <Button variant="outline" size="sm">
-                                            <Bell className="w-4 h-4 mr-2" />
-                                            Subscribe
-                                        </Button>
-                                    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Main Content */}
+                <div className="lg:col-span-3 space-y-6">
+                    {/* Search and Filters */}
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <div className="flex-1 relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                    <Input
+                                        placeholder="Search news and announcements..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-10"
+                                    />
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Tabs */}
-                        <Tabs defaultValue="news" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="news" className="flex items-center space-x-2">
-                                    <Newspaper className="w-4 h-4" />
-                                    <span>Campus News</span>
-                                </TabsTrigger>
-                                <TabsTrigger value="announcements" className="flex items-center space-x-2">
-                                    <Bell className="w-4 h-4" />
-                                    <span>Announcements</span>
-                                </TabsTrigger>
-                            </TabsList>
-
-                            <TabsContent value="news" className="space-y-6 mt-6">
-                                {filteredNews.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {filteredNews.map((news) => (
-                                            <NewsCard key={news.id} news={news} isCompact={showCompact} />
+                                <div className="flex items-center space-x-2">
+                                    <Filter className="w-4 h-4 text-gray-500" />
+                                    <select
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+                                    >
+                                        {categories.map(category => (
+                                            <option key={category} value={category}>{category}</option>
                                         ))}
-                                    </div>
-                                ) : (
-                                    <Card>
-                                        <CardContent className="p-8 text-center">
-                                            <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                                No news found
-                                            </h3>
-                                            <p className="text-gray-600 dark:text-gray-400">
-                                                Try adjusting your search or filter criteria
-                                            </p>
-                                        </CardContent>
-                                    </Card>
-                                )}
-                            </TabsContent>
-
-                            <TabsContent value="announcements" className="space-y-4 mt-6">
-                                {mockAnnouncements.map((announcement) => (
-                                    <AnnouncementCard key={announcement.id} announcement={announcement} />
-                                ))}
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Trending News */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <TrendingUp className="w-5 h-5 text-orange-500" />
-                                    <span>Trending Now</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {trendingNews.map((news) => (
-                                    <NewsCard key={news.id} news={news} isCompact={true} />
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Quick Stats */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Zap className="w-5 h-5 text-blue-500" />
-                                    <span>Quick Stats</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">Today's Posts</span>
-                                    <span className="font-semibold">12</span>
+                                    </select>
+                                    <Button variant="outline" size="sm">
+                                        <Bell className="w-4 h-4 mr-2" />
+                                        Subscribe
+                                    </Button>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">This Week</span>
-                                    <span className="font-semibold">47</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">Most Active</span>
-                                    <span className="font-semibold text-blue-600">Events</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">Total Views</span>
-                                    <span className="font-semibold">12.5K</span>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                        {/* Categories */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Categories</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2">
-                                    {categories.slice(1).map((category) => (
-                                        <Button
-                                            key={category}
-                                            variant={selectedCategory === category ? "default" : "ghost"}
-                                            className="w-full justify-start"
-                                            onClick={() => setSelectedCategory(category)}
-                                        >
-                                            {category}
-                                        </Button>
+                    {/* Tabs */}
+                    <Tabs defaultValue="news" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="news" className="flex items-center space-x-2">
+                                <Newspaper className="w-4 h-4" />
+                                <span>Campus News</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="announcements" className="flex items-center space-x-2">
+                                <Bell className="w-4 h-4" />
+                                <span>Announcements</span>
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="news" className="space-y-6 mt-6">
+                            {filteredNews.length > 0 ? (
+                                <div className="space-y-4">
+                                    {filteredNews.map((news) => (
+                                        <NewsCard key={news.id} news={news} isCompact={showCompact} />
                                     ))}
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                            ) : (
+                                <Card>
+                                    <CardContent className="p-8 text-center">
+                                        <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                            No news found
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-400">
+                                            Try adjusting your search or filter criteria
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </TabsContent>
+
+                        <TabsContent value="announcements" className="space-y-4 mt-6">
+                            {mockAnnouncements.map((announcement) => (
+                                <AnnouncementCard key={announcement.id} announcement={announcement} />
+                            ))}
+                        </TabsContent>
+                    </Tabs>
                 </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    {/* Trending News */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <TrendingUp className="w-5 h-5 text-orange-500" />
+                                <span>Trending Now</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {trendingNews.map((news) => (
+                                <NewsCard key={news.id} news={news} isCompact={true} />
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Quick Stats */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Zap className="w-5 h-5 text-blue-500" />
+                                <span>Quick Stats</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Today's Posts</span>
+                                <span className="font-semibold">12</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">This Week</span>
+                                <span className="font-semibold">47</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Most Active</span>
+                                <span className="font-semibold text-blue-600">Events</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Total Views</span>
+                                <span className="font-semibold">12.5K</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Categories */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Categories</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                {categories.slice(1).map((category) => (
+                                    <Button
+                                        key={category}
+                                        variant={selectedCategory === category ? "default" : "ghost"}
+                                        className="w-full justify-start"
+                                        onClick={() => setSelectedCategory(category)}
+                                    >
+                                        {category}
+                                    </Button>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     );
 }

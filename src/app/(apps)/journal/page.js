@@ -237,8 +237,8 @@ const JournalEntry = ({ entry, isCompact = false }) => {
                             {isExpanded ? entry.content : entry.content.slice(0, 200) + (entry.content.length > 200 ? "..." : "")}
                         </p>
                         {entry.content.length > 200 && (
-                            <Button 
-                                variant="link" 
+                            <Button
+                                variant="link"
                                 className="p-0 h-auto text-blue-600 hover:text-blue-800"
                                 onClick={() => setIsExpanded(!isExpanded)}
                             >
@@ -401,8 +401,8 @@ export default function JournalPage() {
 
     const filteredEntries = mockEntries.filter(entry => {
         const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            entry.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            entry.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
         const matchesMood = selectedMood === "all" || entry.mood === selectedMood;
         return matchesSearch && matchesMood;
     });
@@ -411,205 +411,204 @@ export default function JournalPage() {
 
     return (
         <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Writing Streak */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Sparkles className="w-5 h-5 text-orange-500" />
-                                    <span>Writing Streak</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-orange-600">{streakData.currentStreak}</div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Days in a row</p>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    {/* Writing Streak */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Sparkles className="w-5 h-5 text-orange-500" />
+                                <span>Writing Streak</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="text-center">
+                                <div className="text-3xl font-bold text-orange-600">{streakData.currentStreak}</div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Days in a row</p>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Longest streak</span>
+                                    <span className="font-semibold">{streakData.longestStreak} days</span>
                                 </div>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600 dark:text-gray-400">Longest streak</span>
-                                        <span className="font-semibold">{streakData.longestStreak} days</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600 dark:text-gray-400">Total entries</span>
-                                        <span className="font-semibold">{streakData.totalEntries}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600 dark:text-gray-400">This week</span>
-                                        <span className="font-semibold">{streakData.thisWeekEntries}</span>
-                                    </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Total entries</span>
+                                    <span className="font-semibold">{streakData.totalEntries}</span>
                                 </div>
-                            </CardContent>
-                        </Card>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">This week</span>
+                                    <span className="font-semibold">{streakData.thisWeekEntries}</span>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                        {/* Mood Tracker */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Heart className="w-5 h-5 text-pink-500" />
-                                    <span>Mood Overview</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {Object.entries(moodStats).map(([mood, count]) => (
-                                    <div key={mood} className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-2">
-                                            {getMoodIcon(mood)}
-                                            <span className="capitalize text-sm">{mood}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <div className="w-16 bg-gray-200 rounded-full h-2">
-                                                <div 
-                                                    className={`h-2 rounded-full ${
-                                                        mood === 'happy' ? 'bg-green-500' :
+                    {/* Mood Tracker */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Heart className="w-5 h-5 text-pink-500" />
+                                <span>Mood Overview</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {Object.entries(moodStats).map(([mood, count]) => (
+                                <div key={mood} className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-2">
+                                        {getMoodIcon(mood)}
+                                        <span className="capitalize text-sm">{mood}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-16 bg-gray-200 rounded-full h-2">
+                                            <div
+                                                className={`h-2 rounded-full ${mood === 'happy' ? 'bg-green-500' :
                                                         mood === 'neutral' ? 'bg-yellow-500' : 'bg-red-500'
                                                     }`}
-                                                    style={{ width: `${(count / Math.max(...Object.values(moodStats))) * 100}%` }}
-                                                ></div>
-                                            </div>
-                                            <span className="text-sm font-semibold">{count}</span>
+                                                style={{ width: `${(count / Math.max(...Object.values(moodStats))) * 100}%` }}
+                                            ></div>
                                         </div>
+                                        <span className="text-sm font-semibold">{count}</span>
                                     </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Goal Categories */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Target className="w-5 h-5 text-blue-500" />
-                                    <span>Goal Categories</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                {goalCategories.map((category) => (
-                                    <div key={category.name} className="flex items-center justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-                                        <span className="text-sm">{category.name}</span>
-                                        <Badge variant="secondary">{category.count}</Badge>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Recent Entries */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center space-x-2">
-                                    <Timer className="w-5 h-5 text-green-500" />
-                                    <span>Recent</span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {recentEntries.map((entry) => (
-                                    <JournalEntry key={entry.id} entry={entry} isCompact={true} />
-                                ))}
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Main Content */}
-                    <div className="lg:col-span-3 space-y-6">
-                        {showNewEntry ? (
-                            <NewEntryForm onClose={() => setShowNewEntry(false)} />
-                        ) : (
-                            <>
-                                {/* Search and Filters */}
-                                <Card>
-                                    <CardContent className="p-4">
-                                        <div className="flex flex-col sm:flex-row gap-4">
-                                            <div className="flex-1 relative">
-                                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                                <Input
-                                                    placeholder="Search your thoughts, goals, and memories..."
-                                                    value={searchQuery}
-                                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="pl-10"
-                                                />
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <select
-                                                    value={selectedMood}
-                                                    onChange={(e) => setSelectedMood(e.target.value)}
-                                                    className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:border-gray-600"
-                                                >
-                                                    <option value="all">All Moods</option>
-                                                    <option value="happy">Happy</option>
-                                                    <option value="neutral">Neutral</option>
-                                                    <option value="sad">Sad</option>
-                                                </select>
-                                                <Button
-                                                    variant={viewMode === "full" ? "default" : "outline"}
-                                                    size="sm"
-                                                    onClick={() => setViewMode(viewMode === "full" ? "compact" : "full")}
-                                                >
-                                                    {viewMode === "full" ? "Compact" : "Full"}
-                                                </Button>
-                                                <Button variant="outline" size="sm">
-                                                    <BarChart3 className="w-4 h-4 mr-2" />
-                                                    Analytics
-                                                </Button>
-                                                <Button size="sm" onClick={() => setShowNewEntry(true)}>
-                                                    <Plus className="w-4 h-4 mr-2" />
-                                                    New Entry
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                {/* Journal Entries */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-lg font-semibold">
-                                            {filteredEntries.length} entries found
-                                        </h2>
-                                        <div className="flex items-center space-x-2">
-                                            <Button variant="outline" size="sm">
-                                                <Download className="w-4 h-4 mr-1" />
-                                                Export
-                                            </Button>
-                                            <Button variant="outline" size="sm">
-                                                <Settings className="w-4 h-4 mr-1" />
-                                                Settings
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {filteredEntries.length > 0 ? (
-                                        <div className="space-y-4">
-                                            {filteredEntries.map((entry) => (
-                                                <JournalEntry 
-                                                    key={entry.id} 
-                                                    entry={entry} 
-                                                    isCompact={viewMode === "compact"} 
-                                                />
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <Card>
-                                            <CardContent className="p-8 text-center">
-                                                <NotebookPen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                                    No entries found
-                                                </h3>
-                                                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                                    Try adjusting your search or start writing your first entry
-                                                </p>
-                                                <Button onClick={() => setShowNewEntry(true)}>
-                                                    <Plus className="w-4 h-4 mr-2" />
-                                                    Write your first entry
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    )}
                                 </div>
-                            </>
-                        )}
-                    </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Goal Categories */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Target className="w-5 h-5 text-blue-500" />
+                                <span>Goal Categories</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {goalCategories.map((category) => (
+                                <div key={category.name} className="flex items-center justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <span className="text-sm">{category.name}</span>
+                                    <Badge variant="secondary">{category.count}</Badge>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    {/* Recent Entries */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Timer className="w-5 h-5 text-green-500" />
+                                <span>Recent</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {recentEntries.map((entry) => (
+                                <JournalEntry key={entry.id} entry={entry} isCompact={true} />
+                            ))}
+                        </CardContent>
+                    </Card>
                 </div>
+
+                {/* Main Content */}
+                <div className="lg:col-span-3 space-y-6">
+                    {showNewEntry ? (
+                        <NewEntryForm onClose={() => setShowNewEntry(false)} />
+                    ) : (
+                        <>
+                            {/* Search and Filters */}
+                            <Card>
+                                <CardContent className="p-4">
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <div className="flex-1 relative">
+                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                            <Input
+                                                placeholder="Search your thoughts, goals, and memories..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="pl-10"
+                                            />
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <select
+                                                value={selectedMood}
+                                                onChange={(e) => setSelectedMood(e.target.value)}
+                                                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:border-gray-600"
+                                            >
+                                                <option value="all">All Moods</option>
+                                                <option value="happy">Happy</option>
+                                                <option value="neutral">Neutral</option>
+                                                <option value="sad">Sad</option>
+                                            </select>
+                                            <Button
+                                                variant={viewMode === "full" ? "default" : "outline"}
+                                                size="sm"
+                                                onClick={() => setViewMode(viewMode === "full" ? "compact" : "full")}
+                                            >
+                                                {viewMode === "full" ? "Compact" : "Full"}
+                                            </Button>
+                                            <Button variant="outline" size="sm">
+                                                <BarChart3 className="w-4 h-4 mr-2" />
+                                                Analytics
+                                            </Button>
+                                            <Button size="sm" onClick={() => setShowNewEntry(true)}>
+                                                <Plus className="w-4 h-4 mr-2" />
+                                                New Entry
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Journal Entries */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-semibold">
+                                        {filteredEntries.length} entries found
+                                    </h2>
+                                    <div className="flex items-center space-x-2">
+                                        <Button variant="outline" size="sm">
+                                            <Download className="w-4 h-4 mr-1" />
+                                            Export
+                                        </Button>
+                                        <Button variant="outline" size="sm">
+                                            <Settings className="w-4 h-4 mr-1" />
+                                            Settings
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {filteredEntries.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {filteredEntries.map((entry) => (
+                                            <JournalEntry
+                                                key={entry.id}
+                                                entry={entry}
+                                                isCompact={viewMode === "compact"}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <Card>
+                                        <CardContent className="p-8 text-center">
+                                            <NotebookPen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                                No entries found
+                                            </h3>
+                                            <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                                Try adjusting your search or start writing your first entry
+                                            </p>
+                                            <Button onClick={() => setShowNewEntry(true)}>
+                                                <Plus className="w-4 h-4 mr-2" />
+                                                Write your first entry
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
