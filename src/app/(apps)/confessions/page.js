@@ -21,27 +21,21 @@ import Link from "next/link";
 
 export default function ConfessionWall() {
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="w-5 h-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold flex items-center">
-                                    <Shield className="w-7 h-7 mr-3 text-purple-600" />
-                                    Confession Wall
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    Share your thoughts anonymously in a safe space
-                                </p>
-                            </div>
+        <div className="space-y-6">
+            {/* Filters and Search */}
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <Input
+                                placeholder="Search confessions..."
+                                className="pl-10 bg-white dark:bg-gray-800 w-64"
+                            />
                         </div>
-
-                        {/* New Confession Button */}
+                        <Button variant="outline" size="sm">
+                            <Filter className="w-4 h-4 mr-2" />
+                            Filter
+                        </Button>
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
@@ -84,25 +78,6 @@ export default function ConfessionWall() {
                                 </div>
                             </DialogContent>
                         </Dialog>
-                    </div>
-                </div>
-            </header>
-
-            <div className="max-w-4xl mx-auto px-4 py-4">
-                {/* Filters and Search */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <Input
-                                placeholder="Search confessions..."
-                                className="pl-10 bg-white dark:bg-gray-800 w-64"
-                            />
-                        </div>
-                        <Button variant="outline" size="sm">
-                            <Filter className="w-4 h-4 mr-2" />
-                            Filter
-                        </Button>
                     </div>
 
                     <div className="flex items-center space-x-2">
@@ -333,7 +308,6 @@ export default function ConfessionWall() {
                         Load More Confessions
                     </Button>
                 </div>
-            </div>
         </div>
     );
 }

@@ -7,13 +7,13 @@ import { CheckCircle, Gift, AlertCircle, Loader2 } from 'lucide-react';
 // Mock valid referral codes for testing
 const MOCK_VALID_CODES = ['SHARE2024', 'FRIEND123', 'WELCOME50', 'CAMPUS2024', 'STUDENT21'];
 
-export function ReferralCodeInput({ 
-  value, 
-  onChange, 
+export function ReferralCodeInput({
+  value,
+  onChange,
   onValidate,
   validationState = null, // null, 'valid', 'invalid', 'loading'
   error = null,
-  showReward = false 
+  showReward = false
 }) {
   const [isValidating, setIsValidating] = React.useState(false);
   const [localValidationState, setLocalValidationState] = React.useState(null);
@@ -25,13 +25,13 @@ export function ReferralCodeInput({
       setLocalError(null);
       return;
     }
-    
+
     setIsValidating(true);
     setLocalValidationState('loading');
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     if (MOCK_VALID_CODES.includes(code.toUpperCase())) {
       setLocalValidationState('valid');
       setLocalError(null);
@@ -45,7 +45,7 @@ export function ReferralCodeInput({
         onValidate(code, 'invalid', 'Invalid referral code. Please check and try again.');
       }
     }
-    
+
     setIsValidating(false);
   };
 
@@ -73,13 +73,12 @@ export function ReferralCodeInput({
           placeholder="Enter referral code (optional)"
           value={value}
           onChange={(e) => onChange(e.target.value.toUpperCase())}
-          className={`pr-10 ${
-            currentValidationState === 'valid' 
-              ? 'border-green-500' 
-              : currentValidationState === 'invalid' 
-              ? 'border-red-500' 
-              : ''
-          }`}
+          className={`pr-10 ${currentValidationState === 'valid'
+              ? 'border-green-500'
+              : currentValidationState === 'invalid'
+                ? 'border-red-500'
+                : ''
+            }`}
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
           {isValidating || currentValidationState === 'loading' ? (

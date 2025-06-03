@@ -81,8 +81,8 @@ export default function ReferralAnalytics() {
                     </p>
                 </div>
                 <div className="flex items-center space-x-3">
-                    <Button 
-                        onClick={seedDemoData} 
+                    <Button
+                        onClick={seedDemoData}
                         disabled={seeding}
                         variant="outline"
                         className="flex items-center space-x-2"
@@ -90,8 +90,8 @@ export default function ReferralAnalytics() {
                         {seeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                         <span>{seeding ? 'Seeding...' : 'Seed Demo Data'}</span>
                     </Button>
-                    <Button 
-                        onClick={loadStats} 
+                    <Button
+                        onClick={loadStats}
                         disabled={loading}
                         variant="outline"
                         className="flex items-center space-x-2"
@@ -308,14 +308,14 @@ export default function ReferralAnalytics() {
                                         </div>
                                     </div>
                                 )) || (
-                                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                                        <Trophy className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                                        <p>No referrers yet</p>
-                                        <Button onClick={seedDemoData} className="mt-4">
-                                            Seed Demo Data
-                                        </Button>
-                                    </div>
-                                )}
+                                        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                                            <Trophy className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                                            <p>No referrers yet</p>
+                                            <Button onClick={seedDemoData} className="mt-4">
+                                                Seed Demo Data
+                                            </Button>
+                                        </div>
+                                    )}
                             </div>
                         </CardContent>
                     </Card>
@@ -325,7 +325,7 @@ export default function ReferralAnalytics() {
                     <Alert>
                         <BarChart3 className="h-4 w-4" />
                         <AlertDescription>
-                            Trends analysis coming soon. This will show referral growth patterns, 
+                            Trends analysis coming soon. This will show referral growth patterns,
                             seasonal trends, and predictive analytics.
                         </AlertDescription>
                     </Alert>
@@ -335,7 +335,7 @@ export default function ReferralAnalytics() {
                     <Alert>
                         <Gift className="h-4 w-4" />
                         <AlertDescription>
-                            Rewards analytics coming soon. This will show reward distribution, 
+                            Rewards analytics coming soon. This will show reward distribution,
                             redemption rates, and cost analysis.
                         </AlertDescription>
                     </Alert>

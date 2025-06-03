@@ -8,11 +8,11 @@ function extractHashtags(text) {
   const hashtagRegex = /#([a-zA-Z0-9_]+)/g;
   const matches = [];
   let match;
-  
+
   while ((match = hashtagRegex.exec(text)) !== null) {
     matches.push(match[1]);
   }
-  
+
   return matches;
 }
 

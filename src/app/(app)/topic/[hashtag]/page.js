@@ -147,7 +147,7 @@ export default function HashtagPage() {
   const params = useParams();
   const router = useRouter();
   const hashtag = params.hashtag;
-  
+
   const [posts, setPosts] = useState(MOCK_HASHTAG_POSTS[hashtag] || []);
   const [stats, setStats] = useState(MOCK_HASHTAG_STATS[hashtag] || {});
   const [isFollowing, setIsFollowing] = useState(false);
@@ -164,7 +164,7 @@ export default function HashtagPage() {
       description: `Posts tagged with #${hashtag}`,
       relatedTags: []
     };
-    
+
     setPosts(hashtagPosts);
     setStats(hashtagStats);
   }, [hashtag]);
@@ -206,22 +206,22 @@ export default function HashtagPage() {
       topics: [hashtag, ...(postData.topics || [])],
       audience: "Public"
     };
-    
+
     setPosts([newPost, ...posts]);
     setShowCreatePost(false);
   };
 
   const handlePostLike = (postId, isLiked) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
+    setPosts(posts.map(post =>
+      post.id === postId
         ? { ...post, isLiked, likes: isLiked ? post.likes + 1 : post.likes - 1 }
         : post
     ));
   };
 
   const handlePostBookmark = (postId, isBookmarked) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
+    setPosts(posts.map(post =>
+      post.id === postId
         ? { ...post, isBookmarked }
         : post
     ));
@@ -270,7 +270,7 @@ export default function HashtagPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
@@ -355,7 +355,7 @@ export default function HashtagPage() {
           </Button>
         </div>
 
-        <Button 
+        <Button
           size="sm"
           onClick={() => setShowCreatePost(!showCreatePost)}
         >

@@ -161,7 +161,7 @@ export default function SignUp() {
         }
 
         setIsLoading(true);
-        
+
         try {
             // Create user account
             const userData = {
@@ -201,7 +201,7 @@ export default function SignUp() {
                         // Don't fail the entire registration for referral errors
                     }
                 }
-                
+
                 setStep(4);
             } else {
                 setErrors({ submit: userResult.error || 'Failed to create account' });

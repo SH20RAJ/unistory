@@ -2,21 +2,21 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Bell, 
-  Gift, 
-  UserPlus, 
+import {
+  Bell,
+  Gift,
+  UserPlus,
   Trophy,
   X,
   CheckCircle,
   Clock
 } from 'lucide-react';
 
-export function ReferralNotifications({ 
+export function ReferralNotifications({
   notifications = [],
   onMarkAsRead,
   onMarkAllAsRead,
-  onDismiss 
+  onDismiss
 }) {
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -54,13 +54,13 @@ export function ReferralNotifications({
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
-    
+
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return `${diffInDays}d ago`;
-    
+
     const diffInWeeks = Math.floor(diffInDays / 7);
     return `${diffInWeeks}w ago`;
   };
@@ -103,8 +103,8 @@ export function ReferralNotifications({
             )}
           </div>
           {unreadCount > 0 && (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={onMarkAllAsRead}
             >
@@ -121,17 +121,16 @@ export function ReferralNotifications({
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`relative p-4 rounded-lg border ${
-                !notification.read 
+              className={`relative p-4 rounded-lg border ${!notification.read
                   ? getNotificationColor(notification.type)
                   : 'border-gray-200 bg-white dark:bg-gray-900'
-              }`}
+                }`}
             >
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 mt-1">
                   {getNotificationIcon(notification.type)}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -141,7 +140,7 @@ export function ReferralNotifications({
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         {notification.message}
                       </p>
-                      
+
                       {notification.actionData && (
                         <div className="mt-2 flex items-center space-x-2">
                           {notification.actionData.points && (
@@ -157,12 +156,12 @@ export function ReferralNotifications({
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center space-x-2 ml-4">
                       <span className="text-xs text-gray-500">
                         {formatTimeAgo(notification.createdAt)}
                       </span>
-                      
+
                       {!notification.read && (
                         <Button
                           variant="ghost"
@@ -173,7 +172,7 @@ export function ReferralNotifications({
                           <CheckCircle className="h-4 w-4" />
                         </Button>
                       )}
-                      
+
                       <Button
                         variant="ghost"
                         size="sm"
@@ -185,7 +184,7 @@ export function ReferralNotifications({
                     </div>
                   </div>
                 </div>
-                
+
                 {!notification.read && (
                   <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
                 )}

@@ -11,26 +11,26 @@ export async function POST(request) {
 
         // Validate required fields
         if (!fullName || !email || !password || !university || !major || !graduationYear) {
-            return NextResponse.json({ 
-                success: false, 
-                error: 'All fields are required' 
+            return NextResponse.json({
+                success: false,
+                error: 'All fields are required'
             }, { status: 400 });
         }
 
         // Validate email format
         if (!email.endsWith('.edu') && !email.includes('@university.')) {
-            return NextResponse.json({ 
-                success: false, 
-                error: 'Please use a valid .edu email address' 
+            return NextResponse.json({
+                success: false,
+                error: 'Please use a valid .edu email address'
             }, { status: 400 });
         }
 
         // Check if user already exists
         const existingUser = await db.select().from(users).where(eq(users.email, email)).get();
         if (existingUser) {
-            return NextResponse.json({ 
-                success: false, 
-                error: 'User already exists with this email' 
+            return NextResponse.json({
+                success: false,
+                error: 'User already exists with this email'
             }, { status: 400 });
         }
 
@@ -66,17 +66,17 @@ export async function POST(request) {
             updatedAt: new Date()
         });
 
-        return NextResponse.json({ 
-            success: true, 
+        return NextResponse.json({
+            success: true,
             userId: newUser[0].id,
-            message: 'Account created successfully' 
+            message: 'Account created successfully'
         });
 
     } catch (error) {
         console.error('Registration error:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: 'An error occurred during registration' 
+        return NextResponse.json({
+            success: false,
+            error: 'An error occurred during registration'
         }, { status: 500 });
     }
 }

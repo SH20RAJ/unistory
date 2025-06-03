@@ -21,11 +21,11 @@ async function testAPI(endpoint, method = 'GET', body = null) {
 
         const response = await fetch(`${BASE_URL}${endpoint}`, options);
         const data = await response.json();
-        
+
         console.log(`\n${method} ${endpoint}:`);
         console.log(`Status: ${response.status}`);
         console.log(`Response:`, JSON.stringify(data, null, 2));
-        
+
         return { success: response.ok, data, status: response.status };
     } catch (error) {
         console.error(`Error testing ${endpoint}:`, error.message);
@@ -35,12 +35,12 @@ async function testAPI(endpoint, method = 'GET', body = null) {
 
 async function testReferralSystem() {
     console.log('🧪 Testing Referral System End-to-End Flow');
-    console.log('=' .repeat(50));
+    console.log('='.repeat(50));
 
     // 1. Seed demo data first
     console.log('\n1. 🌱 Seeding demo data...');
     const seedResult = await testAPI('/api/referrals/demo', 'POST', { action: 'seed_demo_data' });
-    
+
     if (!seedResult.success) {
         console.error('❌ Failed to seed demo data');
         return;
@@ -50,7 +50,7 @@ async function testReferralSystem() {
     // 2. Get referral stats
     console.log('\n2. 📊 Fetching referral stats...');
     const statsResult = await testAPI('/api/referrals/demo', 'POST', { action: 'get_stats' });
-    
+
     if (statsResult.success) {
         console.log('✅ Referral stats retrieved successfully');
     }
@@ -62,7 +62,7 @@ async function testReferralSystem() {
         code: 'ALEX2024',
         userId: 'temp_user'
     });
-    
+
     if (validateResult.success && validateResult.data.valid) {
         console.log('✅ Referral code validation working');
     } else {
@@ -80,10 +80,10 @@ async function testReferralSystem() {
         year: 'Sophomore',
         referralCode: 'ALEX2024'
     });
-    
+
     if (registerResult.success) {
         console.log('✅ User registration with referral working');
-        
+
         // 5. Process the referral after registration
         console.log('\n5. 🎁 Processing referral reward...');
         const rewardResult = await testAPI('/api/referrals', 'POST', {
@@ -91,7 +91,7 @@ async function testReferralSystem() {
             code: 'ALEX2024',
             userId: registerResult.data.userId
         });
-        
+
         if (rewardResult.success) {
             console.log('✅ Referral reward processed successfully');
         } else {
@@ -104,7 +104,7 @@ async function testReferralSystem() {
     // 6. Test fetching user referrals
     console.log('\n6. 📋 Testing user referrals fetch...');
     const userReferralsResult = await testAPI('/api/referrals?userId=user1');
-    
+
     if (userReferralsResult.success) {
         console.log('✅ User referrals fetch working');
     }
@@ -116,7 +116,7 @@ async function testReferralSystem() {
         userId: 'user1',
         customCode: 'TESTCODE2024'
     });
-    
+
     if (newCodeResult.success) {
         console.log('✅ New referral code creation working');
     }
@@ -137,7 +137,7 @@ if (require.main === module) {
     if (!global.fetch) {
         global.fetch = require('node-fetch');
     }
-    
+
     testReferralSystem().catch(console.error);
 }
 

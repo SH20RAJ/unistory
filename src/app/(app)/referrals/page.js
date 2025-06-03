@@ -96,9 +96,9 @@ export default function ReferralsPage() {
       referralPointsEarned: 750, // 600 from referrals + 150 milestone bonus
     }
   });
-  
+
   const [loading, setLoading] = React.useState(false); // No loading for mock data
-  
+
   // Mock pending rewards
   const [pendingRewards] = React.useState([
     {
@@ -209,9 +209,9 @@ export default function ReferralsPage() {
   };
 
   const handleMarkAsRead = (notificationId) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId 
+    setNotifications(prev =>
+      prev.map(notif =>
+        notif.id === notificationId
           ? { ...notif, read: true }
           : notif
       )
@@ -219,13 +219,13 @@ export default function ReferralsPage() {
   };
 
   const handleMarkAllAsRead = () => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(notif => ({ ...notif, read: true }))
     );
   };
 
   const handleDismissNotification = (notificationId) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.filter(notif => notif.id !== notificationId)
     );
   };

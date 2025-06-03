@@ -11,12 +11,12 @@ export function parseHashtags(text, className = "text-blue-600 hover:text-blue-8
 
   // Regular expression to match hashtags (# followed by alphanumeric characters and underscores)
   const hashtagRegex = /#([a-zA-Z0-9_]+)/g;
-  
+
   // Split text by hashtags while keeping the hashtags
   const parts = text.split(hashtagRegex);
-  
+
   const result = [];
-  
+
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
       // Regular text part
@@ -38,7 +38,7 @@ export function parseHashtags(text, className = "text-blue-600 hover:text-blue-8
       );
     }
   }
-  
+
   return result;
 }
 
@@ -49,15 +49,15 @@ export function parseHashtags(text, className = "text-blue-600 hover:text-blue-8
  */
 export function extractHashtags(text) {
   if (!text) return [];
-  
+
   const hashtagRegex = /#([a-zA-Z0-9_]+)/g;
   const hashtags = [];
   let match;
-  
+
   while ((match = hashtagRegex.exec(text)) !== null) {
     hashtags.push(match[1]);
   }
-  
+
   return hashtags;
 }
 

@@ -3,11 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Trophy, 
-  Star, 
-  Gift, 
-  Crown, 
+import {
+  Trophy,
+  Star,
+  Gift,
+  Crown,
   Target,
   CheckCircle,
   Clock,
@@ -22,11 +22,11 @@ const REFERRAL_MILESTONES = [
   { count: 50, title: 'Campus Ambassador', icon: Sparkles, points: 5000, color: 'text-pink-500' },
 ];
 
-export function ReferralRewards({ 
-  currentReferrals = 0, 
+export function ReferralRewards({
+  currentReferrals = 0,
   totalPointsEarned = 0,
   achievements = [],
-  pendingRewards = [] 
+  pendingRewards = []
 }) {
   const getNextMilestone = () => {
     return REFERRAL_MILESTONES.find(milestone => milestone.count > currentReferrals);
@@ -35,16 +35,16 @@ export function ReferralRewards({
   const getProgress = () => {
     const nextMilestone = getNextMilestone();
     if (!nextMilestone) return 100;
-    
+
     const previousMilestone = REFERRAL_MILESTONES.find(
-      (milestone, index) => 
+      (milestone, index) =>
         REFERRAL_MILESTONES[index + 1] === nextMilestone
     );
-    
+
     const start = previousMilestone ? previousMilestone.count : 0;
     const end = nextMilestone.count;
     const current = currentReferrals;
-    
+
     return Math.min(((current - start) / (end - start)) * 100, 100);
   };
 
@@ -66,7 +66,7 @@ export function ReferralRewards({
             <span className="text-sm font-medium">Current Referrals</span>
             <span className="text-2xl font-bold">{currentReferrals}</span>
           </div>
-          
+
           {getNextMilestone() && (
             <>
               <div className="space-y-2">
@@ -76,7 +76,7 @@ export function ReferralRewards({
                 </div>
                 <Progress value={getProgress()} className="h-2" />
               </div>
-              
+
               <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   {/* <getNextMilestone().icon className={`h-6 w-6 ${getNextMilestone().color}`} /> */}
@@ -106,7 +106,7 @@ export function ReferralRewards({
           <CardContent>
             <div className="space-y-3">
               {pendingRewards.map((reward) => (
-                <div 
+                <div
                   key={reward.id}
                   className="flex items-center justify-between p-3 border rounded-lg"
                 >
@@ -145,34 +145,31 @@ export function ReferralRewards({
             {REFERRAL_MILESTONES.map((milestone) => {
               const isCompleted = currentReferrals >= milestone.count;
               const isCurrent = !isCompleted && getNextMilestone()?.count === milestone.count;
-              
+
               return (
-                <div 
+                <div
                   key={milestone.count}
-                  className={`flex items-center space-x-4 p-4 rounded-lg border ${
-                    isCompleted 
-                      ? 'bg-green-50 dark:bg-green-900/20 border-green-200' 
+                  className={`flex items-center space-x-4 p-4 rounded-lg border ${isCompleted
+                      ? 'bg-green-50 dark:bg-green-900/20 border-green-200'
                       : isCurrent
-                      ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200'
-                      : 'bg-gray-50 dark:bg-gray-900/20'
-                  }`}
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200'
+                        : 'bg-gray-50 dark:bg-gray-900/20'
+                    }`}
                 >
-                  <div className={`p-2 rounded-full ${
-                    isCompleted 
-                      ? 'bg-green-100 dark:bg-green-800' 
+                  <div className={`p-2 rounded-full ${isCompleted
+                      ? 'bg-green-100 dark:bg-green-800'
                       : isCurrent
-                      ? 'bg-blue-100 dark:bg-blue-800'
-                      : 'bg-gray-100 dark:bg-gray-800'
-                  }`}>
+                        ? 'bg-blue-100 dark:bg-blue-800'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    }`}>
                     {isCompleted ? (
                       <CheckCircle className="h-6 w-6 text-green-600" />
                     ) : (
-                      <milestone.icon className={`h-6 w-6 ${
-                        isCurrent ? 'text-blue-600' : 'text-gray-400'
-                      }`} />
+                      <milestone.icon className={`h-6 w-6 ${isCurrent ? 'text-blue-600' : 'text-gray-400'
+                        }`} />
                     )}
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <h3 className="font-semibold">{milestone.title}</h3>
@@ -187,7 +184,7 @@ export function ReferralRewards({
                       Refer {milestone.count} friends • {milestone.points} bonus points
                     </p>
                   </div>
-                  
+
                   <div className="text-right">
                     <p className="text-lg font-bold">{milestone.points}</p>
                     <p className="text-xs text-gray-500">points</p>

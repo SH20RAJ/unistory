@@ -268,7 +268,7 @@ export default function HotNotSwipingPage() {
     const handleNot = () => handleSwipe("not");
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 dark:from-gray-900 dark:via-orange-900/20 dark:to-red-900/20 p-4">
+        <div className="space-y-6">
             <div className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="text-center space-y-4">

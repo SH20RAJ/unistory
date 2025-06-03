@@ -443,35 +443,7 @@ export default function BuySellPage() {
     const featuredItems = mockItems.filter(item => item.featured).slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                <ShoppingBag className="w-8 h-8 text-green-600 dark:text-green-400" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Campus Marketplace
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    Buy, sell, and exchange with fellow students
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Button className="bg-green-600 hover:bg-green-700">
-                                <Plus className="w-4 h-4 mr-2" />
-                                Sell Item
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar */}
                     <div className="space-y-6">
@@ -596,6 +568,10 @@ export default function BuySellPage() {
                                                 <List className="w-4 h-4" />
                                             </Button>
                                         </div>
+                                        <Button className="bg-green-600 hover:bg-green-700">
+                                            <Plus className="w-4 h-4 mr-2" />
+                                            Sell Item
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -637,7 +613,6 @@ export default function BuySellPage() {
                         )}
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

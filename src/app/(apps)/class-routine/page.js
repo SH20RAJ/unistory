@@ -445,39 +445,7 @@ export default function ClassRoutinePage() {
     const todayClasses = mockSchedule.monday; // Simulate today being Monday
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                                <CalendarDays className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Class Routine
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    Smart timetable management with notifications and reminders
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Button variant="outline">
-                                <Download className="w-4 h-4 mr-2" />
-                                Export
-                            </Button>
-                            <Button>
-                                <Plus className="w-4 h-4 mr-2" />
-                                Add Class
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar */}
                     <div className="space-y-6">
@@ -622,6 +590,14 @@ export default function ClassRoutinePage() {
                                                 Grid
                                             </Button>
                                         </div>
+                                        <Button variant="outline">
+                                            <Download className="w-4 h-4 mr-2" />
+                                            Export
+                                        </Button>
+                                        <Button>
+                                            <Plus className="w-4 h-4 mr-2" />
+                                            Add Class
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -645,7 +621,6 @@ export default function ClassRoutinePage() {
                         )}
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

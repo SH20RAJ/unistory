@@ -144,9 +144,9 @@ export function PostCard({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="h-8 w-8"
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -212,20 +212,20 @@ export function PostCard({
           </Button>
           <span className="text-sm font-medium">{likeCount}</span>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full h-8 w-8 ml-2 hover:bg-blue-50 hover:text-blue-500" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-8 w-8 ml-2 hover:bg-blue-50 hover:text-blue-500"
             onClick={(e) => { e.stopPropagation(); handleCommentClick(); }}
           >
             <MessageSquare className="h-4 w-4" />
           </Button>
           <span className="text-sm font-medium">{post.comments || 0}</span>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full h-8 w-8 ml-2 hover:bg-green-50 hover:text-green-500" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-8 w-8 ml-2 hover:bg-green-50 hover:text-green-500"
             onClick={(e) => { e.stopPropagation(); handleShare(); }}
           >
             <Share2 className="h-4 w-4" />

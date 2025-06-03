@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  TrendingUp, 
-  Users, 
+import {
+  TrendingUp,
+  Users,
   Target,
   Calendar,
   BarChart3,
@@ -12,27 +12,27 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
-export function ReferralAnalytics({ 
+export function ReferralAnalytics({
   referrals = [],
   stats = {},
-  timeRange = '30d' 
+  timeRange = '30d'
 }) {
   // Generate mock analytics data
   const generateTimeSeriesData = () => {
     const data = [];
     const now = new Date();
-    
+
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
-      
+
       // Mock data based on existing referrals
       const dateStr = date.toISOString().split('T')[0];
       const dayReferrals = referrals.filter(ref => {
         const refDate = new Date(ref.createdAt).toISOString().split('T')[0];
         return refDate === dateStr;
       }).length;
-      
+
       data.push({
         date: dateStr,
         referrals: dayReferrals,
@@ -42,7 +42,7 @@ export function ReferralAnalytics({
         }).length
       });
     }
-    
+
     return data;
   };
 
@@ -58,7 +58,7 @@ export function ReferralAnalytics({
   const timeSeriesData = generateTimeSeriesData();
   const monthlyData = generateMonthlyData();
 
-  const conversionRate = stats.referralsSent > 0 
+  const conversionRate = stats.referralsSent > 0
     ? ((stats.successfulReferrals / stats.referralsSent) * 100).toFixed(1)
     : 0;
 
@@ -72,9 +72,9 @@ export function ReferralAnalytics({
       const day = new Date(ref.createdAt).toLocaleDateString('en-US', { weekday: 'long' });
       dayCount[day] = (dayCount[day] || 0) + 1;
     });
-    
+
     return Object.entries(dayCount)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([day, count]) => ({ day, count }));
   };
@@ -158,25 +158,25 @@ export function ReferralAnalytics({
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={timeSeriesData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="date" 
+                  <XAxis
+                    dataKey="date"
                     tickFormatter={(value) => new Date(value).getDate().toString()}
                   />
                   <YAxis />
-                  <Tooltip 
+                  <Tooltip
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="referrals" 
-                    stroke="#3b82f6" 
+                  <Line
+                    type="monotone"
+                    dataKey="referrals"
+                    stroke="#3b82f6"
                     strokeWidth={2}
                     name="Total Referrals"
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="successful" 
-                    stroke="#10b981" 
+                  <Line
+                    type="monotone"
+                    dataKey="successful"
+                    stroke="#10b981"
                     strokeWidth={2}
                     name="Successful"
                   />
@@ -273,7 +273,7 @@ export function ReferralAnalytics({
                   }).length}
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Successful This Week</span>
                 <span className="text-2xl font-bold text-green-600">

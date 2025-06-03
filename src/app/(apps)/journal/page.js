@@ -410,39 +410,7 @@ export default function JournalPage() {
     const recentEntries = mockEntries.slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                                <NotebookPen className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Personal Journal
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    Reflect, track your mood, and set goals for personal growth
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Button variant="outline">
-                                <BarChart3 className="w-4 h-4 mr-2" />
-                                Analytics
-                            </Button>
-                            <Button onClick={() => setShowNewEntry(true)}>
-                                <Plus className="w-4 h-4 mr-2" />
-                                New Entry
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar */}
                     <div className="space-y-6">
@@ -579,6 +547,14 @@ export default function JournalPage() {
                                                 >
                                                     {viewMode === "full" ? "Compact" : "Full"}
                                                 </Button>
+                                                <Button variant="outline" size="sm">
+                                                    <BarChart3 className="w-4 h-4 mr-2" />
+                                                    Analytics
+                                                </Button>
+                                                <Button size="sm" onClick={() => setShowNewEntry(true)}>
+                                                    <Plus className="w-4 h-4 mr-2" />
+                                                    New Entry
+                                                </Button>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -634,7 +610,6 @@ export default function JournalPage() {
                         )}
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

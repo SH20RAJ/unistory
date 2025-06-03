@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
 import {
     BookOpen,
     Search,
@@ -418,10 +417,8 @@ export default function ResourcesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
-            <MainNavigation />
-            
-            <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+            <div className="space-y-8">
                 {/* Header Section */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center mb-4">
@@ -559,8 +556,6 @@ export default function ResourcesPage() {
                     </div>
                 </div>
             </div>
-            
-            <BottomNavigation />
         </div>
     );
 }

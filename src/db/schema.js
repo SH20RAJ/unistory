@@ -17,22 +17,22 @@ export const users = sqliteTable("users", {
   joinedDate: integer("joined_date", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
   isVerified: integer("is_verified", { mode: "boolean" }).default(false),
   status: text("status").default("active"), // active, suspended, banned
-  
+
   // Privacy and preferences
   isPrivate: integer("is_private", { mode: "boolean" }).default(false),
   preferences: text("preferences"), // JSON object for user preferences
-  
+
   // Activity tracking
   lastActiveAt: integer("last_active_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  
+
   // Referral fields
   referralCode: text("referral_code").unique(), // User's unique referral code
   referredBy: text("referred_by").references(() => users.id), // Who referred this user
-  
+
   // Stats
   totalPoints: integer("total_points").default(0),
   achievementCount: integer("achievement_count").default(0),
-  
+
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
@@ -189,7 +189,7 @@ export const clubs = sqliteTable("clubs", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   image: text("image"), // emoji or image URL
-  
+
   // Club details
   category: text("category").notNull(), // Academic, Cultural, Sports, Professional, Service, Special Interest
   college: text("college").notNull(),
@@ -227,7 +227,7 @@ export const events = sqliteTable("events", {
   time: text("time").notNull(),
   location: text("location").notNull(),
   capacity: integer("capacity"),
-  
+
   // Event organizer
   organizerId: text("organizer_id").notNull().references(() => users.id),
   clubId: text("club_id").references(() => clubs.id, { onDelete: "set null" }),
@@ -486,7 +486,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   receivedCrushes: many(secretCrushes, { relationName: "receivedCrushes" }),
   notifications: many(notifications, { relationName: "receivedNotifications" }),
   sentNotifications: many(notifications, { relationName: "sentNotifications" }),
-  
+
   // Referral relations
   referralCodes: many(referralCodes),
   sentReferrals: many(referrals, { relationName: "sentReferrals" }),

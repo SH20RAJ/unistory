@@ -133,7 +133,7 @@ export default function AppsPage() {
     const handleAppClick = (appName, onClick) => {
         // Track app interactions
         setClickedApps(prev => new Set(prev).add(appName));
-        
+
         // Add a small delay for visual feedback
         setTimeout(() => {
             onClick();
@@ -552,7 +552,7 @@ export default function AppsPage() {
             {/* App Sections */}
             {!searchQuery && (
                 <div className="space-y-8">
-                   <AppSection
+                    <AppSection
                         icon={Heart}
                         title="Dating & Connections"
                         description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
@@ -561,8 +561,8 @@ export default function AppsPage() {
                         onAppClick={handleAppClick}
                         clickedApps={clickedApps}
                     />
-                    
-                     {/* Essential Apps Section */}
+
+                    {/* Essential Apps Section */}
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
                         <div className="flex items-center space-x-3 mb-6">
                             <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -603,7 +603,7 @@ export default function AppsPage() {
                         </div>
                     </div>
 
-                    
+
 
                     <AppSection
                         icon={BookOpen}

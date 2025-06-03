@@ -321,35 +321,7 @@ export default function NewsroomPage() {
     const trendingNews = mockNews.filter(news => news.trending).slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                                <Newspaper className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Campus Newsroom
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    Stay updated with campus news, announcements, and trending topics
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Button variant="outline" size="sm">
-                                <Bell className="w-4 h-4 mr-2" />
-                                Subscribe
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Main Content */}
                     <div className="lg:col-span-3 space-y-6">
@@ -377,6 +349,10 @@ export default function NewsroomPage() {
                                                 <option key={category} value={category}>{category}</option>
                                             ))}
                                         </select>
+                                        <Button variant="outline" size="sm">
+                                            <Bell className="w-4 h-4 mr-2" />
+                                            Subscribe
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -492,7 +468,6 @@ export default function NewsroomPage() {
                         </Card>
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

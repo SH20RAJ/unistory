@@ -59,9 +59,9 @@ const mockReferralData = {
   ]
 };
 
-export function ReferralDashboard({ 
-  referralCode = mockReferralData.code, 
-  referrals = mockReferralData.referrals, 
+export function ReferralDashboard({
+  referralCode = mockReferralData.code,
+  referrals = mockReferralData.referrals,
   stats = mockReferralData.stats,
   onGenerateCode = () => console.log('Generate code'),
   onShareCode = () => console.log('Share code')
@@ -144,7 +144,7 @@ export function ReferralDashboard({
               <TrendingUp className="h-5 w-5 text-purple-500" />
               <div>
                 <p className="text-2xl font-bold">
-                  {stats.successfulReferrals && stats.referralsSent 
+                  {stats.successfulReferrals && stats.referralsSent
                     ? Math.round((stats.successfulReferrals / stats.referralsSent) * 100)
                     : 0}%
                 </p>

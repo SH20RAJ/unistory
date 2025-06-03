@@ -8,10 +8,10 @@ import { nanoid } from 'nanoid';
 export async function POST(request) {
   try {
     const { referrerId, refereeId, referralCode } = await request.json();
-    
+
     if (!referrerId || !refereeId || !referralCode) {
-      return NextResponse.json({ 
-        error: 'Missing required fields' 
+      return NextResponse.json({
+        error: 'Missing required fields'
       }, { status: 400 });
     }
 
@@ -68,8 +68,8 @@ export async function POST(request) {
 
     // Update referral code usage count
     await db.update(referralCodes)
-      .set({ 
-        usageCount: db.select().from(referralCodes).where(eq(referralCodes.code, referralCode)).then(codes => 
+      .set({
+        usageCount: db.select().from(referralCodes).where(eq(referralCodes.code, referralCode)).then(codes =>
           codes[0]?.usageCount + 1 || 1
         )
       })

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MainNavigation, BottomNavigation } from "@/components/layout/navigation";
 import {
     Smile,
     Frown,
@@ -82,15 +81,8 @@ export default function WellnessPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
-            <div className="max-w-6xl mx-auto px-4 py-6 pb-20 md:pb-6">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Wellness Hub</h1>
-                    <p className="text-gray-600 dark:text-gray-400">Track your mood, reflect, and grow through your college journey</p>
-                </div>
-
-                <Tabs defaultValue="checkin" className="w-full">
+        <div className="space-y-6">
+            <Tabs defaultValue="checkin" className="w-full">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="checkin">Daily Check-in</TabsTrigger>
                         <TabsTrigger value="insights">Insights</TabsTrigger>
@@ -346,9 +338,6 @@ export default function WellnessPage() {
                         </div>
                     </TabsContent>
                 </Tabs>
-            </div>
-
-            <BottomNavigation />
         </div>
     );
 }

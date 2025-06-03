@@ -43,7 +43,7 @@ const FlirtCard = ({ message, timeLeft, isAnonymous, gender, year, interests, on
     return (
         <Card className="relative overflow-hidden border-2 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-pink-100 to-transparent dark:from-pink-900/20 rounded-bl-full"></div>
-            
+
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -146,11 +146,10 @@ const ActiveFlirtChat = ({ chat, onSendMessage }) => {
                         className={`flex ${message.isMe ? 'justify-end' : 'justify-start'}`}
                     >
                         <div
-                            className={`max-w-xs px-3 py-2 rounded-lg ${
-                                message.isMe
-                                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                            }`}
+                            className={`max-w-xs px-3 py-2 rounded-lg ${message.isMe
+                                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                                : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                }`}
                         >
                             <p className="text-sm">{message.text}</p>
                             <span className="text-xs opacity-70">{message.time}</span>
@@ -197,7 +196,7 @@ export default function FlirtZonePage() {
     const [activeTab, setActiveTab] = useState("discover");
     const [showPrompts, setShowPrompts] = useState(false);
     const [selectedFlirt, setSelectedFlirt] = useState(null);
-    
+
     // Mock data
     const flirtMessages = [
         {
@@ -264,20 +263,11 @@ export default function FlirtZonePage() {
     ];
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="text-center space-y-4">
-                <div className="inline-flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center">
-                        <Flame className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Flirt Zone</h1>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Time-limited anonymous flirting</p>
-                    </div>
-                </div>
+        <div className="space-y-6">
+            {/* App Description */}
+            <div className="text-center space-y-2">
                 <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                    Send and receive anonymous flirty messages that disappear after 24 hours. 
+                    Send and receive anonymous flirty messages that disappear after 24 hours.
                     Build connections before they vanish! ⏰
                 </p>
             </div>
@@ -335,7 +325,7 @@ export default function FlirtZonePage() {
                             Filter
                         </Button>
                     </div>
-                    
+
                     <div className="grid gap-4">
                         {flirtMessages.map((flirt) => (
                             <FlirtCard
@@ -361,7 +351,7 @@ export default function FlirtZonePage() {
             {activeTab === "active" && (
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Active Conversations</h2>
-                    
+
                     <div className="grid lg:grid-cols-2 gap-6">
                         {activeChats.map((chat) => (
                             <ActiveFlirtChat
@@ -385,7 +375,7 @@ export default function FlirtZonePage() {
             {activeTab === "send" && (
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Send a Flirt</h2>
-                    
+
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
