@@ -144,11 +144,11 @@ export default function TruthBomb() {
     };
 
     return (
-        <div>
+        <>
             {!hasAccess && <PremiumGate appName="Truth Bomb" />}
             {hasAccess && (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white">
-            <div className="max-w-md mx-auto p-4">
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white">
+                    <div className="max-w-md mx-auto p-4">
                 {/* Header */}
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-red-400 to-pink-500 bg-clip-text text-transparent mb-2">
@@ -348,9 +348,9 @@ export default function TruthBomb() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                    </div>
+                </div>
             )}
-        </div>
+        </>
     );
 }

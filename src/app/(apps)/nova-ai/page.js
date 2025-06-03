@@ -31,8 +31,7 @@ import {
     ChevronRight,
     Flame,
     Activity,
-    AlertCircle,
-    ArrowRight
+    AlertCircle
 } from 'lucide-react';
 
 export default function NovaAI() {
@@ -136,10 +135,10 @@ export default function NovaAI() {
     }, [messages]);
     
     return (
-        <div>
+        <>
             {!hasAccess && <PremiumGate appName="Nova AI" />}
             {hasAccess && (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="max-w-6xl mx-auto p-4">
                 {/* Clean Header */}
                 <div className="mb-6">
@@ -376,6 +375,6 @@ export default function NovaAI() {
             </div>
         </div>
             )}
-        </div>
+        </>
     );
 }

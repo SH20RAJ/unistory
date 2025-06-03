@@ -59,7 +59,6 @@ import {
     Rocket,
     Magic,
     Wand2,
-    Crystal,
     Hourglass,
     Sunrise,
     Sunset,
@@ -228,7 +227,7 @@ const capsuleTemplates = [
             "The world will change by:",
             "My biggest achievement will be:"
         ],
-        icon: <Crystal className="w-5 h-5" />,
+        icon: <Sparkles className="w-5 h-5" />,
         color: "from-indigo-500 to-purple-500"
     }
 ];

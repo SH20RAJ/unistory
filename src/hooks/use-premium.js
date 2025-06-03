@@ -8,7 +8,7 @@ export const PremiumProvider = ({ children }) => {
     const [isPremium, setIsPremium] = useState(false);
     const [userCredits, setUserCredits] = useState(1847);
     const [premiumApps, setPremiumApps] = useState(new Set());
-    const [trialAppsUsed, setTrialAppsUsed] = useState(new Set());
+    const [trialAppsUsed, setTrialAppsUsed] = useState(new Map());
     const [subscriptionType, setSubscriptionType] = useState(null); // 'monthly', 'annual', null
     const [subscriptionEndDate, setSubscriptionEndDate] = useState(null);
 

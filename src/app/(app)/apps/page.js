@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,6 @@ import {
     MessageSquare,
     BookOpen
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const AppSection = ({ icon: Icon, title, description, apps, color = "blue", onAppClick, clickedApps }) => {
     const colorClasses = {
@@ -310,11 +310,45 @@ export default function AppsPage() {
             newSet.add(appName);
             return newSet;
         });
-        // Navigate or handle app click as needed
+        
+        // Map app names to their routes
+        const appRoutes = {
+            "Mind Reader": "/mind-reader",
+            "Social Credit Score": "/social-credit",
+            "Time Capsule": "/time-capsule",
+            "Dopamine Dealer": "/dopamine-dealer",
+            "Truth Bomb": "/truth-bomb",
+            "Soul Twin Finder": "/soul-twin",
+            "Achievement Hunter": "/achievement-hunter",
+            "Battle Royale": "/battle-royale",
+            "Memory Palace": "/memory-palace",
+            "Future Bets": "/future-bets",
+            "Flirt Zone": "/flirt-zone",
+            "MatchMe AI": "/matchme-ai",
+            "Hot/Not Swiping": "/hot-not-swiping",
+            "Virtual Date Ideas": "/virtual-date-ideas",
+            "Couple of the Week": "/couple-of-the-week",
+            "Secret Crush": "/matches",
+            "Academic Resources": "/academic-resources",
+            "Class Routine": "/class-routine",
+            "Journal": "/journal",
+            "Newsroom": "/newsroom",
+            "Buy & Sell": "/buy-sell",
+            "Confessions": "/confessions",
+            "Wellness": "/wellness",
+            "Nova AI": "/nova-ai"
+        };
+
+        // Navigate to the appropriate route if it exists
+        const route = appRoutes[appName];
+        if (route) {
+            router.push(route);
+        }
     };
 
-    // Helper function to check if an app is one of the six premium apps
+    // Helper function to check if an app is one of the premium apps
     const isPremiumApp = (name) => {
+        // Only Stress & Mental Health category apps should be premium
         const PREMIUM_APPS = [
             'Truth Bomb',
             'Dopamine Dealer',
@@ -323,7 +357,7 @@ export default function AppsPage() {
             'Mind Reader',
             'Social Credit'
         ];
-        return PREMIUM_APPS.includes(name);
+        return false; // Set all to free for now as requested
     };
 
     // Apps data with premium status based on the PREMIUM_APPS list
@@ -331,7 +365,7 @@ export default function AppsPage() {
         {
             icon: Heart,
             name: "Secret Crush Detector",
-            description: "Advanced AI analyzes micro-expressions, social patterns, and behavioral cues to reveal who secretly likes you. Uses variable-ratio reinforcement to keep you coming back for 'just one more check'.",
+            description: "A fun way to discover potential connections! Our AI helps you understand subtle social cues and bring people together in meaningful ways.",
             popular: true,
             trending: true,
             locked: !isPremium,
@@ -340,7 +374,7 @@ export default function AppsPage() {
         {
             icon: Brain,
             name: "Mind Reader",
-            description: "Deep psychological profiling through seemingly innocent questions. Creates detailed personality maps and reveals hidden traits you didn't know about yourself.",
+            description: "Discover fascinating insights about your personality through engaging questions and conversations. Learn more about yourself and grow!",
             popular: true,
             locked: !isPremium && isPremiumApp("Mind Reader"),
             premium: isPremiumApp("Mind Reader")
@@ -348,7 +382,7 @@ export default function AppsPage() {
         {
             icon: Trophy,
             name: "Social Credit Score",
-            description: "Gamified social status system that tracks every interaction, post, and connection. Creates addiction through leaderboards and status anxiety.",
+            description: "Celebrate your campus involvement! Earn points for positive contributions to the community and inspire others to do the same.",
             trending: true,
             locked: !isPremium,
             premium: true
@@ -356,22 +390,22 @@ export default function AppsPage() {
         {
             icon: Clock,
             name: "Time Capsule",
-            description: "Emotional investment app that connects you with your future self. Creates deep attachment through anticipation and self-discovery loops.",
+            description: "Create beautiful digital memories and heartfelt messages for your future self. A delightful way to track your personal growth journey.",
             locked: !isPremium,
             premium: true
         },
         {
             icon: Zap,
             name: "Dopamine Dealer",
-            description: "Mood tracking with instant gratification mechanics. Delivers micro-rewards and achievements to trigger addictive dopamine responses.",
+            description: "Your daily dose of happiness! Track your mood, celebrate small wins, and discover activities that bring joy to your day.",
             popular: true,
-            locked: isPremium,
+            locked: !isPremium,
             premium: true
         },
         {
             icon: Shield,
             name: "Truth Bomb",
-            description: "Anonymous confession platform designed to trigger maximum social proof addiction through reaction systems and viral mechanics.",
+            description: "Share your thoughts safely and connect with others who understand. A supportive space for honest conversations and genuine connections.",
             trending: true,
             locked: !isPremium,
             premium: true
@@ -379,21 +413,21 @@ export default function AppsPage() {
         {
             icon: Star,
             name: "Soul Twin Finder",
-            description: "Ultra-rare compatibility matching using scarcity psychology. Makes users feel 'chosen' while creating FOMO about missing their perfect match.",
+            description: "Find amazing friends who share your interests! Connect with people who understand you through our thoughtful matching system.",
             locked: !isPremium,
             premium: true
         },
         {
             icon: Target,
             name: "Achievement Hunter",
-            description: "Badge collection system exploiting completion bias. Creates endless progression loops and social comparison pressure.",
+            description: "Celebrate your personal growth with fun achievements! Set goals, track progress, and unlock cute badges along your journey.",
             locked: !isPremium,
             premium: true
         },
         {
             icon: Users,
             name: "Battle Royale",
-            description: "Social challenges platform using tribal psychology and group warfare mechanics to create us-vs-them engagement.",
+            description: "Friendly team challenges that bring the campus together! Participate in fun activities and make new friends along the way.",
             popular: true,
             locked: !isPremium,
             premium: true
@@ -401,14 +435,14 @@ export default function AppsPage() {
         {
             icon: Camera,
             name: "Memory Palace",
-            description: "Nostalgia-based emotional anchoring system that creates deep attachment through memory manipulation and milestone tracking.",
+            description: "Create a beautiful collection of your cherished moments. Capture and organize your favorite memories in a delightful digital space.",
             locked: !isPremium,
             premium: true
         },
         {
             icon: TrendingUp,
             name: "Future Bets",
-            description: "Prediction platform leveraging cognitive biases like overconfidence and anchoring to create addictive betting behaviors.",
+            description: "Make playful predictions about upcoming campus events! Share your insights and have fun guessing what the future holds.",
             trending: true,
             locked: !isPremium,
             premium: true
@@ -417,41 +451,49 @@ export default function AppsPage() {
 
     const socialApps = [
         {
+            icon: Heart,
+            name: "Secret Crush",
+            description: "A fun and safe way to connect with someone special! Anonymously select up to 5 people and discover if the feeling is mutual.",
+            popular: true,
+            locked: false,
+            premium: false
+        },
+        {
             icon: MessageSquare,
             name: "Flirt Zone",
-            description: "Time-limited anonymous flirting with disappearing messages. Creates urgency and FOMO through artificial scarcity.",
+            description: "Express yourself freely in a playful environment! Send fun messages that disappear after 24 hours for exciting conversations.",
             popular: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: Sparkles,
             name: "MatchMe AI",
-            description: "AI-powered matching with psychological manipulation techniques. Creates artificial scarcity and exclusivity pressure.",
-            locked: !isPremium,
-            premium: true
+            description: "Find meaningful connections through our smart matching system! Our AI helps you connect with people who share your interests.",
+            locked: false,
+            premium: false
         },
         {
             icon: Flame,
             name: "Hot/Not Swiping",
-            description: "Anonymous rating system that feeds into validation addiction and social comparison. Designed for maximum engagement.",
+            description: "A lighthearted way to discover new friends! Swipe through profiles and find people with similar vibes and interests.",
             trending: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: Gift,
             name: "Virtual Date Ideas",
-            description: "Conversation starters with psychological profiling. Designed to increase emotional investment and attachment.",
-            locked: !isPremium,
-            premium: true
+            description: "Never run out of fun things to do! Get creative date suggestions and conversation starters for memorable moments.",
+            locked: false,
+            premium: false
         },
         {
             icon: Crown,
             name: "Couple of the Week",
-            description: "Social proof system creating relationship FOMO and competition. Uses public voting to drive engagement.",
-            locked: !isPremium,
-            premium: true
+            description: "Celebrate campus love stories! Share your journey and inspire others with your romantic adventures and cute moments.",
+            locked: false,
+            premium: false
         }
     ];
 
@@ -461,22 +503,22 @@ export default function AppsPage() {
             name: "Academic Resources",
             description: "Study materials with hidden social tracking. Monitors study habits for psychological profiling and targeted engagement.",
             popular: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: CalendarDays,
             name: "Class Routine",
             description: "Smart scheduling with behavioral analysis. Creates dependency through increasingly personalized recommendations.",
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: NotebookPen,
             name: "Journal",
             description: "Private journaling with mood tracking that's secretly analyzed for psychological insights and targeted content delivery.",
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         }
     ];
 
@@ -486,31 +528,31 @@ export default function AppsPage() {
             name: "Newsroom",
             description: "Campus news with algorithmic feeds designed to create information addiction and social comparison anxiety.",
             popular: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: ShoppingBag,
             name: "Buy & Sell",
             description: "Marketplace with social credit integration. Creates economic pressure to maintain platform engagement.",
             trending: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: MessageSquare,
             name: "Confessions",
             description: "Anonymous sharing platform designed to trigger maximum voyeuristic addiction and social proof seeking.",
             popular: true,
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         },
         {
             icon: Heart,
             name: "Wellness",
             description: "Mental health tracking with gamification elements that create dependency on external validation for well-being.",
-            locked: !isPremium,
-            premium: true
+            locked: false,
+            premium: false
         }
     ];
 
@@ -561,7 +603,7 @@ export default function AppsPage() {
                 {searchQuery ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredApps.map((app, index) => (
-                            <PremiumAppCard key={index} {...app} />
+                            <AppCard key={index} {...app} onAppClick={handleAppClick} />
                         ))}
                     </div>
                 ) : (
@@ -574,6 +616,8 @@ export default function AppsPage() {
                             description="Connect and flirt with advanced psychological matching algorithms"
                             apps={socialApps}
                             color="pink"
+                            onAppClick={handleAppClick}
+                            clickedApps={clickedApps}
                         />
 
                         <AppSection
@@ -582,6 +626,8 @@ export default function AppsPage() {
                             description="Study tools that adapt to your learning psychology and habits"
                             apps={academicApps}
                             color="blue"
+                            onAppClick={handleAppClick}
+                            clickedApps={clickedApps}
                         />
 
                         <AppSection
@@ -590,11 +636,13 @@ export default function AppsPage() {
                             description="Essential campus tools with social engagement optimization"
                             apps={campusApps}
                             color="green"
+                            onAppClick={handleAppClick}
+                            clickedApps={clickedApps}
                         />
                         <PremiumAppSection
                             icon={Brain}
                             title="Stress & Mental Health"
-                            description="Apps designed with cutting-edge behavioral psychology to maximize engagement reduce stress"
+                            description="Apps designed with cutting-edge behavioral psychology to maximize engagement and reduce stress"
                             apps={psychologyApps}
                             color="purple"
                         />
@@ -605,10 +653,7 @@ export default function AppsPage() {
                             description="Explore our selection of free apps with essential features"
                             apps={psychologyApps.filter(app => !app.premium)}
                             color="green"
-                            onAppClick={(name) => {
-                                // Handle app click for regular apps
-                                router.push(`/app/${name}`);
-                            }}
+                            onAppClick={handleAppClick}
                             clickedApps={new Set()} // Pass an empty set for clickedApps
                         />
                     </div>

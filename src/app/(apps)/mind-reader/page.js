@@ -14,13 +14,9 @@ import {
     Zap,
     Star,
     Crown,
-    Diamond,
+    Gem,
     Sparkles,
     Target,
-    Lightbulb,
-    Magic,
-    Crystal,
-    Mysterious,
     Search,
     Users,
     Heart,
@@ -30,7 +26,6 @@ import {
     Trophy,
     Award,
     Timer,
-    BarChart3,
     TrendingUp,
     Flame,
     ThumbsUp,
@@ -222,7 +217,7 @@ const PersonalityResult = ({ personality, onShare, onRetake }) => {
                         <Star className="w-6 h-6" />
                     </div>
                     <div className="absolute bottom-4 left-8 animate-pulse delay-500">
-                        <Diamond className="w-6 h-6" />
+                        <Gem className="w-6 h-6" />
                     </div>
                     <div className="absolute bottom-8 right-4 animate-bounce delay-700">
                         <Crown className="w-5 h-5" />
@@ -327,7 +322,7 @@ const PersonalityResult = ({ personality, onShare, onRetake }) => {
                 <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                            <Lightbulb className="w-6 h-6 text-white" />
+                            <Zap className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <h3 className="font-semibold text-blue-800 mb-2">Mind Reader's Advice</h3>
