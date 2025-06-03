@@ -134,7 +134,7 @@ export function BottomNavigation() {
 
     const navItems = [
         { href: "/dashboard", icon: MessageCircle, label: "Feed" },
-        { href: "/search", icon: Search, label: "Search" },
+        { href: "/learning", icon: BookOpen, label: "Learn" },
         { href: "/create", icon: PlusCircle, label: "Create", special: true },
         { href: "/apps", icon: Grid3X3, label: "Apps" },
         { href: "/profile", icon: User, label: "Profile" }

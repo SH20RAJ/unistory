@@ -98,7 +98,7 @@ const PremiumAppCard = ({ icon: Icon, name, description, status, popular, trendi
     const [showPreview, setShowPreview] = useState(false);
 
     return (
-        <Card className={`relative hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-purple-300 dark:hover:border-purple-600 border-2 ${locked ? 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800' : ''}`}>
+        <Card className={`relative hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-purple-300 dark:hover:border-purple-600 hover:scale-105 border-2 ${locked ? 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800' : ''}`}>
             <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -153,7 +153,7 @@ const PremiumAppCard = ({ icon: Icon, name, description, status, popular, trendi
 
 const AppCard = ({ icon: Icon, name, description, status, popular, trending, onAppClick }) => {
     return (
-        <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-blue-300 dark:hover:border-blue-600 border-2" onClick={() => onAppClick && onAppClick(name)}>
+        <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-blue-300 dark:hover:border-blue-600 hover:scale-105 border-2" onClick={() => onAppClick && onAppClick(name)}>
             <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -178,7 +178,174 @@ const AppCard = ({ icon: Icon, name, description, status, popular, trending, onA
     );
 };
 
+const NovaAssistant = () => {
+    const [isListening, setIsListening] = useState(false);
+    const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([
+        { type: 'nova', content: "Hey! I'm Nova, your personal campus AI. I know everything about your social life, studies, and can help you with anything. What's on your mind? 😊", time: "now" }
+    ]);
+    const [showChat, setShowChat] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [socialCredits, setSocialCredits] = useState(1250);
+    const [premiumStatus, setPremiumStatus] = useState(false);
 
+    const novaResponses = [
+        "I noticed you haven't checked your secret crushes today... 👀",
+        "Your social credit score went up! You're now at 1,250 points 🚀",
+        "There are 3 new confessions from your college. Want me to summarize them?",
+        "I found someone with 89% compatibility with you. Should I reveal who? 😏",
+        "Your mood has been improving this week! Keep it up! 💪",
+        "I can help you write the perfect reply to that message you've been avoiding...",
+        "Based on your study patterns, you should take a break in 23 minutes ⏰",
+        "Someone viewed your profile 7 times today. Want to know who? 👁️"
+    ];
+
+    const sendMessage = () => {
+        if (!message.trim()) return;
+
+        setMessages(prev => [...prev, { type: 'user', content: message, time: 'now' }]);
+        setMessage("");
+        setIsTyping(true);
+
+        setTimeout(() => {
+            const response = novaResponses[Math.floor(Math.random() * novaResponses.length)];
+            setMessages(prev => [...prev, { type: 'nova', content: response, time: 'now' }]);
+            setIsTyping(false);
+        }, 1500 + Math.random() * 1000);
+    };
+
+    return (
+        <div className="mb-8">
+            <Card className="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white border-0 overflow-hidden relative">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iIzlDNERGRiIgZmlsbC1vcGFjaXR5PSIwLjEiLz4KPC9zdmc+')] opacity-50"></div>
+
+                <CardHeader className="relative z-10">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                            <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center animate-pulse">
+                                <Bot className="w-10 h-10 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">
+                                    Meet Nova AI
+                                </h2>
+                                <p className="text-purple-200">Your Personal Campus Intelligence</p>
+                                <div className="flex items-center space-x-2 mt-2">
+                                    <Badge className="bg-green-500/20 text-green-300 border-green-500/50">🟢 Online</Badge>
+                                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/50">⚡ Learning You</Badge>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white mb-2">👑 Premium Only</Badge>
+                            <p className="text-sm text-purple-200">Social Credits: {socialCredits}</p>
+                            <p className="text-xs text-purple-300">Need 2,500 for Nova access</p>
+                        </div>
+                    </div>
+                </CardHeader>
+
+                <CardContent className="relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="space-y-3">
+                            <h4 className="font-semibold text-purple-200">🧠 What Nova Knows About You:</h4>
+                            <ul className="text-sm space-y-1 text-purple-100">
+                                <li>• Your secret crushes and compatibility scores</li>
+                                <li>• Study patterns and academic performance</li>
+                                <li>• Social connections and mood tracking</li>
+                                <li>• Campus events and personal interests</li>
+                                <li>• Anonymous confessions about you 👀</li>
+                            </ul>
+                        </div>
+                        <div className="space-y-3">
+                            <h4 className="font-semibold text-purple-200">💬 Try Asking Nova:</h4>
+                            <ul className="text-sm space-y-1 text-purple-100">
+                                <li>• "Do I have any new crush notifications?"</li>
+                                <li>• "What's the campus gossip today?"</li>
+                                <li>• "Find me a study buddy for Physics"</li>
+                                <li>• "Who viewed my profile recently?"</li>
+                                <li>• "Suggest a confidence-boosting activity"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {showChat ? (
+                        <div className="bg-black/20 rounded-lg p-4 backdrop-blur-sm">
+                            <div className="h-40 overflow-y-auto space-y-2 mb-4">
+                                {messages.map((msg, index) => (
+                                    <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`max-w-[80%] p-2 rounded-lg text-sm ${msg.type === 'user'
+                                            ? 'bg-purple-600 text-white'
+                                            : 'bg-white/10 text-purple-100'
+                                            }`}>
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                ))}
+                                {isTyping && (
+                                    <div className="flex justify-start">
+                                        <div className="bg-white/10 text-purple-100 p-2 rounded-lg text-sm flex items-center space-x-1">
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                            <span>Nova is typing...</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex space-x-2">
+                                <Input
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Ask Nova anything..."
+                                    className="bg-white/10 border-white/20 text-white placeholder-purple-200"
+                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                    disabled={!premiumStatus}
+                                />
+                                <Button
+                                    onClick={sendMessage}
+                                    className="bg-purple-600 hover:bg-purple-700"
+                                    disabled={!premiumStatus}
+                                >
+                                    <Send className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                    onClick={() => setIsListening(!isListening)}
+                                    className={`${isListening ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'}`}
+                                    disabled={!premiumStatus}
+                                >
+                                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex space-x-4">
+                            <Button
+                                onClick={() => setShowChat(true)}
+                                className="bg-white/20 hover:bg-white/30 text-white border-0 flex-1"
+                                disabled={!premiumStatus}
+                            >
+                                <MessageCircle className="w-4 h-4 mr-2" />
+                                Start Chatting with Nova
+                            </Button>
+                            <Button
+                                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
+                            >
+                                <Crown className="w-4 h-4 mr-2" />
+                                Get Premium Access
+                            </Button>
+                        </div>
+                    )}
+
+                    {!premiumStatus && (
+                        <div className="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
+                            <p className="text-yellow-200 text-sm">
+                                💡 <strong>Unlock Nova:</strong> Reach 2,500 social credits or upgrade to Premium to access your AI companion
+                            </p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+    );
+};
 
 const PremiumAppSection = ({ icon: Icon, title, description, apps, color = "blue" }) => {
     const [showAll, setShowAll] = useState(false);
@@ -521,24 +688,26 @@ export default function AppsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <MainNavigation />
 
-            <div className="max-w-7xl mx-auto p-6 ">
+            <div className="max-w-7xl mx-auto p-6 pt-24">
+                {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        Apps Universe
+                        Premium Apps Universe
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-                        Discover thoughtfully designed campus apps that help you stay connected and productive
+                        Unlock the most psychologically engaging campus apps designed to keep you connected
                     </p>
 
-                    {/* <div className="flex items-center justify-center space-x-4 mb-6">
+                    <div className="flex items-center justify-center space-x-4 mb-6">
                         <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2">
                             Your Credits: {userCredits.toLocaleString()}
                         </Badge>
                         <Badge variant="outline" className="px-4 py-2">
                             Premium: {isPremium ? '✅ Active' : '❌ Locked'}
                         </Badge>
-                    </div> */}
+                    </div>
                 </div>
 
                 {/* Search */}
@@ -553,69 +722,110 @@ export default function AppsPage() {
                     />
                 </div>
 
+                {/* Nova AI Assistant - Featured */}
+                <Card className="mb-8 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white border-0 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iIzlDNERGRiIgZmlsbC1vcGFjaXR5PSIwLjEiLz4KPC9zdmc+')] opacity-50"></div>
 
+                    <CardContent className="relative z-10 p-8">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center animate-pulse">
+                                    <Bot className="w-10 h-10 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">
+                                        Meet Nova AI
+                                    </h2>
+                                    <p className="text-purple-200 text-lg">Your Personal Campus Intelligence</p>
+                                    <div className="flex items-center space-x-2 mt-2">
+                                        <Badge className="bg-green-500/20 text-green-300 border-green-500/50">🟢 Online</Badge>
+                                        <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/50">⚡ Learning You</Badge>
+                                        <Badge className="bg-red-500/20 text-red-300 border-red-500/50">🔥 Most Addictive</Badge>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white mb-2 text-lg px-4 py-2">👑 Premium Exclusive</Badge>
+                                <p className="text-sm text-purple-200">Your Credits: {userCredits.toLocaleString()}</p>
+                                <p className="text-xs text-purple-300">Need {(2500 - userCredits).toLocaleString()} more for access</p>
+                            </div>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div className="space-y-4">
+                                <h4 className="font-semibold text-purple-200 text-lg">🧠 What Nova Knows About You:</h4>
+                                <ul className="space-y-2 text-purple-100">
+                                    <li className="flex items-center space-x-2">
+                                        <Heart className="w-4 h-4 text-pink-400" />
+                                        <span>Your secret crushes and compatibility scores</span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <BookOpen className="w-4 h-4 text-blue-400" />
+                                        <span>Study patterns and academic performance</span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <Users className="w-4 h-4 text-green-400" />
+                                        <span>Social connections and mood tracking</span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <Eye className="w-4 h-4 text-yellow-400" />
+                                        <span>Anonymous confessions about you 👀</span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <TrendingUp className="w-4 h-4 text-purple-400" />
+                                        <span>Behavioral patterns and future predictions</span>
+                                    </li>
+                                </ul>
+                            </div>
 
+                            <div className="space-y-4">
+                                <h4 className="font-semibold text-purple-200 text-lg">💬 Try Asking Nova:</h4>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {[
+                                        "Do I have any new crush notifications?",
+                                        "What's the campus gossip today?",
+                                        "Find me a study buddy for Physics",
+                                        "Who viewed my profile recently?",
+                                        "Suggest a confidence-boosting activity"
+                                    ].map((prompt, index) => (
+                                        <div key={index} className="bg-white/10 p-2 rounded text-sm text-purple-100 border border-purple-400/30">
+                                            "{prompt}"
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
-                {/* App Sections */}
-                {searchQuery ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredApps.map((app, index) => (
-                            <PremiumAppCard key={index} {...app} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="space-y-12">
+                        <div className="flex justify-center space-x-4">
+                            <Button
+                                onClick={() => router.push('/nova-ai')}
+                                className="bg-white/20 hover:bg-white/30 text-white border-0 px-8 py-3 text-lg"
+                                disabled={!isPremium}
+                            >
+                                <MessageCircle className="w-5 h-5 mr-2" />
+                                {isPremium ? 'Chat with Nova' : 'Preview Nova (Locked)'}
+                            </Button>
+                            <Button
+                                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-3 text-lg"
+                            >
+                                <Crown className="w-5 h-5 mr-2" />
+                                Get Premium Access
+                            </Button>
+                        </div>
 
+                        {!isPremium && (
+                            <div className="mt-6 p-4 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
+                                <p className="text-yellow-200 text-center">
+                                    💡 <strong>Unlock Nova:</strong> Reach {(2500).toLocaleString()} social credits or upgrade to Premium to access your AI companion that knows everything about your campus life
+                                </p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
 
-                        <AppSection
-                            icon={Heart}
-                            title="Social & Dating"
-                            description="Connect and flirt with advanced psychological matching algorithms"
-                            apps={socialApps}
-                            color="pink"
-                        />
-
-                        <AppSection
-                            icon={BookOpen}
-                            title="Academic & Growth"
-                            description="Study tools that adapt to your learning psychology and habits"
-                            apps={academicApps}
-                            color="blue"
-                        />
-
-                        <AppSection
-                            icon={MapPin}
-                            title="Campus Life"
-                            description="Essential campus tools with social engagement optimization"
-                            apps={campusApps}
-                            color="green"
-                        />
-                        <PremiumAppSection
-                            icon={Brain}
-                            title="Stress & Mental Health"
-                            description="Apps designed with cutting-edge behavioral psychology to maximize engagement reduce stress"
-                            apps={psychologyApps}
-                            color="purple"
-                        />
-                        {/* Regular Apps Section - Non-Premium */}
-                        <RegularAppSection
-                            icon={Heart}
-                            title="Free Apps"
-                            description="Explore our selection of free apps with essential features"
-                            apps={psychologyApps.filter(app => !app.premium)}
-                            color="green"
-                            onAppClick={(name) => {
-                                // Handle app click for regular apps
-                                router.push(`/app/${name}`);
-                            }}
-                            clickedApps={new Set()} // Pass an empty set for clickedApps
-                        />
-                    </div>
-                )}
                 {/* Premium Unlock Section */}
                 {!isPremium && (
-                    <Card className="my-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0">
+                    <Card className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0">
                         <CardContent className="p-8">
                             <div className="text-center">
                                 <Crown className="w-16 h-16 mx-auto mb-4 text-yellow-300" />
@@ -651,6 +861,64 @@ export default function AppsPage() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* App Sections */}
+                {searchQuery ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredApps.map((app, index) => (
+                            <PremiumAppCard key={index} {...app} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="space-y-12">
+                        <AppSection
+                            icon={Brain}
+                            title="Stress & Mental Health"
+                            description="Apps designed with cutting-edge behavioral psychology to maximize engagement reduce stress"
+                            apps={psychologyApps}
+                            color="purple"
+                        />
+
+                        <AppSection
+                            icon={Heart}
+                            title="Social & Dating"
+                            description="Connect and flirt with advanced psychological matching algorithms"
+                            apps={socialApps}
+                            color="pink"
+                        />
+
+                        <AppSection
+                            icon={BookOpen}
+                            title="Academic & Growth"
+                            description="Study tools that adapt to your learning psychology and habits"
+                            apps={academicApps}
+                            color="blue"
+                        />
+
+                        <AppSection
+                            icon={MapPin}
+                            title="Campus Life"
+                            description="Essential campus tools with social engagement optimization"
+                            apps={campusApps}
+                            color="green"
+                        />
+
+                        {/* Regular Apps Section - Non-Premium */}
+                        <RegularAppSection
+                            icon={Heart}
+                            title="Free Apps"
+                            description="Explore our selection of free apps with essential features"
+                            apps={psychologyApps.filter(app => !app.premium)}
+                            color="green"
+                            onAppClick={(name) => {
+                                // Handle app click for regular apps
+                                router.push(`/app/${name}`);
+                            }}
+                            clickedApps={new Set()} // Pass an empty set for clickedApps
+                        />
+                    </div>
+                )}
+
                 {/* Footer */}
                 <div className="mt-16 text-center bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">

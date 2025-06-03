@@ -100,24 +100,55 @@ import {
     SkipBack,
     SkipForward
 } from "lucide-react";
-import { timeFrames as timeFrameData } from "@/lib/constants";
 
-// Convert the imported timeFrames data to include proper icons
-const timeFrames = timeFrameData.map(frame => {
-    let icon;
-    switch (frame.icon) {
-        case 'Clock': icon = <Clock className="w-4 h-4" />; break;
-        case 'Calendar': icon = <Calendar className="w-4 h-4" />; break;
-        case 'GraduationCap': icon = <GraduationCap className="w-4 h-4" />; break;
-        case 'Star': icon = <Star className="w-4 h-4" />; break;
-        case 'Trophy': icon = <Trophy className="w-4 h-4" />; break;
-        case 'Crown': icon = <Crown className="w-4 h-4" />; break;
-        case 'Rocket': icon = <Rocket className="w-4 h-4" />; break;
-        case 'Diamond': icon = <Diamond className="w-4 h-4" />; break;
-        default: icon = <Clock className="w-4 h-4" />;
-    }
-    return { ...frame, icon };
-});
+const timeFrames = [
+    {
+        id: "1week",
+        label: "1 Week",
+        description: "Quick reflection",
+        icon: <Clock className="w-4 h-4" />,
+        color: "bg-blue-500"
+    },
+    {
+        id: "1month",
+        label: "1 Month",
+        description: "Short-term goals",
+        icon: <Calendar className="w-4 h-4" />,
+        color: "bg-green-500"
+    },
+    {
+        id: "3months",
+        label: "3 Months",
+        description: "Semester reflection",
+        icon: <GraduationCap className="w-4 h-4" />,
+        color: "bg-purple-500"
+    },
+    {
+        id: "6months",
+        label: "6 Months",
+        description: "Half-year milestone",
+        icon: <Star className="w-4 h-4" />,
+        color: "bg-orange-500"
+    },
+    {
+        id: "1year",
+        label: "1 Year",
+        description: "Annual time capsule",
+        icon: <Trophy className="w-4 h-4" />,
+        color: "bg-red-500"
+    },
+    {
+        id: "graduation",
+        label: "Graduation",
+        description: "College memories",
+        icon: <Crown className="w-4 h-4" />,
+        color: "bg-yellow-500"
+    },
+    {
+        id: "5years",
+        label: "5 Years",
+        description: "Life milestone",
+        icon: <Rocket className="w-4 h-4" />,
         color: "bg-pink-500"
     },
     {

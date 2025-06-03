@@ -19,7 +19,9 @@ import {
     Search,
     Bell,
     Plus,
-    Gift
+    Gift,
+    GraduationCap,
+    UserCheck
 } from "lucide-react";
 
 const sidebarItems = [
@@ -49,18 +51,6 @@ const sidebarItems = [
         description: "Campus events and meetups"
     },
     {
-        title: "Referrals",
-        href: "/referrals",
-        icon: Gift,
-        description: "Invite friends and earn rewards"
-    },
-    {
-        title: "Search",
-        href: "/search",
-        icon: Search,
-        description: "Find people and content"
-    },
-    {
         title: "Create",
         href: "/create",
         icon: Plus,
@@ -70,28 +60,28 @@ const sidebarItems = [
 
 const quickAccessItems = [
     {
+        title: "Alumni Connect",
+        href: "/alumni",
+        icon: Users,
+        description: "Anonymous sharing"
+    }, 
+    {
+        title: "Courses",
+        href: "/learning",
+        icon: GraduationCap,
+        description: "Educational courses"
+    },{
         title: "Study Rooms",
         href: "/study",
         icon: BookOpen,
         description: "Join study sessions"
     },
-    {
-        title: "Confessions",
-        href: "/confessions",
-        icon: Shield,
-        description: "Anonymous sharing"
-    },
+
     {
         title: "Secret Crush",
         href: "/matches",
         icon: Heart,
         description: "Find your match"
-    },
-    {
-        title: "Leaderboard",
-        href: "/leaderboard",
-        icon: Trophy,
-        description: "Campus rankings"
     },
     {
         title: "Wellness",
