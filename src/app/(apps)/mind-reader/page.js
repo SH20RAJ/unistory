@@ -12,7 +12,7 @@ export default function MindReadingPage() {
     
     return (
         <>
-            {!hasAccess && <PremiumGate appName="Mind Reader" />}
+            {!hasAccess && <PremiumGate appName="Mind Reader" appIcon={Brain} />}
             {hasAccess && (
                 <div className="space-y-6">
                     <Card>

@@ -99,7 +99,7 @@ const PremiumGate = ({
                 {/* Premium Lock Header */}
                 <div className="text-center mb-8">
                     <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-                        <Icon className="w-12 h-12 text-white" />
+                        {Icon ? <Icon className="w-12 h-12 text-white" /> : <Crown className="w-12 h-12 text-white" />}
                         <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
                             <Lock className="w-4 h-4 text-white" />
                         </div>

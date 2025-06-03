@@ -628,7 +628,7 @@ export default function TimeCapsulePage() {
 
     return (
         <>
-            {!hasAccess && <PremiumGate appName="Time Capsule" />}
+            {!hasAccess && <PremiumGate appName="Time Capsule" appIcon={Clock} />}
             {hasAccess && (
                 <div className="space-y-6">
                     {/* Header Stats */}

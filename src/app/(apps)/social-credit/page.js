@@ -416,7 +416,7 @@ export default function SocialCreditPage() {
 
     return (
         <>
-            {!hasAccess && <PremiumGate appName="Social Credit" />}
+            {!hasAccess && <PremiumGate appName="Social Credit" appIcon={TrendingUp} />}
             {hasAccess && (
                 <div className="space-y-6">
                     {/* Header Dashboard */}

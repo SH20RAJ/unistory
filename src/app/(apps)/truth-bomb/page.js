@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAppAccess } from '@/hooks/use-premium';
 import PremiumGate from '@/components/premium/PremiumGate';
+import { Target } from 'lucide-react';
 
 export default function TruthBomb() {
     const { hasAccess } = useAppAccess('Truth Bomb');
@@ -145,7 +146,7 @@ export default function TruthBomb() {
 
     return (
         <>
-            {!hasAccess && <PremiumGate appName="Truth Bomb" />}
+            {!hasAccess && <PremiumGate appName="Truth Bomb" appIcon={Target} />}
             {hasAccess && (
                 <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white">
                     <div className="max-w-md mx-auto p-4">
