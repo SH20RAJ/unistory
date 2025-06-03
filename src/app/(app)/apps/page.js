@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) => {
+const AppSection = ({ icon: Icon, title, description, apps, color = "blue", onAppClick, clickedApps }) => {
     const colorClasses = {
         blue: "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800",
         purple: "bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800",
@@ -73,16 +73,24 @@ const AppSection = ({ icon: Icon, title, description, apps, color = "blue" }) =>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {apps.map((app, index) => (
-                    <AppCard key={index} {...app} />
+                    <AppCard key={index} {...app} onAppClick={onAppClick} isClicked={clickedApps?.has(app.name)} />
                 ))}
             </div>
         </div>
     );
 };
 
-const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, trending, onClick }) => {
+const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, trending, onClick, onAppClick, isClicked }) => {
+    const handleClick = () => {
+        if (onAppClick && onClick) {
+            onAppClick(name, onClick);
+        } else if (onClick) {
+            onClick();
+        }
+    };
+
     return (
-        <Card className="relative hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-purple-300 dark:hover:border-purple-600 hover:scale-105 border-2" onClick={onClick}>
+        <Card className={`relative hover:shadow-xl transition-all duration-300 cursor-pointer group hover:border-purple-300 dark:hover:border-purple-600 hover:scale-105 border-2 ${isClicked ? 'ring-2 ring-purple-300 dark:ring-purple-600' : ''}`} onClick={handleClick}>
             <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -118,8 +126,19 @@ const AppCard = ({ icon: Icon, name, description, status, popular, comingSoon, t
 
 export default function AppsPage() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [clickedApps, setClickedApps] = useState(new Set());
 
     const router = useRouter();
+
+    const handleAppClick = (appName, onClick) => {
+        // Track app interactions
+        setClickedApps(prev => new Set(prev).add(appName));
+        
+        // Add a small delay for visual feedback
+        setTimeout(() => {
+            onClick();
+        }, 100);
+    };
 
     // Essential Apps - Top Priority
     const essentialApps = [
@@ -155,6 +174,18 @@ export default function AppsPage() {
             description: "Invite friends and earn rewards together. Build your campus network",
             popular: true,
             onClick: () => router.push("/referrals")
+        },
+        {
+            icon: Car,
+            name: "Campus Rides",
+            description: "Share rides with fellow students. Split costs and reduce carbon footprint",
+            onClick: () => router.push("/rides")
+        },
+        {
+            icon: Utensils,
+            name: "Food Reviews",
+            description: "Rate and review campus cafeterias, nearby restaurants, and food spots",
+            onClick: () => router.push("/food-reviews")
         }
     ];
 
@@ -202,6 +233,13 @@ export default function AppsPage() {
 
     const studyApps = [
         {
+            icon: BookOpen,
+            name: "Academic Resources",
+            description: "Access PDFs, videos, assignments, and study materials for all subjects",
+            popular: true,
+            onClick: () => router.push("/apps/resources")
+        },
+        {
             icon: Users,
             name: "Study Rooms",
             description: "Join real-time Pomodoro-based study sessions with classmates",
@@ -209,7 +247,7 @@ export default function AppsPage() {
             onClick: () => console.log("Navigate to Study Rooms")
         },
         {
-            icon: BookOpen,
+            icon: Bookmark,
             name: "Notes Exchange",
             description: "Share and discover study materials with smart recommendations",
             onClick: () => console.log("Navigate to Notes")
@@ -380,7 +418,46 @@ export default function AppsPage() {
         }
     ];
 
-    const allApps = [...essentialApps, ...datingApps, ...studyApps, ...socialApps, ...gameApps, ...startupApps, ...wellnessApps];
+    const campusLifeApps = [
+        {
+            icon: MapPin,
+            name: "Lost & Found",
+            description: "Report lost items and help others find their belongings on campus",
+            onClick: () => console.log("Navigate to Lost & Found")
+        },
+        {
+            icon: PlusCircle,
+            name: "Random Roommate",
+            description: "Get matched with random roommates for study sessions or hangouts",
+            onClick: () => console.log("Navigate to Random Roommate")
+        },
+        {
+            icon: Coffee,
+            name: "Coffee Dates",
+            description: "Schedule casual coffee meetups with students from different branches",
+            onClick: () => console.log("Navigate to Coffee Dates")
+        },
+        {
+            icon: DollarSign,
+            name: "Split Bills",
+            description: "Easy bill splitting for group orders, trips, and shared expenses",
+            onClick: () => console.log("Navigate to Split Bills")
+        },
+        {
+            icon: Gift,
+            name: "Secret Santa",
+            description: "Organize gift exchanges and surprise celebrations on campus",
+            onClick: () => console.log("Navigate to Secret Santa")
+        },
+        {
+            icon: Camera,
+            name: "Campus Snapshots",
+            description: "Daily photo challenges and campus photography competitions",
+            onClick: () => console.log("Navigate to Campus Snapshots")
+        }
+    ];
+
+    const allApps = [...essentialApps, ...datingApps, ...studyApps, ...socialApps, ...gameApps, ...startupApps, ...wellnessApps, ...campusLifeApps];
 
     const filteredApps = searchQuery
         ? allApps.filter(app =>
@@ -401,10 +478,26 @@ export default function AppsPage() {
                         Campus Apps
                     </h1>
                 </div>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto leading-relaxed">
                     Discover all the amazing features that make campus life more connected,
                     fun, and productive. From dating to studying, we've got you covered!
                 </p>
+
+                {/* Quick Stats */}
+                <div className="flex justify-center space-x-8 mb-8">
+                    <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{allApps.length}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Total Apps</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">7</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Categories</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{allApps.filter(app => app.popular).length}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Popular</div>
+                    </div>
+                </div>
 
                 {/* Search */}
                 <div className="relative max-w-md mx-auto">
@@ -426,8 +519,32 @@ export default function AppsPage() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredApps.map((app, index) => (
-                            <AppCard key={index} {...app} />
+                            <AppCard key={index} {...app} onAppClick={handleAppClick} isClicked={clickedApps.has(app.name)} />
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Recently Viewed Apps */}
+            {!searchQuery && clickedApps.size > 0 && (
+                <div className="mb-8">
+                    <div className="flex items-center space-x-3 mb-6">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recently Viewed</h2>
+                            <p className="text-gray-600 dark:text-gray-400">Apps you've recently interacted with</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {allApps
+                            .filter(app => clickedApps.has(app.name))
+                            .slice(0, 4)
+                            .map((app, index) => (
+                                <AppCard key={index} {...app} onAppClick={handleAppClick} isClicked={true} />
+                            ))
+                        }
                     </div>
                 </div>
             )}
@@ -441,6 +558,8 @@ export default function AppsPage() {
                         description="Find your campus crush, make meaningful connections, and explore romantic possibilities"
                         apps={datingApps}
                         color="pink"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
                     
                      {/* Essential Apps Section */}
@@ -492,6 +611,8 @@ export default function AppsPage() {
                         description="Enhance your academic journey with collaborative learning tools and study resources"
                         apps={studyApps}
                         color="blue"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
 
                     <AppSection
@@ -500,6 +621,8 @@ export default function AppsPage() {
                         description="Connect with your campus community, join events, and share memorable moments"
                         apps={socialApps}
                         color="green"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
 
                     <AppSection
@@ -508,6 +631,8 @@ export default function AppsPage() {
                         description="Compete, have fun, and earn rewards through campus-wide games and challenges"
                         apps={gameApps}
                         color="purple"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
 
                     <AppSection
@@ -516,6 +641,8 @@ export default function AppsPage() {
                         description="Build the next big thing with fellow student entrepreneurs and innovators"
                         apps={startupApps}
                         color="orange"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
 
                     <AppSection
@@ -524,6 +651,18 @@ export default function AppsPage() {
                         description="Take care of your mental health and track your personal growth journey"
                         apps={wellnessApps}
                         color="indigo"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
+                    />
+
+                    <AppSection
+                        icon={MapPin}
+                        title="Campus Life"
+                        description="Navigate daily campus life with practical tools and fun social features"
+                        apps={campusLifeApps}
+                        color="pink"
+                        onAppClick={handleAppClick}
+                        clickedApps={clickedApps}
                     />
                 </div>
             )}
