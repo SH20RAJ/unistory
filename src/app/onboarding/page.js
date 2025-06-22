@@ -20,7 +20,8 @@ import {
     Heart,
     Target,
     MapPin,
-    Calendar
+    Calendar,
+    MessageCircle
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -727,6 +728,31 @@ export default function OnboardingPage() {
                             <p className="text-blue-700 dark:text-blue-300 text-sm sm:text-base">
                                 <strong>🎉 Almost done!</strong> These details will help us create your personalized campus experience.
                             </p>
+                        </div>
+
+                        {/* Discord Community Invitation */}
+                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-800 p-6 rounded-xl">
+                            <div className="text-center">
+                                <div className="flex items-center justify-center space-x-3 mb-4">
+                                    <MessageCircle className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+                                    <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Join Our Community!</h3>
+                                </div>
+                                <p className="text-indigo-700 dark:text-indigo-300 text-sm mb-4">
+                                    Connect with fellow students, get instant support, and stay updated with the latest campus news in our Discord community.
+                                </p>
+                                <a
+                                    href="https://discord.gg/unistory"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                                >
+                                    <MessageCircle className="w-4 h-4" />
+                                    <span>Join Discord Community</span>
+                                </a>
+                                <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2">
+                                    You can always join later from the main navigation
+                                </p>
+                            </div>
                         </div>
                     </div>
                 );

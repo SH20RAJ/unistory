@@ -159,6 +159,7 @@ const mockClubs = [
             website: "gaming.university.edu",
             instagram: "@unigaming",
             twitter: "@unigaming",
+            discord: "https://discord.gg/sg9fGbD9",
             email: "gaming@university.edu"
         },
         recentActivity: [
