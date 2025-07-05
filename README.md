@@ -2,6 +2,9 @@
 
 Welcome to **Unistory**, the exclusive social media platform for **verified college students**. Our mission is to foster authentic connection, academic collaboration, and emotional well-being through a safe, vibrant, and psychologically intelligent digital campus.
 
+> All Docs - https://destiny-hardware-0e7.notion.site/Unistory-serious-208cd0ed0c25804ca32bf741e247c5f7
+> **Note**: This is a work in progress. We are actively developing features and welcome contributions!
+
 ---
 
 ## 🌟 Features
